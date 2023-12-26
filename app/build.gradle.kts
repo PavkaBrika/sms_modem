@@ -37,10 +37,25 @@ android {
 }
 
 dependencies {
+    //Ktor Server
+    implementation("io.ktor:ktor-server-core:1.6.4")
+    implementation("io.ktor:ktor-gson:1.6.4")
+    implementation("io.ktor:ktor-server-netty:1.6.2")
+    implementation("io.ktor:ktor-websockets:1.6.2")
+
+    //Network
+    val okhttpVersion = "4.11.0"
+    val retrofitVersion = "2.9.0"
+    implementation("com.squareup.retrofit2:retrofit:$retrofitVersion")
+    implementation("com.squareup.retrofit2:converter-gson:$retrofitVersion")
+    implementation("com.squareup.retrofit2:adapter-rxjava3:$retrofitVersion")
+    implementation("com.squareup.okhttp3:okhttp:$okhttpVersion")
+    implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
+
     //MVVM
-    val lifecycle_version = "2.6.2"
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version")
-    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle_version")
+    val lifecycleVersion = "2.6.2"
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
 
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
