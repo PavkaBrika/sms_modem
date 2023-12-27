@@ -28,8 +28,11 @@ import java.lang.NullPointerException
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+
     @Inject
-    lateinit var savePort: SavePort
+    lateinit var vmFactory: MainViewModelFactory
+
+    private lateinit var vm: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +40,15 @@ class MainActivity : AppCompatActivity() {
 
         (applicationContext as App).appComponent.inject(this)
 
-        val vm = ViewModelProvider(this, MainViewModelFactory(this)).get(MainViewModel::class.java)
+        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
 
         val ipAddressTextView: TextView = findViewById(R.id.ipAddressTextView)
         ipAddressTextView.text = getDeviceIpAddress()
+
+        val portTextView: TextView = findViewById(R.id.portTextView)
+        vm.port.observe(this) { port ->
+            portTextView.text = ":${port.value}"
+        }
 
         val activateButton: Button = findViewById(R.id.activateServiceButton)
         activateButton.setOnClickListener {
@@ -77,7 +85,7 @@ class MainActivity : AppCompatActivity() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-            savePort.execute(Port(dialog.findViewById<EditText>(R.id.portEditText).toString().toInt()))
+            vm.savePort(Port(dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()))
             Log.e("TAG", "Port saved")
         }
         dialog.show()
@@ -92,8 +100,6 @@ class MainActivity : AppCompatActivity() {
             val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             return Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
         }
-
-
     }
 
     private fun serviceAction(action: ServiceState) {
