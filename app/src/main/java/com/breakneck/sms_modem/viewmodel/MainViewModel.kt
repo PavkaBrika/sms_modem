@@ -13,6 +13,7 @@ class MainViewModel: ViewModel() {
 
     init {
         Log.e(TAG, "MainViewModel Created")
+
     }
 
     override fun onCleared() {
