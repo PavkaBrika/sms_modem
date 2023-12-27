@@ -1,5 +1,6 @@
 package com.breakneck.sms_modem.service
 
+import android.app.Notification
 import android.app.Service
 import android.content.Intent
 import android.os.IBinder
@@ -31,6 +32,7 @@ class NetworkService: Service() {
         super.onCreate()
         Log.e(TAG, "Service create")
 
+//        val notification: Notification = createNotification()
     }
 
     fun startService() {
@@ -40,5 +42,9 @@ class NetworkService: Service() {
     fun stopService() {
 
     }
+
+//    fun createNotification() : Notification {
+//
+//    }
 
 }

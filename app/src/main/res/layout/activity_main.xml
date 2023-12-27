@@ -7,10 +7,10 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
-    <EditText
-        android:id="@+id/portEditText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+<!--    <EditText-->
+<!--        android:id="@+id/portEditText"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="wrap_content"-->
 
     <Button
         android:id="@+id/activateServiceButton"
