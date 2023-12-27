@@ -15,18 +15,27 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import com.breakneck.domain.util.ServiceState
+import com.breakneck.domain.model.Port
+import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.usecase.SavePort
 import com.breakneck.sms_modem.R
+import com.breakneck.sms_modem.app.App
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.viewmodel.MainViewModel
 import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import java.lang.NullPointerException
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
+    @Inject
+    lateinit var savePort: SavePort
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        (applicationContext as App).appComponent.inject(this)
 
         val vm = ViewModelProvider(this, MainViewModelFactory(this)).get(MainViewModel::class.java)
 
@@ -68,8 +77,10 @@ class MainActivity : AppCompatActivity() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-            dialog.findViewById<EditText>(R.id.portEditText)
+            savePort.execute(Port(dialog.findViewById<EditText>(R.id.portEditText).toString().toInt()))
+            Log.e("TAG", "Port saved")
         }
+        dialog.show()
     }
 
     private fun getDeviceIpAddress(): String {

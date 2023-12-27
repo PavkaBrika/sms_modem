@@ -75,8 +75,8 @@ dependencies {
     implementation("com.google.dagger:dagger:2.50")
     kapt("com.google.dagger:dagger-compiler:2.50")
     implementation("com.google.dagger:dagger-android:2.50")
-//    implementation("javax.inject:javax.inject:1")
-//    kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
+    implementation("javax.inject:javax.inject:1")
+    kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")
 
     //Clean architecture
     implementation(project(path = ":domain"))

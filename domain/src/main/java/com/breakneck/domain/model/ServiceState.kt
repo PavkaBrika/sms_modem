@@ -1,4 +1,4 @@
-package com.breakneck.domain.util
+package com.breakneck.domain.model
 
 sealed class ServiceState {
     object enabled: ServiceState()
