@@ -17,66 +17,68 @@ import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.SavePort
+import com.breakneck.domain.usecase.GetPort
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.app.App
+import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.viewmodel.MainViewModel
 import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import org.koin.android.ext.android.inject
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var vmFactory: MainViewModelFactory
+    private lateinit var binding: ActivityMainBinding
 
-    private lateinit var vm: MainViewModel
+    //TODO implement dagger instead koin
+//    @Inject
+//    lateinit var vmFactory: MainViewModelFactory
+//    private lateinit var vm: MainViewModel
+//    @Inject
+//    lateinit var getPort: GetPort
+
+    private val vm by viewModel<MainViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        val view = binding.root
+        setContentView(view)
 
-        (applicationContext as App).appComponent.inject(this)
+        //TODO implement dagger instead koin
+//        (applicationContext as App).appComponent.inject(this)
+//        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
 
-        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
+        binding.ipAddressTextView.text = getDeviceIpAddress()
 
-        val ipAddressTextView: TextView = findViewById(R.id.ipAddressTextView)
-        ipAddressTextView.text = getDeviceIpAddress()
-
-        val portTextView: TextView = findViewById(R.id.portTextView)
         vm.port.observe(this) { port ->
-            portTextView.text = ":${port.value}"
+            binding.portTextView.text = getString(R.string.colon_port, port.value)
         }
 
-        val activateButton: Button = findViewById(R.id.activateServiceButton)
-        activateButton.setOnClickListener {
+        binding.activateServiceButton.setOnClickListener {
             try {
-                when (vm.networkServiceState.value!!) {
-                    ServiceState.enabled -> {
-                        vm.networkServiceState.value = ServiceState.disabled
-                    }
-                    ServiceState.disabled -> {
-                        vm.networkServiceState.value = ServiceState.enabled
-                    }
-                }
-                serviceAction(vm.networkServiceState.value!!)
+                vm.changeServiceState()
             } catch (e: NullPointerException) {
                 e.printStackTrace()
+                //TODO change hardcode strings to string file
                 Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
             }
         }
 
-        val settingsButton: Button = findViewById(R.id.settingsButton)
-        settingsButton.setOnClickListener {
+        binding.settingsButton.setOnClickListener {
             openSettingsBottomSheetDialog()
         }
 
         vm.networkServiceState.observe(this) { state ->
+            serviceAction(state)
+            //TODO change hardcode strings to string file
             when (state) {
-                ServiceState.disabled -> activateButton.text = "Disabled"
-                ServiceState.enabled -> activateButton.text = "Enabled"
+                ServiceState.Disabled -> binding.activateServiceButton.text = "Enable"
+                ServiceState.Enabled -> binding.activateServiceButton.text = "Enabled"
             }
         }
     }
@@ -85,7 +87,11 @@ class MainActivity : AppCompatActivity() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-            vm.savePort(Port(dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()))
+            vm.savePort(
+                Port(
+                    dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()
+                )
+            )
             Log.e("TAG", "Port saved")
         }
         dialog.show()
@@ -93,11 +99,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun getDeviceIpAddress(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            var link: LinkProperties = connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
+            val connectivityManager =
+                getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val link: LinkProperties =
+                connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
+            //TODO add some validation in ip
             return link.linkAddresses[0].address.hostAddress
         } else {
-            val wifiManager = applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+            val wifiManager =
+                applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
             return Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
         }
     }
@@ -105,14 +115,7 @@ class MainActivity : AppCompatActivity() {
     private fun serviceAction(action: ServiceState) {
         Intent(this, NetworkService::class.java)
             .also {
-                 it.action = when (action) {
-                     ServiceState.enabled -> {
-                         "disable"
-                     }
-                     ServiceState.disabled -> {
-                         "enable"
-                     }
-                 }
+                it.putExtra("state", action)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(it)
                 } else {

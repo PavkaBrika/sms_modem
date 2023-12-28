@@ -1,6 +1,7 @@
 package com.breakneck.sms_modem.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breakneck.domain.model.Port
@@ -15,8 +16,13 @@ class MainViewModel(
 
     val TAG = "MainViewModel"
 
-    val networkServiceState = MutableLiveData<ServiceState>(ServiceState.disabled)
-    val port = MutableLiveData<Port>()
+    private val _networkServiceState = MutableLiveData<ServiceState>(ServiceState.Disabled)
+    val networkServiceState: LiveData<ServiceState>
+        get() = _networkServiceState
+
+    private val _port = MutableLiveData<Port>()
+    val port: LiveData<Port>
+        get() = _port
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -29,14 +35,26 @@ class MainViewModel(
     }
 
     private fun getPort() {
-        port.value = getPort.execute()
+        _port.value = getPort.execute()
         Log.e(TAG, "Port got: ${port.value}")
     }
 
     fun savePort(port: Port) {
         savePort.execute(port = port)
         Log.e(TAG, "Port saved: ${port.value}")
-        getPort()
+        _port.value = port
+    }
+
+    fun changeServiceState() {
+        when (networkServiceState.value!!) {
+            ServiceState.Enabled -> {
+                _networkServiceState.value = ServiceState.Disabled
+            }
+
+            ServiceState.Disabled -> {
+                _networkServiceState.value = ServiceState.Enabled
+            }
+        }
     }
 
 }

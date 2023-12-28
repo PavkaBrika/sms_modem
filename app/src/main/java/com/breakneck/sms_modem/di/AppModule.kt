@@ -6,6 +6,8 @@ import com.breakneck.domain.usecase.SavePort
 import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import dagger.Module
 import dagger.Provides
+import dagger.Subcomponent
+import javax.inject.Singleton
 
 @Module
 class AppModule(val context: Context) {

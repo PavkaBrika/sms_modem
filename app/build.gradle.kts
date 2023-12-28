@@ -45,6 +45,9 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    buildFeatures {
+        viewBinding = true
+    }
 }
 
 dependencies {
@@ -71,9 +74,16 @@ dependencies {
     //Coroutines
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
+    //Koin
+    val koinVersion = "3.2.0"
+    implementation("io.insert-koin:koin-core:$koinVersion")
+    implementation("io.insert-koin:koin-android:$koinVersion")
+
     //Dagger2
     implementation("com.google.dagger:dagger:2.50")
     kapt("com.google.dagger:dagger-compiler:2.50")
+    kapt("com.google.dagger:dagger-android-processor:2.50")
+    implementation("com.google.dagger:dagger-android-support:2.50")
     implementation("com.google.dagger:dagger-android:2.50")
     implementation("javax.inject:javax.inject:1")
     kapt("org.jetbrains.kotlinx:kotlinx-metadata-jvm:0.5.0")

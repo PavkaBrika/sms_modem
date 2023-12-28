@@ -6,40 +6,78 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
+    <androidx.cardview.widget.CardView
+        android:id="@+id/stateCardView"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        app:cardBackgroundColor="@android:color/holo_green_dark"
+        app:cardCornerRadius="50dp"
+        android:layout_margin="24dp"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/settingsButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_marginTop="50dp">
+
+            <TextView
+                android:id="@+id/stateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="АКТИВНО"
+                android:textColor="@color/white"
+                android:textSize="50sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/addressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/activateServiceButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
+                <TextView
+                    android:id="@+id/ipAddressTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:text="IP ADDRESS"
+                    android:textSize="28sp" />
+
+                <TextView
+                    android:id="@+id/portTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+
+                    android:text="PORT"
+                    android:textSize="28sp" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+
+
+    </androidx.cardview.widget.CardView>
+
     <Button
         android:id="@+id/settingsButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:text="settings"
-        app:layout_constraintBottom_toTopOf="@+id/addressLayout"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <LinearLayout
-        android:id="@+id/addressLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         app:layout_constraintBottom_toTopOf="@+id/activateServiceButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/ipAddressTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="IP ADDRESS"
-            android:textSize="28sp" />
-
-        <TextView
-            android:id="@+id/portTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PORT"
-            android:textSize="28sp" />
-
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/activateServiceButton"

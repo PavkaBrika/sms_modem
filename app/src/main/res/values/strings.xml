@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">sms_modem</string>
+    <string name="colon_port">:%d</string>
 </resources>

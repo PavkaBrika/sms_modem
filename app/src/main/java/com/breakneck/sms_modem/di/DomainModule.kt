@@ -8,6 +8,7 @@ import com.breakneck.domain.usecase.SavePort
 import com.breakneck.domain.usecase.SaveServiceState
 import dagger.Module
 import dagger.Provides
+import javax.inject.Singleton
 
 @Module
 class DomainModule {

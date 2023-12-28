@@ -1,6 +1,8 @@
 package com.breakneck.domain.model
 
-sealed class ServiceState {
-    object enabled: ServiceState()
-    object disabled: ServiceState()
+import java.io.Serializable
+
+sealed class ServiceState: Serializable {
+    data object Enabled : ServiceState()
+    data object Disabled : ServiceState()
 }
