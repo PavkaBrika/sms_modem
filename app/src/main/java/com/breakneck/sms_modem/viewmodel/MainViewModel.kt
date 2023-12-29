@@ -39,7 +39,7 @@ class MainViewModel(
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
-        getServiceState()
+        changeServiceIntent()
     }
 
     override fun onCleared() {
@@ -72,7 +72,9 @@ class MainViewModel(
             ServiceState.Disabled -> {
                 _networkServiceIntent.value = ServiceIntent.Enable
             }
-            ServiceState.Loading -> {}
+            ServiceState.Loading -> {
+                _networkServiceIntent.value = ServiceIntent.Enable
+            }
         }
     }
 

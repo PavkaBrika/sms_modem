@@ -37,6 +37,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 
 class MainActivity : AppCompatActivity() {
@@ -105,6 +106,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.activateServiceButton.setOnClickListener {
             try {
+                serviceAction(vm.networkServiceIntent.value!!)
                 vm.changeServiceIntent()
                 vm.setServiceStateLoading()
             } catch (e: NullPointerException) {
@@ -120,15 +122,14 @@ class MainActivity : AppCompatActivity() {
 
         vm.networkServiceIntent.observe(this) { intent ->
             lifecycleScope.launch(Dispatchers.Default) {
-                serviceAction(intent)
                 //TODO change hardcode strings to string file
                 when (intent) {
                     ServiceIntent.Disable -> {
-                        binding.activateServiceButton.text = "Enable"
+                        binding.activateServiceButton.text = "Disable"
                     }
 
                     ServiceIntent.Enable -> {
-                        binding.activateServiceButton.text = "Disable"
+                        binding.activateServiceButton.text = "Enable"
                     }
                 }
             }
@@ -153,7 +154,7 @@ class MainActivity : AppCompatActivity() {
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(p0: Context?, p1: Intent?) {
-                vm.getServiceState()
+                vm.changeServiceIntent()
             }
         }
     }
@@ -163,10 +164,8 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
-            Intent(this, NetworkService::class.java)
-                .also {
-                    bindService(it, networkServiceConnection, 0)
-                }
+            val intent = Intent(this, NetworkService::class.java)
+            bindService(intent, networkServiceConnection, 0)
         }
     }
 
@@ -214,10 +213,15 @@ class MainActivity : AppCompatActivity() {
         } else {
             startService(serviceIntent)
         }
-        if (intent is ServiceIntent.Enable)
-            bindService(serviceIntent, networkServiceConnection, 0)
-        else
-            unbindService(networkServiceConnection)
+        try {
+            when (intent) {
+                ServiceIntent.Disable -> unbindService(networkServiceConnection)
+                ServiceIntent.Enable -> bindService(serviceIntent, networkServiceConnection, 0)
+            }
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+        }
+
     }
 
     private val networkServiceConnection = object : ServiceConnection {
