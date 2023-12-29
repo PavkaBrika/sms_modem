@@ -106,7 +106,7 @@ open class NetworkService : Service() {
         startForeground(1, notification)
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
-        sendResult(serviceState)
+        changeServiceState()
     }
 
     override fun onDestroy() {
@@ -157,7 +157,7 @@ open class NetworkService : Service() {
 
         serviceState = ServiceState.Disabled
         saveServiceState.execute(serviceState)
-        sendResult(serviceState)
+        changeServiceState()
     }
 
     fun createServer() {
@@ -239,7 +239,7 @@ open class NetworkService : Service() {
         Log.e(TAG, "Message sent")
     }
 
-    fun sendResult(state: ServiceState) {
+    fun changeServiceState() {
         Intent(SERVICE_STATE_RESULT)
             .also {
                 broadcaster.sendBroadcast(it)

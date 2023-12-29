@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.wifi.WifiManager
@@ -18,6 +19,8 @@ import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.breakneck.domain.model.Port
@@ -64,6 +67,35 @@ class MainActivity : AppCompatActivity() {
         //TODO implement dagger instead koin
 //        (applicationContext as App).appComponent.inject(this)
 //        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.SEND_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    android.Manifest.permission.READ_SMS,
+                    android.Manifest.permission.RECEIVE_SMS,
+                    android.Manifest.permission.SEND_SMS,
+                    android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                ),
+                10
+            )
+        }
 
         binding.ipAddressTextView.text = getDeviceIpAddress()
 
