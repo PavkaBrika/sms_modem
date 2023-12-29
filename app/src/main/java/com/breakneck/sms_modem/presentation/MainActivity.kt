@@ -1,34 +1,36 @@
 package com.breakneck.sms_modem.presentation
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.breakneck.domain.model.Port
+import com.breakneck.domain.model.ServiceBoundState
+import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.GetPort
 import com.breakneck.sms_modem.R
-import com.breakneck.sms_modem.app.App
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.viewmodel.MainViewModel
-import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
+//import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import org.koin.android.ext.android.inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -42,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 //    lateinit var getPort: GetPort
 
     private val vm by viewModel<MainViewModel>()
+
+    lateinit var boundNetworkService: NetworkService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,7 +65,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.activateServiceButton.setOnClickListener {
             try {
-                vm.changeServiceState()
+                vm.changeServiceIntent()
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 //TODO change hardcode strings to string file
@@ -73,14 +77,33 @@ class MainActivity : AppCompatActivity() {
             openSettingsBottomSheetDialog()
         }
 
-        vm.networkServiceState.observe(this) { state ->
-            serviceAction(state)
-            //TODO change hardcode strings to string file
-            when (state) {
-                ServiceState.Disabled -> binding.activateServiceButton.text = "Enable"
-                ServiceState.Enabled -> binding.activateServiceButton.text = "Enabled"
+        vm.networkServiceIntent.observe(this) { state ->
+            lifecycleScope.launch(Dispatchers.Default) {
+                serviceAction(state)
+                //TODO change hardcode strings to string file
+                when (state) {
+                    ServiceIntent.Disable -> {
+                        binding.activateServiceButton.text = "Enable"
+                        binding.stateTextView.text = "Disabled"
+                    }
+                    ServiceIntent.Enable -> {
+                        binding.activateServiceButton.text = "Disable"
+                        binding.stateTextView.text = "Enabled"
+                    }
+                }
             }
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
+            unbindService(networkServiceConnection)
     }
 
     private fun openSettingsBottomSheetDialog() {
@@ -112,15 +135,27 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun serviceAction(action: ServiceState) {
-        Intent(this, NetworkService::class.java)
-            .also {
-                it.putExtra("state", action)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    startForegroundService(it)
-                } else {
-                    startService(it)
-                }
-            }
+    private fun serviceAction(action: ServiceIntent) {
+        val serviceIntent = Intent(this, NetworkService::class.java)
+        serviceIntent.putExtra("state", action)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(serviceIntent)
+        } else {
+            startService(serviceIntent)
+        }
+//        if (action is ServiceState.Enabled)
+//        bindService(serviceIntent, networkServiceConnection, Context.BIND_AUTO_CREATE)
+    }
+
+    private val networkServiceConnection = object: ServiceConnection {
+        override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
+            val networkServiceBinder = binder as NetworkService.NetworkServiceBinder
+            boundNetworkService = networkServiceBinder.getService()
+            vm.changeServiceBoundState()
+        }
+
+        override fun onServiceDisconnected(p0: ComponentName?) {
+            vm.changeServiceBoundState()
+        }
     }
 }

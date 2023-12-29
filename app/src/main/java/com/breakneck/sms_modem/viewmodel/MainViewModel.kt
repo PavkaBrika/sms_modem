@@ -5,20 +5,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.breakneck.domain.model.Port
+import com.breakneck.domain.model.ServiceBoundState
+import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.GetPort
+import com.breakneck.domain.usecase.GetServiceState
 import com.breakneck.domain.usecase.SavePort
 
 class MainViewModel(
     private val savePort: SavePort,
-    private val getPort: GetPort
+    private val getPort: GetPort,
+    private val getServiceState: GetServiceState
 ): ViewModel() {
 
     val TAG = "MainViewModel"
 
-    private val _networkServiceState = MutableLiveData<ServiceState>(ServiceState.Disabled)
+    private val _networkServiceState = MutableLiveData<ServiceState>()
     val networkServiceState: LiveData<ServiceState>
         get() = _networkServiceState
+
+    private val _networkServiceBoundState = MutableLiveData<ServiceBoundState>()
+    val networkServiceBoundState: LiveData<ServiceBoundState>
+        get() = _networkServiceBoundState
+
+    private val _networkServiceIntent = MutableLiveData<ServiceIntent>()
+    val networkServiceIntent: LiveData<ServiceIntent>
+        get() = _networkServiceIntent
 
     private val _port = MutableLiveData<Port>()
     val port: LiveData<Port>
@@ -27,6 +39,7 @@ class MainViewModel(
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
+        getServiceState()
     }
 
     override fun onCleared() {
@@ -45,14 +58,30 @@ class MainViewModel(
         _port.value = port
     }
 
-    fun changeServiceState() {
+    private fun getServiceState() {
+        _networkServiceState.value = getServiceState.execute()
+        Log.e(TAG, "Server is ${_networkServiceState.value}")
+    }
+
+    fun changeServiceIntent() {
         when (networkServiceState.value!!) {
             ServiceState.Enabled -> {
-                _networkServiceState.value = ServiceState.Disabled
+                _networkServiceIntent.value = ServiceIntent.Disable
             }
 
             ServiceState.Disabled -> {
-                _networkServiceState.value = ServiceState.Enabled
+                _networkServiceIntent.value = ServiceIntent.Enable
+            }
+        }
+    }
+
+    fun changeServiceBoundState() {
+        when (networkServiceBoundState.value!!) {
+            ServiceBoundState.Bounded -> {
+                _networkServiceBoundState.value = ServiceBoundState.Unbounded
+            }
+            ServiceBoundState.Unbounded -> {
+                _networkServiceBoundState.value = ServiceBoundState.Bounded
             }
         }
     }

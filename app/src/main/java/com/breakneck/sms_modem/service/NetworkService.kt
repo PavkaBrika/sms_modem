@@ -1,5 +1,6 @@
 package com.breakneck.sms_modem.service
 
+import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -9,11 +10,13 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
+import android.os.Binder
 import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.telephony.SmsManager
 import android.util.Log
+import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.SaveServiceState
@@ -33,13 +36,15 @@ import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
 import javax.inject.Inject
 
-class NetworkService : Service() {
+open class NetworkService : Service() {
 
     //TODO implement dagger instead koin
 //    @Inject
 //    lateinit var getPort: GetPort
 //    @Inject
 //    lateinit var saveServiceState: SaveServiceState
+
+    private val binder: IBinder = NetworkServiceBinder()
 
     val getPort: GetPort by inject()
     val saveServiceState: SaveServiceState by inject()
@@ -49,9 +54,9 @@ class NetworkService : Service() {
 
     val TAG = "Network service"
 
-    override fun onBind(p0: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         Log.e(TAG, "Service bind")
-        return null
+        return binder
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -59,14 +64,14 @@ class NetworkService : Service() {
         if (intent != null) {
             val extras = intent.extras
             val state = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                extras!!.getSerializable("state", ServiceState::class.java)
+                extras!!.getSerializable("state", ServiceIntent::class.java)
             } else {
-                extras!!.getSerializable("state") as ServiceState
+                extras!!.getSerializable("state") as ServiceIntent
             }
             Log.e(TAG, "using a intent with state")
             when (state) {
-                ServiceState.Disabled -> stopService()
-                ServiceState.Enabled -> startService()
+                ServiceIntent.Disable -> stopService()
+                ServiceIntent.Enable -> startService()
                 null -> {}
             }
         }
@@ -163,8 +168,8 @@ class NetworkService : Service() {
                 it.description = "SMS Service channel"
                 it.enableLights(true)
                 it.lightColor = Color.RED
-                it.enableVibration(true)
-                it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+//                it.enableVibration(true)
+//                it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
                 it
             }
             notificationManager.createNotificationChannel(channel)
@@ -206,5 +211,11 @@ class NetworkService : Service() {
         Log.e(TAG, "Message sent")
     }
 
+    inner class NetworkServiceBinder: Binder() {
+
+        fun getService(): NetworkService {
+            return this@NetworkService
+        }
+    }
 
 }
