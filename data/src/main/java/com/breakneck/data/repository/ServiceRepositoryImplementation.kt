@@ -10,16 +10,17 @@ class ServiceRepositoryImplementation(private val serviceStorage: ServiceStorage
     override fun saveServiceState(serviceState: ServiceState) {
         serviceStorage.saveServiceState(
             when (serviceState) {
-                ServiceState.Disabled -> ServiceStateData.disabled
-                ServiceState.Enabled -> ServiceStateData.enabled
+                ServiceState.Disabled -> ServiceStateData.Disabled
+                ServiceState.Enabled -> ServiceStateData.Enabled
+                ServiceState.Loading -> ServiceStateData.Disabled
             }
         )
     }
 
     override fun getServiceState(): ServiceState {
         return when (serviceStorage.getServiceState()) {
-            ServiceStateData.disabled -> ServiceState.Disabled
-            ServiceStateData.enabled -> ServiceState.Enabled
+            ServiceStateData.Disabled -> ServiceState.Disabled
+            ServiceStateData.Enabled -> ServiceState.Enabled
         }
     }
 }

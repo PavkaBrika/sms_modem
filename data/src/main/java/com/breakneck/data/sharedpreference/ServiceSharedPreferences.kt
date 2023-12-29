@@ -17,8 +17,8 @@ class ServiceSharedPreferences(context: Context): ServiceStorage {
             .putString(
                 SERVICE_STATE,
                 when (serviceState) {
-                    ServiceStateData.disabled -> "disabled"
-                    ServiceStateData.enabled -> "enabled"
+                    ServiceStateData.Disabled -> "disabled"
+                    ServiceStateData.Enabled -> "enabled"
                 }
             )
             .apply()
@@ -26,9 +26,9 @@ class ServiceSharedPreferences(context: Context): ServiceStorage {
 
     override fun getServiceState(): ServiceStateData {
         return when (sharedPreferences.getString(SERVICE_STATE, "disabled")) {
-            "disabled" -> ServiceStateData.disabled
-            "enabled" -> ServiceStateData.enabled
-            else -> ServiceStateData.disabled
+            "disabled" -> ServiceStateData.Disabled
+            "enabled" -> ServiceStateData.Enabled
+            else -> ServiceStateData.Disabled
         }
     }
 }

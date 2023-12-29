@@ -1,8 +1,10 @@
 package com.breakneck.sms_modem.presentation
 
+import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.net.ConnectivityManager
 import android.net.LinkProperties
@@ -17,6 +19,7 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -24,6 +27,7 @@ import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.service.NetworkService
+import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.viewmodel.MainViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -47,6 +51,8 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var boundNetworkService: NetworkService
 
+    lateinit var receiver: BroadcastReceiver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -66,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         binding.activateServiceButton.setOnClickListener {
             try {
                 vm.changeServiceIntent()
+                vm.setServiceStateLoading()
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 //TODO change hardcode strings to string file
@@ -77,33 +84,57 @@ class MainActivity : AppCompatActivity() {
             openSettingsBottomSheetDialog()
         }
 
-        vm.networkServiceIntent.observe(this) { state ->
+        vm.networkServiceIntent.observe(this) { intent ->
             lifecycleScope.launch(Dispatchers.Default) {
-                serviceAction(state)
+                serviceAction(intent)
                 //TODO change hardcode strings to string file
-                when (state) {
+                when (intent) {
                     ServiceIntent.Disable -> {
                         binding.activateServiceButton.text = "Enable"
-                        binding.stateTextView.text = "Disabled"
                     }
+
                     ServiceIntent.Enable -> {
                         binding.activateServiceButton.text = "Disable"
-                        binding.stateTextView.text = "Enabled"
                     }
                 }
+            }
+        }
+
+        vm.networkServiceState.observe(this) { state ->
+            when (state) {
+                ServiceState.Enabled -> {
+                    binding.stateTextView.text = "Enabled"
+                }
+
+                ServiceState.Disabled -> {
+                    binding.stateTextView.text = "Disabled"
+                }
+
+                ServiceState.Loading -> {
+                    //TODO do something animation on loading
+                    binding.stateTextView.text = "Loading"
+                }
+            }
+        }
+
+        receiver = object : BroadcastReceiver() {
+            override fun onReceive(p0: Context?, p1: Intent?) {
+                vm.getServiceState()
             }
         }
     }
 
     override fun onStart() {
         super.onStart()
-
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
     }
 
     override fun onStop() {
         super.onStop()
         if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
             unbindService(networkServiceConnection)
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
     private fun openSettingsBottomSheetDialog() {
@@ -127,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             val link: LinkProperties =
                 connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
             //TODO add some validation in ip
-            return link.linkAddresses[0].address.hostAddress
+            return link.linkAddresses[1].address.hostAddress
         } else {
             val wifiManager =
                 applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
@@ -135,27 +166,29 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun serviceAction(action: ServiceIntent) {
+    private fun serviceAction(intent: ServiceIntent) {
         val serviceIntent = Intent(this, NetworkService::class.java)
-        serviceIntent.putExtra("state", action)
+        serviceIntent.putExtra("intent", intent)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent)
         } else {
             startService(serviceIntent)
         }
-//        if (action is ServiceState.Enabled)
-//        bindService(serviceIntent, networkServiceConnection, Context.BIND_AUTO_CREATE)
+        if (intent is ServiceIntent.Enable)
+            bindService(serviceIntent, networkServiceConnection, Context.BIND_AUTO_CREATE)
+        else
+            unbindService(networkServiceConnection)
     }
 
-    private val networkServiceConnection = object: ServiceConnection {
+    private val networkServiceConnection = object : ServiceConnection {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             val networkServiceBinder = binder as NetworkService.NetworkServiceBinder
             boundNetworkService = networkServiceBinder.getService()
-            vm.changeServiceBoundState()
+//            vm.changeServiceBoundState()
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            vm.changeServiceBoundState()
+//            vm.changeServiceBoundState()
         }
     }
 }

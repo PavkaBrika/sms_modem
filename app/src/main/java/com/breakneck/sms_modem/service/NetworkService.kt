@@ -1,6 +1,5 @@
 package com.breakneck.sms_modem.service
 
-import android.annotation.SuppressLint
 import android.app.AlarmManager
 import android.app.Notification
 import android.app.NotificationChannel
@@ -16,13 +15,12 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.telephony.SmsManager
 import android.util.Log
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.SaveServiceState
-import com.breakneck.sms_modem.app.App
 import com.breakneck.sms_modem.presentation.MainActivity
-import dagger.android.AndroidInjection
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -34,7 +32,8 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
-import javax.inject.Inject
+
+const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 
 open class NetworkService : Service() {
 
@@ -45,6 +44,7 @@ open class NetworkService : Service() {
 //    lateinit var saveServiceState: SaveServiceState
 
     private val binder: IBinder = NetworkServiceBinder()
+    private lateinit var broadcaster: LocalBroadcastManager
 
     val getPort: GetPort by inject()
     val saveServiceState: SaveServiceState by inject()
@@ -63,13 +63,13 @@ open class NetworkService : Service() {
         Log.e("Network service", "onStartCommand executed with startId: $startId")
         if (intent != null) {
             val extras = intent.extras
-            val state = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                extras!!.getSerializable("state", ServiceIntent::class.java)
+            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                extras!!.getSerializable("intent", ServiceIntent::class.java)
             } else {
-                extras!!.getSerializable("state") as ServiceIntent
+                extras!!.getSerializable("intent") as ServiceIntent
             }
-            Log.e(TAG, "using a intent with state")
-            when (state) {
+            Log.e(TAG, "using a intent with $intent")
+            when (intent) {
                 ServiceIntent.Disable -> stopService()
                 ServiceIntent.Enable -> startService()
                 null -> {}
@@ -83,11 +83,15 @@ open class NetworkService : Service() {
         Log.e(TAG, "Service create")
         //TODO implement dagger instead koin
 //        AndroidInjection.inject(this)
+        broadcaster = LocalBroadcastManager.getInstance(this)
 
         createServer()
 
         val notification: Notification = createNotification()
         startForeground(1, notification)
+        serviceState = ServiceState.Enabled
+        saveServiceState.execute(serviceState)
+        sendResult(serviceState)
     }
 
     override fun onDestroy() {
@@ -97,15 +101,22 @@ open class NetworkService : Service() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        Log.e(TAG, "Service destroyed")
     }
 
     override fun onTaskRemoved(rootIntent: Intent?) {
-        val restartServiceIntent =Intent(applicationContext, NetworkService::class.java).also {
+        val restartServiceIntent = Intent(applicationContext, NetworkService::class.java).also {
             it.setPackage(packageName)
         }
-        val restartServicePendingIntent = PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_IMMUTABLE)
-        val alarmService = applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        alarmService.set(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 1000, restartServicePendingIntent)
+        val restartServicePendingIntent =
+            PendingIntent.getService(this, 1, restartServiceIntent, PendingIntent.FLAG_IMMUTABLE)
+        val alarmService =
+            applicationContext.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        alarmService.set(
+            AlarmManager.ELAPSED_REALTIME,
+            SystemClock.elapsedRealtime() + 1000,
+            restartServicePendingIntent
+        )
         super.onTaskRemoved(rootIntent)
     }
 
@@ -113,23 +124,25 @@ open class NetworkService : Service() {
         if (serviceState is ServiceState.Enabled)
             return
         Log.e(TAG, "Starting service task")
-        serviceState = ServiceState.Enabled
-        saveServiceState.execute(serviceState)
     }
 
     fun stopService() {
         Log.e(TAG, "Stopped service task")
-        //TODO change deprecated method
         try {
-            stopForeground(true)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                stopForeground(STOP_FOREGROUND_REMOVE)
+            } else {
+                stopForeground(true)
+            }
             stopSelf()
         } catch (e: Exception) {
-            Log.e("TAG","Service stopped without being started: ${e.message}")
+            Log.e("TAG", "Service stopped without being started: ${e.message}")
             e.printStackTrace()
         }
 
         serviceState = ServiceState.Disabled
         saveServiceState.execute(serviceState)
+        sendResult(serviceState)
     }
 
     fun createServer() {
@@ -211,7 +224,14 @@ open class NetworkService : Service() {
         Log.e(TAG, "Message sent")
     }
 
-    inner class NetworkServiceBinder: Binder() {
+    fun sendResult(state: ServiceState) {
+        Intent(SERVICE_STATE_RESULT)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
+    inner class NetworkServiceBinder : Binder() {
 
         fun getService(): NetworkService {
             return this@NetworkService

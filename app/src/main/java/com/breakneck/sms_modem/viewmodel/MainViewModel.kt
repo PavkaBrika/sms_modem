@@ -24,7 +24,7 @@ class MainViewModel(
     val networkServiceState: LiveData<ServiceState>
         get() = _networkServiceState
 
-    private val _networkServiceBoundState = MutableLiveData<ServiceBoundState>()
+    private val _networkServiceBoundState = MutableLiveData<ServiceBoundState>(ServiceBoundState.Unbounded)
     val networkServiceBoundState: LiveData<ServiceBoundState>
         get() = _networkServiceBoundState
 
@@ -58,21 +58,26 @@ class MainViewModel(
         _port.value = port
     }
 
-    private fun getServiceState() {
+    fun getServiceState() {
         _networkServiceState.value = getServiceState.execute()
         Log.e(TAG, "Server is ${_networkServiceState.value}")
     }
 
     fun changeServiceIntent() {
+        getServiceState()
         when (networkServiceState.value!!) {
             ServiceState.Enabled -> {
                 _networkServiceIntent.value = ServiceIntent.Disable
             }
-
             ServiceState.Disabled -> {
                 _networkServiceIntent.value = ServiceIntent.Enable
             }
+            ServiceState.Loading -> {}
         }
+    }
+
+    fun setServiceStateLoading() {
+        _networkServiceState.value = ServiceState.Loading
     }
 
     fun changeServiceBoundState() {
