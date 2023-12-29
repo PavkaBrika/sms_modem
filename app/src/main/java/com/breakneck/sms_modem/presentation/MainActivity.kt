@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
+    val TAG = "MainActivity"
+
     //TODO implement dagger instead koin
 //    @Inject
 //    lateinit var vmFactory: MainViewModelFactory
@@ -128,6 +130,12 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
+        if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
+            Intent(this, NetworkService::class.java)
+                .also {
+                    bindService(it, networkServiceConnection, 0)
+                }
+        }
     }
 
     override fun onStop() {
@@ -146,7 +154,7 @@ class MainActivity : AppCompatActivity() {
                     dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()
                 )
             )
-            Log.e("TAG", "Port saved")
+            Log.e(TAG, "Port saved")
         }
         dialog.show()
     }
@@ -175,7 +183,7 @@ class MainActivity : AppCompatActivity() {
             startService(serviceIntent)
         }
         if (intent is ServiceIntent.Enable)
-            bindService(serviceIntent, networkServiceConnection, Context.BIND_AUTO_CREATE)
+            bindService(serviceIntent, networkServiceConnection, 0)
         else
             unbindService(networkServiceConnection)
     }
@@ -184,11 +192,13 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             val networkServiceBinder = binder as NetworkService.NetworkServiceBinder
             boundNetworkService = networkServiceBinder.getService()
-//            vm.changeServiceBoundState()
+            vm.changeServiceBoundState()
+            Log.e(TAG, "onNetworkServiceConnected")
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-//            vm.changeServiceBoundState()
+            vm.changeServiceBoundState()
+            Log.e(TAG, "onNetworkServiceDisconnected")
         }
     }
 }

@@ -52,28 +52,43 @@ open class NetworkService : Service() {
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
 
-    val TAG = "Network service"
+    val TAG = "NetworkService"
 
     override fun onBind(intent: Intent?): IBinder? {
         Log.e(TAG, "Service bind")
         return binder
     }
 
+    override fun onUnbind(intent: Intent?): Boolean {
+        Log.e(TAG, "Service unbind")
+        return super.onUnbind(intent)
+    }
+
+    override fun onRebind(intent: Intent?) {
+        Log.e(TAG, "Service rebind")
+        super.onRebind(intent)
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        Log.e("Network service", "onStartCommand executed with startId: $startId")
+        Log.e(TAG, "onStartCommand executed with startId: $startId")
         if (intent != null) {
             val extras = intent.extras
-            val intent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                extras!!.getSerializable("intent", ServiceIntent::class.java)
-            } else {
-                extras!!.getSerializable("intent") as ServiceIntent
+            try {
+                val serviceIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    extras!!.getSerializable("intent", ServiceIntent::class.java)
+                } else {
+                    extras!!.getSerializable("intent") as ServiceIntent
+                }
+                Log.e(TAG, "using a intent with $serviceIntent")
+                when (serviceIntent) {
+                    ServiceIntent.Disable -> stopService()
+                    ServiceIntent.Enable -> startService()
+                    null -> {}
+                }
+            } catch (e: NullPointerException) {
+                e.printStackTrace()
             }
-            Log.e(TAG, "using a intent with $intent")
-            when (intent) {
-                ServiceIntent.Disable -> stopService()
-                ServiceIntent.Enable -> startService()
-                null -> {}
-            }
+
         }
         return START_STICKY
     }
