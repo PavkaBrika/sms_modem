@@ -4,7 +4,6 @@ import android.app.Application
 import android.app.Service
 import com.breakneck.sms_modem.di.AppComponent
 import com.breakneck.sms_modem.di.AppModule
-import com.breakneck.sms_modem.di.DaggerAppComponent
 import com.breakneck.sms_modem.di.koin.appModule
 import com.breakneck.sms_modem.di.koin.dataModule
 import com.breakneck.sms_modem.di.koin.domainModule

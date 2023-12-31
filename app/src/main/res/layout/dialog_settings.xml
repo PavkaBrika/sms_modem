@@ -16,6 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <EditText
+        android:id="@+id/urlEditText"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:hint="URL"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/portEditText" />
+
     <Button
         android:id="@+id/confirmButton"
         android:layout_width="match_parent"
@@ -24,6 +34,6 @@
         android:text="confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/portEditText" />
+        app:layout_constraintTop_toBottomOf="@+id/urlEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -7,9 +7,9 @@ import com.breakneck.data.storage.ServiceStorage
 const val SERVICE_SHARED_PREFERENCES_NAME = "SERVICE_SHARED_PREFERENCES"
 const val SERVICE_STATE = "SERVICE_STATE"
 
-class ServiceSharedPreferences(context: Context): ServiceStorage {
+class ServiceSharedPreferences(private val context: Context): ServiceStorage {
 
-    val sharedPreferences = context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(SERVICE_SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE)
 
     override fun saveServiceState(serviceState: ServiceStateData) {
         sharedPreferences
