@@ -23,6 +23,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -185,7 +186,13 @@ class MainActivity : AppCompatActivity() {
                     dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()
                 )
             )
-            Log.e(TAG, "Port saved")
+            vm.saveMessageDestinationUrl(
+                MessageDestinationUrl(
+                    //TODO add validation to url
+                    dialog.findViewById<EditText>(R.id.urlEditText)!!.text.toString()
+                )
+            )
+            dialog.dismiss()
         }
         dialog.show()
     }

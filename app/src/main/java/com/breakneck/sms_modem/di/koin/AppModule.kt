@@ -10,7 +10,9 @@ val appModule = module {
         MainViewModel(
             savePort = get(),
             getPort = get(),
-            getServiceState = get()
+            getServiceState = get(),
+            saveMessageDestinationUrl = get(),
+            getMessageDestinationUrl = get()
         )
     }
 }

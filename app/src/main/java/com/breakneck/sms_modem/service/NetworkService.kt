@@ -8,6 +8,8 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
+import android.content.pm.ResolveInfo
 import android.graphics.Color
 import android.os.Binder
 import android.os.Build
@@ -21,6 +23,7 @@ import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.SaveServiceState
 import com.breakneck.sms_modem.presentation.MainActivity
+import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -51,6 +54,9 @@ open class NetworkService : Service() {
 
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
+
+    private lateinit var smsReceiver: SMSBroadcastReceiver
+    private lateinit var intentFilter: IntentFilter
 
     val TAG = "NetworkService"
 
@@ -101,18 +107,21 @@ open class NetworkService : Service() {
         broadcaster = LocalBroadcastManager.getInstance(this)
 
         createServer()
+        createSmsReceiver()
 
         val notification: Notification = createNotification()
         startForeground(1, notification)
+
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
-        changeServiceState()
+        changeServiceStateInActivity()
     }
 
     override fun onDestroy() {
         super.onDestroy()
         try {
             server.stop(1000, 2000)
+            unregisterReceiver(smsReceiver)
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -157,7 +166,7 @@ open class NetworkService : Service() {
 
         serviceState = ServiceState.Disabled
         saveServiceState.execute(serviceState)
-        changeServiceState()
+        changeServiceStateInActivity()
     }
 
     fun createServer() {
@@ -239,7 +248,23 @@ open class NetworkService : Service() {
         Log.e(TAG, "Message sent")
     }
 
-    fun changeServiceState() {
+    private fun createSmsReceiver() {
+        smsReceiver = SMSBroadcastReceiver()
+        intentFilter = IntentFilter().also {
+            it.addAction("android.provider.Telephony.SMS_RECEIVED")
+            it.priority = 2147483647
+        }
+        registerReceiver(smsReceiver, intentFilter)
+
+        val intent = Intent("android.provider.Telephony.SMS_RECEIVED")
+        val infos: List<ResolveInfo> = packageManager.queryBroadcastReceivers(intent, 0)
+        for (info in infos) {
+            Log.i("TAG", "Receiver name:" + info.activityInfo.name.toString() + "; priority=" + info.priority
+            )
+        }
+    }
+
+    fun changeServiceStateInActivity() {
         Intent(SERVICE_STATE_RESULT)
             .also {
                 broadcaster.sendBroadcast(it)

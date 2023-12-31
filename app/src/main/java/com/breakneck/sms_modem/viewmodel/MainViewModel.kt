@@ -4,18 +4,23 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.usecase.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.GetServiceState
+import com.breakneck.domain.usecase.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.SavePort
 
 class MainViewModel(
     private val savePort: SavePort,
     private val getPort: GetPort,
-    private val getServiceState: GetServiceState
+    private val getServiceState: GetServiceState,
+    private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
+    private val getMessageDestinationUrl: GetMessageDestinationUrl
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -36,9 +41,14 @@ class MainViewModel(
     val port: LiveData<Port>
         get() = _port
 
+    private val _messageDestinationUrl = MutableLiveData<MessageDestinationUrl>()
+    val messageDestinationUrl: LiveData<MessageDestinationUrl>
+        get() = _messageDestinationUrl
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
+        getMessageDestinationUrl()
         changeServiceIntent()
     }
 
@@ -53,9 +63,30 @@ class MainViewModel(
     }
 
     fun savePort(port: Port) {
-        savePort.execute(port = port)
-        Log.e(TAG, "Port saved: ${port.value}")
-        _port.value = port
+        if (this.port.value!! != port) {
+            savePort.execute(port = port)
+            Log.e(TAG, "Port saved: ${port.value}")
+            _port.value = port
+        } else {
+            Log.e(TAG, "Port not saved: Equals old value")
+        }
+
+    }
+
+    private fun getMessageDestinationUrl() {
+        _messageDestinationUrl.value = getMessageDestinationUrl.execute()
+        Log.e(TAG, "Message destination is: ${messageDestinationUrl.value}")
+    }
+
+    fun saveMessageDestinationUrl(url: MessageDestinationUrl) {
+        if (this.messageDestinationUrl.value!! != url) {
+            saveMessageDestinationUrl.execute(url = url)
+            _messageDestinationUrl.value = url
+            Log.e(TAG, "Message destination saved: ${messageDestinationUrl.value}")
+        } else {
+            Log.e(TAG, "Message destination not saved: Equals old value")
+        }
+
     }
 
     fun getServiceState() {
