@@ -36,7 +36,7 @@ val domainModule = module {
     }
 
     factory<SendMessageToServer> {
-        SendMessageToServer(networkRepository = get())
+        SendMessageToServer(messageRepository = get())
     }
 
 }
