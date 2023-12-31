@@ -1,11 +1,15 @@
 package com.breakneck.sms_modem.di.koin
 
+import com.breakneck.data.network.Network
+import com.breakneck.data.repository.NetworkRepositoryImplementation
 import com.breakneck.data.repository.ServiceRepositoryImplementation
 import com.breakneck.data.repository.SettingsRepositoryImplementation
 import com.breakneck.data.sharedpreference.ServiceSharedPreferences
 import com.breakneck.data.sharedpreference.SettingsSharedPreference
+import com.breakneck.data.storage.NetworkStorage
 import com.breakneck.data.storage.ServiceStorage
 import com.breakneck.data.storage.SettingsStorage
+import com.breakneck.domain.repository.NetworkRepository
 import com.breakneck.domain.repository.ServiceRepository
 import com.breakneck.domain.repository.SettingsRepository
 import org.koin.dsl.module
@@ -28,5 +32,12 @@ val dataModule = module {
         ServiceRepositoryImplementation(serviceStorage = get())
     }
 
+    single<NetworkStorage> {
+        Network(networkApi = get())
+    }
+
+    single<NetworkRepository> {
+        NetworkRepositoryImplementation(networkStorage = get())
+    }
 
 }

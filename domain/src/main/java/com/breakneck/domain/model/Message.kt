@@ -1,3 +1,3 @@
 package com.breakneck.domain.model
 
-data class Message(val cellNumber: String, val message: String)
+data class Message(val cellNumber: String, val text: String)
