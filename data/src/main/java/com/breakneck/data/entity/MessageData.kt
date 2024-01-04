@@ -11,6 +11,12 @@ data class MessageData(
     val text: String,
     val sender: SenderData?
 ) {
+//    constructor(cellNumber: String, text: String, sender: SenderData?) : this(
+//        id = null,
+//        cellNumber = cellNumber,
+//        text = text,
+//        sender = sender
+//    )
     constructor(cellNumber: String, text: String) : this(
         id = null,
         cellNumber = cellNumber,

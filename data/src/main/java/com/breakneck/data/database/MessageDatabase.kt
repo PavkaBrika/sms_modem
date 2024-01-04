@@ -1,6 +1,7 @@
 package com.breakneck.data.database
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.breakneck.data.entity.MessageData
 import com.breakneck.data.storage.DatabaseStorage
@@ -13,6 +14,7 @@ class MessageDatabase(private val context: Context): DatabaseStorage {
 
     override fun saveSentMessage(message: MessageData) {
         db.messageDao().insertMessage(message = message)
+        Log.e("TAG", "message saved")
     }
 
     override fun getLastSentMessage(): MessageData {

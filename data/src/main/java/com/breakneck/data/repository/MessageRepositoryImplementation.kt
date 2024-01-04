@@ -32,7 +32,7 @@ class MessageRepositoryImplementation(
                     Sender.Server -> SenderData.Server
                     null -> null
                 },
-                id = 0
+                id = null
             )
         )
     }
