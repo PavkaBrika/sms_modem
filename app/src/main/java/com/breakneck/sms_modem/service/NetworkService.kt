@@ -18,9 +18,12 @@ import android.os.SystemClock
 import android.telephony.SmsManager
 import android.util.Log
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.breakneck.domain.model.Message
+import com.breakneck.domain.model.Sender
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.GetPort
+import com.breakneck.domain.usecase.SaveSentMessage
 import com.breakneck.domain.usecase.SaveServiceState
 import com.breakneck.sms_modem.presentation.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
@@ -35,6 +38,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
+import java.lang.StringBuilder
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 
@@ -51,6 +55,7 @@ open class NetworkService : Service() {
 
     val getPort: GetPort by inject()
     val saveServiceState: SaveServiceState by inject()
+    val saveSentMessage: SaveSentMessage by inject()
 
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
@@ -245,6 +250,11 @@ open class NetworkService : Service() {
         }
         val messageParts = smsManager.divideMessage(message)
         smsManager.sendMultipartTextMessage(phoneNumber, null, messageParts, null, null)
+        val messageText = StringBuilder("")
+        for (text in messageParts) {
+            messageText.append("$text ")
+        }
+        saveSentMessage.execute(Message(cellNumber = phoneNumber, text = messageText.toString(), sender = Sender.Server))
         Log.e(TAG, "Message sent")
     }
 

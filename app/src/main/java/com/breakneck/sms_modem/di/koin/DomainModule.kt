@@ -5,6 +5,7 @@ import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.GetServiceState
 import com.breakneck.domain.usecase.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.SavePort
+import com.breakneck.domain.usecase.SaveSentMessage
 import com.breakneck.domain.usecase.SaveServiceState
 import com.breakneck.domain.usecase.SendMessageToServer
 import org.koin.dsl.module
@@ -37,6 +38,10 @@ val domainModule = module {
 
     factory<SendMessageToServer> {
         SendMessageToServer(messageRepository = get())
+    }
+
+    factory<SaveSentMessage> {
+        SaveSentMessage(messageRepository = get())
     }
 
 }

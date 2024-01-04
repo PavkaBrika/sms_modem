@@ -204,7 +204,7 @@ class MainActivity : AppCompatActivity() {
             val link: LinkProperties =
                 connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
             //TODO add some validation in ip
-            return link.linkAddresses[1].address.hostAddress
+            return link.linkAddresses[0].address.hostAddress
         } else {
             val wifiManager =
                 applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager

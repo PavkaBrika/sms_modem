@@ -12,7 +12,7 @@ class MessageDatabase(private val context: Context): DatabaseStorage {
     val db = Room.databaseBuilder(context, AppDatabase::class.java, DATABASE_NAME).build()
 
     override fun saveSentMessage(message: MessageData) {
-
+        db.messageDao().insertMessage(message = message)
     }
 
     override fun getLastSentMessage(): MessageData {
