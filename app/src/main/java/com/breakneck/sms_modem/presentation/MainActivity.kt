@@ -172,13 +172,17 @@ class MainActivity : AppCompatActivity() {
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
             val intent = Intent(this, NetworkService::class.java)
             bindService(intent, networkServiceConnection, 0)
+            vm.changeServiceBoundState()
         }
     }
 
     override fun onStop() {
         super.onStop()
-        if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
+        if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded) {
             unbindService(networkServiceConnection)
+            vm.changeServiceBoundState()
+        }
+
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
@@ -240,12 +244,10 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceConnected(p0: ComponentName?, binder: IBinder?) {
             val networkServiceBinder = binder as NetworkService.NetworkServiceBinder
             boundNetworkService = networkServiceBinder.getService()
-            vm.changeServiceBoundState()
             Log.e(TAG, "onNetworkServiceConnected")
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
-            vm.changeServiceBoundState()
             Log.e(TAG, "onNetworkServiceDisconnected")
         }
     }
