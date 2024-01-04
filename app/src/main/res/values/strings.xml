@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">sms_modem</string>
     <string name="colon_port">:%d</string>
+    <string name="settings">Settings</string>
+    <string name="enable">Enable</string>
+    <string name="disable">Disable</string>
+    <string name="enabled">Enabled</string>
+    <string name="disabled">Disabled</string>
+    <string name="messages_history">Messages history</string>
+    <string name="subscribe">Subscribe</string>
 </resources>

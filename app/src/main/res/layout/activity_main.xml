@@ -6,50 +6,129 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/stateCardView"
+        android:layout_height="200dp"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/messagesRecyclerView"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:listitem="@layout/item_message"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/messages_history"
+                android:textSize="26sp" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/messagesRecyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                tools:listitem="@layout/item_message" />
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/subscriptionCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardCornerRadius="32dp"
+        app:layout_constraintBottom_toTopOf="@+id/stateCardView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+
+            <TextView
+                android:id="@+id/subscriptionStateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Subscription is not connected"
+                android:textSize="24sp" />
+
+            <TextView
+                android:id="@+id/subscriptionStateHintTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="It means that you can use app only after ad view" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="fsdfasdf" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="end">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/watchAdButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="Watch ad"
+                    android:enabled="true"
+                    app:icon="@drawable/baseline_settings_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/connectSubscriptionButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/enabled_button"
+                    android:text="@string/subscribe"
+                    app:icon="@drawable/baseline_power_24" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
-    </androidx.cardview.widget.CardView>
-
-
-
-    <androidx.cardview.widget.CardView
+    <com.google.android.material.card.MaterialCardView
         android:id="@+id/stateCardView"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        app:cardBackgroundColor="@android:color/holo_green_dark"
-        app:cardCornerRadius="50dp"
-        android:layout_margin="24dp"
-        android:elevation="1dp"
-        app:layout_constraintBottom_toTopOf="@+id/settingsButton"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/enabled_card"
+        app:cardCornerRadius="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="50dp"
             android:orientation="vertical"
-            android:padding="16dp"
-            android:layout_marginTop="50dp">
+            android:padding="24dp">
 
             <TextView
                 android:id="@+id/stateTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Enabled"
+                android:text="@string/enabled"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="50sp"
@@ -67,46 +146,51 @@
                     android:id="@+id/ipAddressTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:text="IP ADDRESS"
+                    android:textColor="@color/white"
                     android:textSize="28sp" />
 
                 <TextView
                     android:id="@+id/portTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
                     android:text="PORT"
+                    android:textColor="@color/white"
                     android:textSize="28sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/settingsButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:text="@string/settings"
+                    android:enabled="true"
+                    app:icon="@drawable/baseline_settings_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/activateServiceButton"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/enabled_button"
+                    android:text="@string/enable"
+                    app:icon="@drawable/baseline_power_24" />
 
             </LinearLayout>
 
         </LinearLayout>
 
-
-
-
-
-    </androidx.cardview.widget.CardView>
-
-    <Button
-        android:id="@+id/settingsButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="settings"
-        app:layout_constraintBottom_toTopOf="@+id/activateServiceButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/activateServiceButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:text="Activate"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

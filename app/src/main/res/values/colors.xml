@@ -2,4 +2,12 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="enabled_card">#4CAF50</color> //400
+    <color name="enabled_button">#1B5E20</color> //900
+
+    <color name="disabled_card">#EF5350</color>
+    <color name="disabled_button">#B71C1C</color>
+
+
 </resources>

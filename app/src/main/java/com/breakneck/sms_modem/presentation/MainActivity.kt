@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.content.res.Resources.Theme
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.wifi.WifiManager
@@ -123,16 +124,13 @@ class MainActivity : AppCompatActivity() {
         }
 
         vm.networkServiceIntent.observe(this) { intent ->
-            lifecycleScope.launch(Dispatchers.Default) {
-                //TODO change hardcode strings to string file
-                when (intent) {
-                    ServiceIntent.Disable -> {
-                        binding.activateServiceButton.text = "Disable"
-                    }
+            when (intent) {
+                ServiceIntent.Disable -> {
+                    binding.activateServiceButton.text = getString(R.string.disable)
+                }
 
-                    ServiceIntent.Enable -> {
-                        binding.activateServiceButton.text = "Enable"
-                    }
+                ServiceIntent.Enable -> {
+                    binding.activateServiceButton.text = getString(R.string.enable)
                 }
             }
         }
@@ -140,16 +138,59 @@ class MainActivity : AppCompatActivity() {
         vm.networkServiceState.observe(this) { state ->
             when (state) {
                 ServiceState.Enabled -> {
-                    binding.stateTextView.text = "Enabled"
+                    binding.stateTextView.text = getString(R.string.enabled)
+                    binding.settingsButton.apply {
+                        isEnabled = false
+                        setStrokeColorResource(R.color.enabled_button)
+                    }
+                    binding.activateServiceButton.apply {
+                        isEnabled = true
+                        setRippleColorResource(R.color.black)
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.enabled_button
+                            )
+                        )
+                    }
+                    binding.stateCardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.enabled_card
+                        )
+                    )
                 }
 
                 ServiceState.Disabled -> {
-                    binding.stateTextView.text = "Disabled"
+                    binding.stateTextView.text = getString(R.string.disabled)
+                    binding.settingsButton.apply {
+                        isEnabled = true
+                        setStrokeColorResource(R.color.disabled_button)
+                        setRippleColorResource(R.color.disabled_button)
+                    }
+                    binding.activateServiceButton.apply {
+                        isEnabled = true
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.disabled_button
+                            )
+                        )
+                        setRippleColorResource(R.color.black)
+                    }
+                    binding.stateCardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.disabled_card
+                        )
+                    )
                 }
 
                 ServiceState.Loading -> {
                     //TODO do something animation on loading
-                    binding.stateTextView.text = "Loading"
+                    binding.stateTextView.text = "Loading..."
+                    binding.settingsButton.isEnabled = false
+                    binding.activateServiceButton.isEnabled = false
                 }
             }
         }
