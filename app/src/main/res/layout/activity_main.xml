@@ -6,36 +6,48 @@
     android:layout_height="match_parent"
     tools:context=".presentation.MainActivity">
 
+    <TextView
+        android:id="@+id/recyclerViewHint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/messages_history"
+        android:textSize="26sp"
+        android:textColor="@color/black"
+        android:layout_margin="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/materialCardView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:layout_margin="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
         app:cardCornerRadius="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/recyclerViewHint">
 
-        <LinearLayout
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="8dp">
+            android:layout_height="wrap_content">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/messages_history"
-                android:textSize="26sp" />
+                android:orientation="vertical">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/messagesRecyclerView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_message" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/messagesRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_message" />
 
-        </LinearLayout>
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -66,7 +78,7 @@
                 android:id="@+id/subscriptionStateHintTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="It means that you can use app only after ad view" />
+                android:text="It means that you can use app only after watching ads" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -87,6 +99,9 @@
                     android:layout_marginEnd="4dp"
                     android:text="Watch ad"
                     android:enabled="true"
+                    android:textColor="@color/black"
+                    app:strokeColor="@color/black"
+                    app:iconTint="@color/black"
                     app:icon="@drawable/baseline_settings_24" />
 
                 <com.google.android.material.button.MaterialButton
@@ -131,7 +146,7 @@
                 android:text="@string/enabled"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="50sp"
+                android:textSize="40sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -148,7 +163,7 @@
                     android:layout_height="wrap_content"
                     android:text="IP ADDRESS"
                     android:textColor="@color/white"
-                    android:textSize="28sp" />
+                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/portTextView"
@@ -156,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:text="PORT"
                     android:textColor="@color/white"
-                    android:textSize="28sp" />
+                    android:textSize="20sp" />
 
             </LinearLayout>
 

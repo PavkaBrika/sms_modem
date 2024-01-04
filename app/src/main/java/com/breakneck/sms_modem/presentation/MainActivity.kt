@@ -24,6 +24,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
@@ -37,6 +38,7 @@ import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.viewmodel.MainViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -196,7 +198,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         vm.messageList.observe(this) { list ->
-            binding.messagesRecyclerView.adapter = MessageAdapter(messagesList = list)
+            binding.messagesRecyclerView.apply {
+                adapter = MessageAdapter(messagesList = list)
+                addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+            }
+
         }
 
         receiver = object : BroadcastReceiver() {
@@ -233,13 +239,13 @@ class MainActivity : AppCompatActivity() {
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             vm.savePort(
                 Port(
-                    dialog.findViewById<EditText>(R.id.portEditText)!!.text.toString().toInt()
+                    dialog.findViewById<TextInputLayout>(R.id.portTextInput)!!.editText!!.text.toString().toInt()
                 )
             )
             vm.saveMessageDestinationUrl(
                 MessageDestinationUrl(
                     //TODO add validation to url
-                    dialog.findViewById<EditText>(R.id.urlEditText)!!.text.toString()
+                    dialog.findViewById<TextInputLayout>(R.id.urlTextInput)!!.editText!!.text.toString()
                 )
             )
             dialog.dismiss()
