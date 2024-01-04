@@ -29,6 +29,7 @@ import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
+import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
@@ -151,6 +152,10 @@ class MainActivity : AppCompatActivity() {
                     binding.stateTextView.text = "Loading"
                 }
             }
+        }
+
+        vm.messageList.observe(this) { list ->
+            binding.messagesRecyclerView.adapter = MessageAdapter(messagesList = list)
         }
 
         receiver = object : BroadcastReceiver() {

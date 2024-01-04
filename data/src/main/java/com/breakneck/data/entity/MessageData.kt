@@ -9,7 +9,7 @@ data class MessageData(
     val id: Long?,
     val cellNumber: String,
     val text: String,
-    val sender: String?
+    val sender: SenderData?
 ) {
     constructor(cellNumber: String, text: String) : this(
         id = null,

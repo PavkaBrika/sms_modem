@@ -6,6 +6,7 @@ import android.content.Intent
 import android.provider.Telephony
 import android.util.Log
 import com.breakneck.domain.model.Message
+import com.breakneck.domain.model.Sender
 import com.breakneck.domain.usecase.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.SaveSentMessage
 import com.breakneck.domain.usecase.SendMessageToServer
@@ -61,7 +62,7 @@ class SMSBroadcastReceiver: BroadcastReceiver(), KoinComponent {
             cellNumber = message.displayOriginatingAddress
         }
         Log.e(TAG, "Message from $cellNumber, body $text")
-        val message = Message(cellNumber = cellNumber, text = text.toString())
+        val message = Message(cellNumber = cellNumber, text = text.toString(), sender = Sender.Phone)
         saveSentMessage.execute(message)
         sendMessageToServer.execute(url = getMessageDestinationUrl.execute(), message = message)
     }

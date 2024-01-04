@@ -2,10 +2,12 @@ package com.breakneck.data.repository
 
 import com.breakneck.data.entity.MessageData
 import com.breakneck.data.entity.MessageDestinationUrlData
+import com.breakneck.data.entity.SenderData
 import com.breakneck.data.storage.DatabaseStorage
 import com.breakneck.data.storage.NetworkStorage
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
+import com.breakneck.domain.model.Sender
 import com.breakneck.domain.repository.MessageRepository
 
 class MessageRepositoryImplementation(
@@ -25,7 +27,11 @@ class MessageRepositoryImplementation(
             message = MessageData(
                 cellNumber = message.cellNumber,
                 text = message.text,
-                sender = "",
+                sender = when (message.sender) {
+                    Sender.Phone -> SenderData.Phone
+                    Sender.Server -> SenderData.Server
+                    null -> null
+                },
                 id = 0
             )
         )
@@ -34,6 +40,21 @@ class MessageRepositoryImplementation(
     override fun getLastSentMessage(): Message {
         databaseStorage.getLastSentMessage().also {
             return Message(cellNumber = it.cellNumber, text = it.text)
+        }
+    }
+
+    override fun getAllMessages(): List<Message> {
+        val messagesDataList = databaseStorage.getAllMessages()
+        return messagesDataList.map {
+            Message(
+                cellNumber = it.cellNumber,
+                text = it.text,
+                sender = when (it.sender) {
+                    SenderData.Phone -> Sender.Phone
+                    SenderData.Server -> Sender.Server
+                    else -> null
+                }
+            )
         }
     }
 }

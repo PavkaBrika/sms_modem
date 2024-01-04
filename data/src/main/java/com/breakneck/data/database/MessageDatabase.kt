@@ -18,4 +18,8 @@ class MessageDatabase(private val context: Context): DatabaseStorage {
     override fun getLastSentMessage(): MessageData {
         return db.messageDao().getLastMessage()
     }
+
+    override fun getAllMessages(): List<MessageData> {
+        return db.messageDao().getAllMessages()
+    }
 }

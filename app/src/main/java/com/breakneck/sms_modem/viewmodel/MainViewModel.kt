@@ -4,23 +4,30 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.usecase.GetAllMessages
 import com.breakneck.domain.usecase.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.GetServiceState
 import com.breakneck.domain.usecase.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.SavePort
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainViewModel(
     private val savePort: SavePort,
     private val getPort: GetPort,
     private val getServiceState: GetServiceState,
     private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
-    private val getMessageDestinationUrl: GetMessageDestinationUrl
+    private val getMessageDestinationUrl: GetMessageDestinationUrl,
+    private val getAllMessages: GetAllMessages
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -45,11 +52,16 @@ class MainViewModel(
     val messageDestinationUrl: LiveData<MessageDestinationUrl>
         get() = _messageDestinationUrl
 
+    private val _messagesList = MutableLiveData<List<Message>>()
+    val messageList: LiveData<List<Message>>
+        get() = _messagesList
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
         getMessageDestinationUrl()
         changeServiceIntent()
+        getAllMessages()
     }
 
     override fun onCleared() {
@@ -124,4 +136,12 @@ class MainViewModel(
         }
     }
 
+    fun getAllMessages() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val messageList = getAllMessages.execute()
+            withContext(Dispatchers.Main) {
+                _messagesList.value = messageList
+            }
+        }
+    }
 }

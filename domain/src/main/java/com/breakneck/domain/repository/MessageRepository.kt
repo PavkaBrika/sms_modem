@@ -11,4 +11,6 @@ interface MessageRepository {
 
     fun getLastSentMessage(): Message
 
+    fun getAllMessages(): List<Message>
+
 }

@@ -1,5 +1,6 @@
 package com.breakneck.sms_modem.di.koin
 
+import com.breakneck.domain.usecase.GetAllMessages
 import com.breakneck.domain.usecase.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.GetPort
 import com.breakneck.domain.usecase.GetServiceState
@@ -42,6 +43,10 @@ val domainModule = module {
 
     factory<SaveSentMessage> {
         SaveSentMessage(messageRepository = get())
+    }
+
+    factory<GetAllMessages> {
+        GetAllMessages(messageRepository = get())
     }
 
 }

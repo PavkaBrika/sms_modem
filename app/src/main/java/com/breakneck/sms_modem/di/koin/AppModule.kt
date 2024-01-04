@@ -18,7 +18,8 @@ val appModule = module {
             getPort = get(),
             getServiceState = get(),
             saveMessageDestinationUrl = get(),
-            getMessageDestinationUrl = get()
+            getMessageDestinationUrl = get(),
+            getAllMessages = get()
         )
     }
 
@@ -32,7 +33,7 @@ val appModule = module {
 
         val retrofit = Retrofit.Builder()
             .client(okHttpClient)
-            .client(okHttpClient)
+            .baseUrl("https://helloworld")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

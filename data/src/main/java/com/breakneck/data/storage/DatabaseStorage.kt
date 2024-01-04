@@ -8,4 +8,6 @@ interface DatabaseStorage {
 
     fun getLastSentMessage(): MessageData
 
+    fun getAllMessages(): List<MessageData>
+
 }
