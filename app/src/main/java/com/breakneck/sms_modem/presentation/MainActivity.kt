@@ -35,6 +35,7 @@ import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
+import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.viewmodel.MainViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -111,9 +112,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.activateServiceButton.setOnClickListener {
             try {
-                serviceAction(vm.networkServiceIntent.value!!)
-                vm.changeServiceIntent()
-                vm.setServiceStateLoading()
+                if (vm.serviceRemainingTime.value!! > 0) {
+                    serviceAction(vm.networkServiceIntent.value!!)
+                    vm.changeServiceIntent()
+                    vm.setServiceStateLoading()
+                } else {
+                    //TODO change location of this message in layout
+                    Toast.makeText(this, "Watch ads", Toast.LENGTH_SHORT).show()
+                }
             } catch (e: NullPointerException) {
                 e.printStackTrace()
                 //TODO change hardcode strings to string file
@@ -125,7 +131,7 @@ class MainActivity : AppCompatActivity() {
             openSettingsBottomSheetDialog()
         }
 
-        binding.connectSubscriptionButton.setOnClickListener {
+        binding.watchAdButton.setOnClickListener {
             vm.saveServiceRemainingTime()
         }
 
@@ -209,9 +215,17 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        vm.serviceRemainingTime.observe(this) { time ->
+            binding.serviceTimeRemainingTextView.text = time.toString()
+        }
+
         receiver = object : BroadcastReceiver() {
-            override fun onReceive(p0: Context?, p1: Intent?) {
-                vm.changeServiceIntent()
+            override fun onReceive(context: Context?, intent: Intent?) {
+                if (intent!!.action.equals(SERVICE_STATE_RESULT))
+                    vm.changeServiceIntent()
+                else if (intent!!.action.equals(SERVICE_TIME_REMAINING_RESULT)) {
+                    vm.getServiceRemainingTime()
+                }
             }
         }
     }
@@ -220,6 +234,8 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(receiver, IntentFilter(SERVICE_TIME_REMAINING_RESULT))
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
             val intent = Intent(this, NetworkService::class.java)
             bindService(intent, networkServiceConnection, 0)
@@ -234,6 +250,7 @@ class MainActivity : AppCompatActivity() {
             vm.changeServiceBoundState()
         }
 
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 

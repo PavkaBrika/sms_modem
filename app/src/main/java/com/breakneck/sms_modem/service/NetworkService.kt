@@ -44,6 +44,7 @@ import org.koin.android.ext.android.inject
 import java.lang.StringBuilder
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
+const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_REMAINING_RESULT"
 
 open class NetworkService : Service() {
 
@@ -163,11 +164,13 @@ open class NetworkService : Service() {
 
             override fun onTick(millisUntilFinished: Long) {
                 Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
-
+                updateServiceTimeRemainingInActivity()
+                saveServiceRemainingTime.execute(millisUntilFinished)
             }
 
             override fun onFinish() {
                 Log.e(TAG, "CountDownTimerFinished")
+                saveServiceRemainingTime.execute(0)
                 stopService()
             }
         }.start()
@@ -295,6 +298,13 @@ open class NetworkService : Service() {
 
     fun changeServiceStateInActivity() {
         Intent(SERVICE_STATE_RESULT)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
+    fun updateServiceTimeRemainingInActivity() {
+        Intent(SERVICE_TIME_REMAINING_RESULT)
             .also {
                 broadcaster.sendBroadcast(it)
             }

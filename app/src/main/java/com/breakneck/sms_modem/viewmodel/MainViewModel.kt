@@ -12,6 +12,7 @@ import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.message.GetAllMessages
+import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.service.GetServiceState
@@ -29,7 +30,8 @@ class MainViewModel(
     private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
     private val getAllMessages: GetAllMessages,
-    private val saveServiceRemainingTime: SaveServiceRemainingTime
+    private val saveServiceRemainingTime: SaveServiceRemainingTime,
+    private val getServiceRemainingTime: GetServiceRemainingTime
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -68,6 +70,7 @@ class MainViewModel(
         getMessageDestinationUrl()
         changeServiceIntent()
         getAllMessages()
+        getServiceRemainingTime()
     }
 
     override fun onCleared() {
@@ -151,6 +154,11 @@ class MainViewModel(
     }
 
     fun saveServiceRemainingTime() {
-        saveServiceRemainingTime.execute(5000)
+        saveServiceRemainingTime.execute(20000)
+        getServiceRemainingTime()
+    }
+
+    fun getServiceRemainingTime() {
+        _serviceRemainingTime.value = getServiceRemainingTime.execute()
     }
 }
