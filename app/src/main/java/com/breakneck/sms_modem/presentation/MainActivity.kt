@@ -257,18 +257,31 @@ class MainActivity : AppCompatActivity() {
     private fun openSettingsBottomSheetDialog() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
+
+        val portTextInputLayout = dialog.findViewById<TextInputLayout>(R.id.portTextInput)
+        portTextInputLayout!!.editText!!.setText(vm.port.value!!.value.toString())
+
+        val urlTextInputLayout = dialog.findViewById<TextInputLayout>(R.id.urlTextInput)
+        urlTextInputLayout!!.editText!!.setText(vm.messageDestinationUrl.value!!.url)
+
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-            vm.savePort(
-                Port(
-                    dialog.findViewById<TextInputLayout>(R.id.portTextInput)!!.editText!!.text.toString().toInt()
+            val portInputString = portTextInputLayout.editText!!.text.toString()
+            if (portInputString.isNotEmpty()) {
+                vm.savePort(
+                    Port(
+                        portInputString.toInt()
+                    )
                 )
-            )
-            vm.saveMessageDestinationUrl(
-                MessageDestinationUrl(
-                    //TODO add validation to url
-                    dialog.findViewById<TextInputLayout>(R.id.urlTextInput)!!.editText!!.text.toString()
+            }
+            val urlInputString = urlTextInputLayout.editText!!.text.toString()
+            if (urlInputString.isNotEmpty()) {
+                vm.saveMessageDestinationUrl(
+                    MessageDestinationUrl(
+                        //TODO add validation to url
+                        urlTextInputLayout.editText!!.text.toString()
+                    )
                 )
-            )
+            }
             dialog.dismiss()
         }
         dialog.show()

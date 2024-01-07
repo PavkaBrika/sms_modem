@@ -60,9 +60,9 @@ class MainViewModel(
     val messageList: LiveData<List<Message>>
         get() = _messagesList
 
-    private val _serviceRemainingTime = MutableLiveData<Long>()
+    private val _serviceRemainingTimeInSec = MutableLiveData<Long>()
     val serviceRemainingTime: LiveData<Long>
-        get() = _serviceRemainingTime
+        get() = _serviceRemainingTimeInSec
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -154,11 +154,11 @@ class MainViewModel(
     }
 
     fun saveServiceRemainingTime() {
-        saveServiceRemainingTime.execute(20000)
+        saveServiceRemainingTime.execute(2000000)
         getServiceRemainingTime()
     }
 
     fun getServiceRemainingTime() {
-        _serviceRemainingTime.value = getServiceRemainingTime.execute()
+        _serviceRemainingTimeInSec.value = getServiceRemainingTime.execute() / 1000
     }
 }
