@@ -181,6 +181,7 @@ open class NetworkService : Service() {
     fun stopService() {
         Log.e(TAG, "Stopped service task")
         try {
+            timer.cancel()
             serviceState = ServiceState.Disabled
             saveServiceState.execute(serviceState)
             changeServiceStateInActivity()
