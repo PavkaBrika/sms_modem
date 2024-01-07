@@ -1,14 +1,14 @@
 package com.breakneck.sms_modem.di.koin
 
-import com.breakneck.domain.usecase.GetAllMessages
-import com.breakneck.domain.usecase.GetMessageDestinationUrl
-import com.breakneck.domain.usecase.GetPort
-import com.breakneck.domain.usecase.GetServiceState
-import com.breakneck.domain.usecase.SaveMessageDestinationUrl
-import com.breakneck.domain.usecase.SavePort
-import com.breakneck.domain.usecase.SaveSentMessage
-import com.breakneck.domain.usecase.SaveServiceState
-import com.breakneck.domain.usecase.SendMessageToServer
+import com.breakneck.domain.usecase.message.GetAllMessages
+import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
+import com.breakneck.domain.usecase.settings.GetPort
+import com.breakneck.domain.usecase.service.GetServiceState
+import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
+import com.breakneck.domain.usecase.settings.SavePort
+import com.breakneck.domain.usecase.message.SaveSentMessage
+import com.breakneck.domain.usecase.service.SaveServiceState
+import com.breakneck.domain.usecase.message.SendMessageToServer
 import org.koin.dsl.module
 
 val domainModule = module {

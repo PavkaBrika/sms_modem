@@ -8,4 +8,8 @@ interface ServiceRepository {
 
     fun getServiceState(): ServiceState
 
+    fun getServiceRemainingTime(): Long
+
+    fun saveServiceRemainingTime(time: Long)
+
 }

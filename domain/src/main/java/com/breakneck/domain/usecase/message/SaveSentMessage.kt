@@ -1,4 +1,4 @@
-package com.breakneck.domain.usecase
+package com.breakneck.domain.usecase.message
 
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.repository.MessageRepository

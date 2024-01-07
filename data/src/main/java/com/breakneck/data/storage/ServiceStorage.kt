@@ -7,4 +7,8 @@ interface ServiceStorage {
     fun saveServiceState(serviceState: ServiceStateData)
 
     fun getServiceState(): ServiceStateData
+
+    fun getServiceRemainingTime(): Long
+
+    fun saveServiceRemainingTime(time: Long)
 }

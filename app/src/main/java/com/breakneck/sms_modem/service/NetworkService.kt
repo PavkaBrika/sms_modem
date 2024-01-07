@@ -13,6 +13,7 @@ import android.content.pm.ResolveInfo
 import android.graphics.Color
 import android.os.Binder
 import android.os.Build
+import android.os.CountDownTimer
 import android.os.IBinder
 import android.os.SystemClock
 import android.telephony.SmsManager
@@ -22,9 +23,9 @@ import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.Sender
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.GetPort
-import com.breakneck.domain.usecase.SaveSentMessage
-import com.breakneck.domain.usecase.SaveServiceState
+import com.breakneck.domain.usecase.settings.GetPort
+import com.breakneck.domain.usecase.message.SaveSentMessage
+import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.sms_modem.presentation.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
 import io.ktor.application.call
@@ -62,6 +63,7 @@ open class NetworkService : Service() {
 
     private lateinit var smsReceiver: SMSBroadcastReceiver
     private lateinit var intentFilter: IntentFilter
+    private lateinit var timer: CountDownTimer
 
     val TAG = "NetworkService"
 
@@ -120,6 +122,17 @@ open class NetworkService : Service() {
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
         changeServiceStateInActivity()
+
+        timer = object: CountDownTimer(5000, 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
+            }
+
+            override fun onFinish() {
+                Log.e(TAG, "CountDownTimerFinished")
+            }
+        }.start()
     }
 
     override fun onDestroy() {

@@ -2,13 +2,12 @@ package com.breakneck.sms_modem.di
 
 import com.breakneck.domain.repository.ServiceRepository
 import com.breakneck.domain.repository.SettingsRepository
-import com.breakneck.domain.usecase.GetPort
-import com.breakneck.domain.usecase.GetServiceState
-import com.breakneck.domain.usecase.SavePort
-import com.breakneck.domain.usecase.SaveServiceState
+import com.breakneck.domain.usecase.settings.GetPort
+import com.breakneck.domain.usecase.service.GetServiceState
+import com.breakneck.domain.usecase.settings.SavePort
+import com.breakneck.domain.usecase.service.SaveServiceState
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 class DomainModule {

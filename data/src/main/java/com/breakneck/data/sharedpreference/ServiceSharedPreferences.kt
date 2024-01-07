@@ -4,8 +4,9 @@ import android.content.Context
 import com.breakneck.data.entity.ServiceStateData
 import com.breakneck.data.storage.ServiceStorage
 
-const val SERVICE_SHARED_PREFERENCES_NAME = "SERVICE_SHARED_PREFERENCES"
-const val SERVICE_STATE = "SERVICE_STATE"
+private const val SERVICE_SHARED_PREFERENCES_NAME = "SERVICE_SHARED_PREFERENCES"
+private const val SERVICE_STATE = "SERVICE_STATE"
+private const val SERVICE_REMAINING_TIME = "SERVICE_REMAINING_TIME"
 
 class ServiceSharedPreferences(private val context: Context): ServiceStorage {
 
@@ -30,5 +31,13 @@ class ServiceSharedPreferences(private val context: Context): ServiceStorage {
             "enabled" -> ServiceStateData.Enabled
             else -> ServiceStateData.Disabled
         }
+    }
+
+    override fun getServiceRemainingTime(): Long {
+        return sharedPreferences.getLong(SERVICE_REMAINING_TIME, 0)
+    }
+
+    override fun saveServiceRemainingTime(time: Long) {
+        sharedPreferences.edit().putLong(SERVICE_REMAINING_TIME, time).apply()
     }
 }

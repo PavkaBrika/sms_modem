@@ -23,4 +23,12 @@ class ServiceRepositoryImplementation(private val serviceStorage: ServiceStorage
             ServiceStateData.Enabled -> ServiceState.Enabled
         }
     }
+
+    override fun getServiceRemainingTime(): Long {
+        return serviceStorage.getServiceRemainingTime()
+    }
+
+    override fun saveServiceRemainingTime(time: Long) {
+        serviceStorage.saveServiceRemainingTime(time = time)
+    }
 }

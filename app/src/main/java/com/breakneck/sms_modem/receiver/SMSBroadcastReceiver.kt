@@ -7,9 +7,9 @@ import android.provider.Telephony
 import android.util.Log
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.Sender
-import com.breakneck.domain.usecase.GetMessageDestinationUrl
-import com.breakneck.domain.usecase.SaveSentMessage
-import com.breakneck.domain.usecase.SendMessageToServer
+import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
+import com.breakneck.domain.usecase.message.SaveSentMessage
+import com.breakneck.domain.usecase.message.SendMessageToServer
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

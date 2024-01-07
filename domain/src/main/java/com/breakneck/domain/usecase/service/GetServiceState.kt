@@ -1,4 +1,4 @@
-package com.breakneck.domain.usecase
+package com.breakneck.domain.usecase.service
 
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.repository.ServiceRepository
