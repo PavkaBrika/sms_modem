@@ -6,6 +6,6 @@ import com.breakneck.domain.model.Message
 
 interface NetworkStorage {
 
-    fun sendMessageToServer(url: MessageDestinationUrlData, message: MessageData)
+    suspend fun sendMessageToServer(url: MessageDestinationUrlData, message: MessageData)
 
 }

@@ -117,12 +117,19 @@ open class NetworkService : Service() {
         //TODO implement dagger instead koin
 //        AndroidInjection.inject(this)
         broadcaster = LocalBroadcastManager.getInstance(this)
+
+        val notification: Notification = createNotification()
+        startForeground(1, notification)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         try {
             server.stop(1000, 2000)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
             unregisterReceiver(smsReceiver)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -153,9 +160,6 @@ open class NetworkService : Service() {
         createServer()
         createSmsReceiver()
 
-        val notification: Notification = createNotification()
-        startForeground(1, notification)
-
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
         changeServiceStateInActivity()
@@ -163,7 +167,7 @@ open class NetworkService : Service() {
         timer = object: CountDownTimer(getServiceRemainingTime.execute(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
+//                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
                 updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
             }
@@ -182,6 +186,10 @@ open class NetworkService : Service() {
         Log.e(TAG, "Stopped service task")
         try {
             timer.cancel()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        try {
             serviceState = ServiceState.Disabled
             saveServiceState.execute(serviceState)
             changeServiceStateInActivity()
@@ -212,6 +220,8 @@ open class NetworkService : Service() {
                     if ((phone != "") && (message != "")) {
                         sendSMS(phoneNumber = phone!!, message = message!!)
                         call.respondText("Message $message sent to $phone")
+                    } else {
+                        call.respondText("Error")
                     }
                 }
             }

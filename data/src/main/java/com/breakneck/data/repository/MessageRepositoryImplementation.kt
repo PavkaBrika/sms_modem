@@ -15,7 +15,7 @@ class MessageRepositoryImplementation(
     private val databaseStorage: DatabaseStorage
 ) : MessageRepository {
 
-    override fun sendMessageToServer(url: MessageDestinationUrl, message: Message) {
+    override suspend fun sendMessageToServer(url: MessageDestinationUrl, message: Message) {
         networkStorage.sendMessageToServer(
             url = MessageDestinationUrlData(url = url.url),
             message = MessageData(cellNumber = message.cellNumber, text = message.text)

@@ -6,7 +6,7 @@ import com.breakneck.domain.repository.MessageRepository
 
 class SendMessageToServer(private val messageRepository: MessageRepository) {
 
-    fun execute(url: MessageDestinationUrl, message: Message) {
+    suspend fun execute(url: MessageDestinationUrl, message: Message) {
         messageRepository.sendMessageToServer(url = url, message = message)
     }
 }

@@ -7,7 +7,7 @@ import retrofit2.http.Url
 interface NetworkApi {
 
     @POST
-    fun pushMessage(
+    suspend fun pushMessage(
         @Url url: String,
         @Query("cellNumber") cellNumber: String,
         @Query("text") text: String
