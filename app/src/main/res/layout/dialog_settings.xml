@@ -12,13 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="PORT"
+        app:boxStrokeColor="@color/black"
         app:endIconMode="clear_text"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        app:hintTextColor="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/portEditText"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:maxLength="4">
 
         </com.google.android.material.textfield.TextInputEditText>
 
@@ -29,8 +33,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="URL"
+        app:boxStrokeColor="@color/black"
         app:endIconMode="clear_text"
-        app:errorEnabled="true">
+        app:errorEnabled="true"
+        app:helperText="Enter the URL where SMS will be sent"
+        app:hintTextColor="@color/black">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/urlEditText"
@@ -46,8 +53,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="confirm"
         android:backgroundTint="@color/black"
+        android:text="confirm"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/urlEditText" />
