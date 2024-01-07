@@ -255,11 +255,17 @@ class MainActivity : AppCompatActivity() {
 
     private fun getDeviceIpAddress(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            val ipRegex = "\\d+(\\.)\\d+(\\.)\\d+(\\.)\\d+".toRegex()
             val connectivityManager =
                 getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
             val link: LinkProperties =
                 connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
-            //TODO add some validation in ip
+            for (address in link.linkAddresses.indices) {
+                if (link.linkAddresses[address].address.hostAddress.matches(ipRegex)) {
+                    return link.linkAddresses[address].address.hostAddress
+                }
+            }
+            //TODO MAKE ERROR IN THIS RETURN
             return link.linkAddresses[0].address.hostAddress
         } else {
             val wifiManager =
