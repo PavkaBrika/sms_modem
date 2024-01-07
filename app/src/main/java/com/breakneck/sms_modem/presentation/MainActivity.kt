@@ -133,6 +133,8 @@ class MainActivity : AppCompatActivity() {
 
         binding.watchAdButton.setOnClickListener {
             vm.saveServiceRemainingTime()
+            if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                boundNetworkService.updateServiceRemainingTimer()
         }
 
         vm.networkServiceIntent.observe(this) { intent ->

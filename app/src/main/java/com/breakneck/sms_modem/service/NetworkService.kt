@@ -163,21 +163,7 @@ open class NetworkService : Service() {
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
         changeServiceStateInActivity()
-
-        timer = object: CountDownTimer(getServiceRemainingTime.execute(), 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-//                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
-                updateServiceTimeRemainingInActivity()
-                saveServiceRemainingTime.execute(millisUntilFinished)
-            }
-
-            override fun onFinish() {
-                Log.e(TAG, "CountDownTimerFinished")
-                saveServiceRemainingTime.execute(0)
-                stopService()
-            }
-        }.start()
+        updateServiceRemainingTimer()
 
         Log.e(TAG, "Starting service task")
     }
@@ -319,6 +305,28 @@ open class NetworkService : Service() {
             .also {
                 broadcaster.sendBroadcast(it)
             }
+    }
+
+    fun updateServiceRemainingTimer() {
+        try {
+            timer.cancel()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        timer = object: CountDownTimer(getServiceRemainingTime.execute(), 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+//                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
+                updateServiceTimeRemainingInActivity()
+                saveServiceRemainingTime.execute(millisUntilFinished)
+            }
+
+            override fun onFinish() {
+                Log.e(TAG, "CountDownTimerFinished")
+                saveServiceRemainingTime.execute(0)
+                stopService()
+            }
+        }.start()
     }
 
     inner class NetworkServiceBinder : Binder() {
