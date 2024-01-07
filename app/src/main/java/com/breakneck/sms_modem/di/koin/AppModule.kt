@@ -19,7 +19,8 @@ val appModule = module {
             getServiceState = get(),
             saveMessageDestinationUrl = get(),
             getMessageDestinationUrl = get(),
-            getAllMessages = get()
+            getAllMessages = get(),
+            saveServiceRemainingTime = get()
         )
     }
 

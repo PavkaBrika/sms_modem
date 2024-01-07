@@ -6,7 +6,9 @@ import com.breakneck.sms_modem.di.AppComponent
 import com.breakneck.sms_modem.di.AppModule
 import com.breakneck.sms_modem.di.koin.appModule
 import com.breakneck.sms_modem.di.koin.dataModule
-import com.breakneck.sms_modem.di.koin.domainModule
+import com.breakneck.sms_modem.di.koin.messageModule
+import com.breakneck.sms_modem.di.koin.serviceModule
+import com.breakneck.sms_modem.di.koin.settingsModule
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -48,7 +50,7 @@ class App : Application() {
         startKoin {
             androidLogger(level = Level.DEBUG)
             androidContext(this@App)
-            modules(listOf(domainModule, dataModule, appModule))
+            modules(listOf(settingsModule, serviceModule, messageModule, dataModule, appModule))
         }
 
     }

@@ -125,6 +125,10 @@ class MainActivity : AppCompatActivity() {
             openSettingsBottomSheetDialog()
         }
 
+        binding.connectSubscriptionButton.setOnClickListener {
+            vm.saveServiceRemainingTime()
+        }
+
         vm.networkServiceIntent.observe(this) { intent ->
             when (intent) {
                 ServiceIntent.Disable -> {

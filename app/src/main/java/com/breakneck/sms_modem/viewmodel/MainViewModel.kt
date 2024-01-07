@@ -15,6 +15,7 @@ import com.breakneck.domain.usecase.message.GetAllMessages
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.service.GetServiceState
+import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +28,8 @@ class MainViewModel(
     private val getServiceState: GetServiceState,
     private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
-    private val getAllMessages: GetAllMessages
+    private val getAllMessages: GetAllMessages,
+    private val saveServiceRemainingTime: SaveServiceRemainingTime
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -55,6 +57,10 @@ class MainViewModel(
     private val _messagesList = MutableLiveData<List<Message>>()
     val messageList: LiveData<List<Message>>
         get() = _messagesList
+
+    private val _serviceRemainingTime = MutableLiveData<Long>()
+    val serviceRemainingTime: LiveData<Long>
+        get() = _serviceRemainingTime
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -98,7 +104,6 @@ class MainViewModel(
         } else {
             Log.e(TAG, "Message destination not saved: Equals old value")
         }
-
     }
 
     fun getServiceState() {
@@ -143,5 +148,9 @@ class MainViewModel(
                 _messagesList.value = messageList
             }
         }
+    }
+
+    fun saveServiceRemainingTime() {
+        saveServiceRemainingTime.execute(5000)
     }
 }

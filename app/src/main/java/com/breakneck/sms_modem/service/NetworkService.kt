@@ -25,6 +25,8 @@ import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.message.SaveSentMessage
+import com.breakneck.domain.usecase.service.GetServiceRemainingTime
+import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.sms_modem.presentation.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
@@ -57,6 +59,8 @@ open class NetworkService : Service() {
     val getPort: GetPort by inject()
     val saveServiceState: SaveServiceState by inject()
     val saveSentMessage: SaveSentMessage by inject()
+    val getServiceRemainingTime: GetServiceRemainingTime by inject()
+    val saveServiceRemainingTime: SaveServiceRemainingTime by inject()
 
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
@@ -112,27 +116,6 @@ open class NetworkService : Service() {
         //TODO implement dagger instead koin
 //        AndroidInjection.inject(this)
         broadcaster = LocalBroadcastManager.getInstance(this)
-
-        createServer()
-        createSmsReceiver()
-
-        val notification: Notification = createNotification()
-        startForeground(1, notification)
-
-        serviceState = ServiceState.Enabled
-        saveServiceState.execute(serviceState)
-        changeServiceStateInActivity()
-
-        timer = object: CountDownTimer(5000, 1000) {
-
-            override fun onTick(millisUntilFinished: Long) {
-                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
-            }
-
-            override fun onFinish() {
-                Log.e(TAG, "CountDownTimerFinished")
-            }
-        }.start()
     }
 
     override fun onDestroy() {
@@ -165,12 +148,39 @@ open class NetworkService : Service() {
     fun startService() {
         if (serviceState is ServiceState.Enabled)
             return
+
+        createServer()
+        createSmsReceiver()
+
+        val notification: Notification = createNotification()
+        startForeground(1, notification)
+
+        serviceState = ServiceState.Enabled
+        saveServiceState.execute(serviceState)
+        changeServiceStateInActivity()
+
+        timer = object: CountDownTimer(getServiceRemainingTime.execute(), 1000) {
+
+            override fun onTick(millisUntilFinished: Long) {
+                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
+
+            }
+
+            override fun onFinish() {
+                Log.e(TAG, "CountDownTimerFinished")
+                stopService()
+            }
+        }.start()
+
         Log.e(TAG, "Starting service task")
     }
 
     fun stopService() {
         Log.e(TAG, "Stopped service task")
         try {
+            serviceState = ServiceState.Disabled
+            saveServiceState.execute(serviceState)
+            changeServiceStateInActivity()
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 stopForeground(STOP_FOREGROUND_REMOVE)
             } else {
@@ -181,10 +191,6 @@ open class NetworkService : Service() {
             Log.e("TAG", "Service stopped without being started: ${e.message}")
             e.printStackTrace()
         }
-
-        serviceState = ServiceState.Disabled
-        saveServiceState.execute(serviceState)
-        changeServiceStateInActivity()
     }
 
     fun createServer() {
