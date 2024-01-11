@@ -16,13 +16,20 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
+import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.MotionEvent
+import android.view.View
 import android.widget.Button
 import android.widget.Toast
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import com.breakneck.domain.model.MessageDestinationUrl
+import com.breakneck.domain.model.MessageFullListVisibilityState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -144,6 +151,14 @@ class MainActivity : AppCompatActivity() {
                 boundNetworkService.updateServiceRemainingTimer()
         }
 
+        binding.messagesRecyclerView.enableClickListener()
+        binding.messagesRecyclerView.setOnClickListener {
+            vm.changeMessageFullListVisibilityState()
+        }
+        binding.closeMessageHistoryImageView.setOnClickListener {
+            vm.changeMessageFullListVisibilityState()
+        }
+
         vm.networkServiceIntent.observe(this) { intent ->
             when (intent) {
                 ServiceIntent.Disable -> {
@@ -226,6 +241,27 @@ class MainActivity : AppCompatActivity() {
 
         vm.serviceRemainingTime.observe(this) { time ->
             binding.serviceTimeRemainingTextView.text = time.toString()
+        }
+
+        vm.messageFullListVisibilityState.observe(this) { state ->
+            val constraintSet = ConstraintSet()
+            constraintSet.clone(binding.root)
+            when (state) {
+                MessageFullListVisibilityState.Gone -> {
+                    binding.closeMessageHistoryImageView.visibility = View.GONE
+                    binding.messagesListCardView.layoutParams.height = (200 * this.resources.displayMetrics.density).toInt()
+                    binding.stateCardView.visibility = View.VISIBLE
+                    binding.subscriptionCardView.visibility = View.VISIBLE
+                    constraintSet.clear(R.id.messagesListCardView, ConstraintSet.BOTTOM)
+                }
+                MessageFullListVisibilityState.Visible -> {
+                    binding.closeMessageHistoryImageView.visibility = View.VISIBLE
+                    binding.messagesListCardView.layoutParams.height = 0
+                    binding.stateCardView.visibility = View.GONE
+                    binding.subscriptionCardView.visibility = View.GONE
+                    constraintSet.connect(R.id.messagesListCardView, ConstraintSet.BOTTOM, R.id.rootView, ConstraintSet.BOTTOM, 16)
+                }
+            }
         }
 
         receiver = object : BroadcastReceiver() {
@@ -346,5 +382,16 @@ class MainActivity : AppCompatActivity() {
         override fun onServiceDisconnected(p0: ComponentName?) {
             Log.e(TAG, "onNetworkServiceDisconnected")
         }
+    }
+
+    fun RecyclerView.enableClickListener(){
+        val gesture = object : GestureDetector.SimpleOnGestureListener(){
+            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
+                this@enableClickListener.performClick()
+                return super.onSingleTapConfirmed(e)
+            }
+        }
+        val detector = GestureDetector(this.context, gesture)
+        this.setOnTouchListener { v, event -> detector.onTouchEvent(event) }
     }
 }

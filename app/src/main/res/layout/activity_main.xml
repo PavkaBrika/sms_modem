@@ -2,28 +2,41 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/rootView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:animateLayoutChanges="true"
     tools:context=".presentation.MainActivity">
 
     <TextView
         android:id="@+id/recyclerViewHint"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/messages_history"
-        android:textSize="26sp"
-        android:textColor="@color/black"
         android:layout_margin="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:text="@string/messages_history"
+        android:textColor="@color/black"
+        android:textSize="26sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/closeMessageHistoryImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:contentDescription="@string/close_list_of_messages_history"
+        android:src="@drawable/baseline_close_24"
+        app:layout_constraintBottom_toBottomOf="@+id/recyclerViewHint"
+        app:layout_constraintEnd_toEndOf="@+id/messagesListCardView"
+        app:layout_constraintTop_toTopOf="@+id/recyclerViewHint" />
+
     <com.google.android.material.card.MaterialCardView
-        android:id="@+id/materialCardView"
+        android:id="@+id/messagesListCardView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginHorizontal="16dp"
         android:layout_marginTop="8dp"
+        android:elevation="1dp"
         app:cardCornerRadius="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -31,17 +44,18 @@
 
         <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/messagesLinearLayout"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:orientation="vertical">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/messagesRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_message" />
 

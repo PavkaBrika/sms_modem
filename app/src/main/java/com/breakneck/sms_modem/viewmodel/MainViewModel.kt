@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
+import com.breakneck.domain.model.MessageFullListVisibilityState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -63,6 +64,10 @@ class MainViewModel(
     private val _serviceRemainingTimeInSec = MutableLiveData<Long>()
     val serviceRemainingTime: LiveData<Long>
         get() = _serviceRemainingTimeInSec
+
+    private val _messageFullListVisibilityState = MutableLiveData<MessageFullListVisibilityState>(MessageFullListVisibilityState.Gone)
+    val messageFullListVisibilityState: LiveData<MessageFullListVisibilityState>
+        get() = _messageFullListVisibilityState
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -140,6 +145,17 @@ class MainViewModel(
             }
             ServiceBoundState.Unbounded -> {
                 _networkServiceBoundState.value = ServiceBoundState.Bounded
+            }
+        }
+    }
+
+    fun changeMessageFullListVisibilityState() {
+        when (messageFullListVisibilityState.value!!) {
+            MessageFullListVisibilityState.Gone -> {
+                _messageFullListVisibilityState.value = MessageFullListVisibilityState.Visible
+            }
+            MessageFullListVisibilityState.Visible -> {
+                _messageFullListVisibilityState.value = MessageFullListVisibilityState.Gone
             }
         }
     }
