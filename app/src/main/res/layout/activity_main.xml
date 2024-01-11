@@ -23,7 +23,7 @@
         android:id="@+id/closeMessageHistoryImageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         android:contentDescription="@string/close_list_of_messages_history"
         android:src="@drawable/baseline_close_24"
         app:layout_constraintBottom_toBottomOf="@+id/recyclerViewHint"

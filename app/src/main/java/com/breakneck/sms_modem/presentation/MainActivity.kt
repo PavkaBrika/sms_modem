@@ -16,7 +16,6 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
-import android.util.TypedValue
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
@@ -92,6 +91,10 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(
                 applicationContext,
                 android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.POST_NOTIFICATIONS
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -101,7 +104,8 @@ class MainActivity : AppCompatActivity() {
                         android.Manifest.permission.READ_SMS,
                         android.Manifest.permission.RECEIVE_SMS,
                         android.Manifest.permission.SEND_SMS,
-                        android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                        android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
+                        android.Manifest.permission.POST_NOTIFICATIONS
                     ),
                     10
                 )
@@ -118,7 +122,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        binding.ipAddressTextView.text = getDeviceIpAddress()
+        if (vm.ipAddress.value == null)
+            getDeviceIpAddress()
+        vm.ipAddress.observe(this) { address ->
+            binding.ipAddressTextView.text = address
+        }
 
         vm.port.observe(this) { port ->
             binding.portTextView.text = getString(R.string.colon_port, port.value)
@@ -332,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun getDeviceIpAddress(): String {
+    private fun getDeviceIpAddress() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val ipRegex = "\\d+(\\.)\\d+(\\.)\\d+(\\.)\\d+".toRegex()
             val connectivityManager =
@@ -341,21 +349,22 @@ class MainActivity : AppCompatActivity() {
                 connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
             for (address in link.linkAddresses.indices) {
                 if (link.linkAddresses[address].address.hostAddress.matches(ipRegex)) {
-                    return link.linkAddresses[address].address.hostAddress
+                    vm.setDeviceIpAddress(link.linkAddresses[address].address.hostAddress)
                 }
             }
             //TODO MAKE ERROR IN THIS RETURN
-            return link.linkAddresses[0].address.hostAddress
+//            return link.linkAddresses[0].address.hostAddress
         } else {
             val wifiManager =
                 applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            return Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
+            vm.setDeviceIpAddress(Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress))
         }
     }
 
     private fun serviceAction(intent: ServiceIntent) {
         val serviceIntent = Intent(this, NetworkService::class.java)
-        serviceIntent.putExtra("intent", intent)
+        serviceIntent.action = intent.toString()
+        serviceIntent.putExtra("ipAddress", vm.ipAddress.value)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent)
         } else {

@@ -24,7 +24,7 @@
             android:layout_weight="1"
             android:text="cell number"
             android:textColor="@android:color/black"
-            android:textSize="20sp"
+            android:textSize="16sp"
             app:layout_constraintEnd_toStartOf="@+id/dateTextView"
             app:layout_constraintStart_toEndOf="@+id/senderImageView"
             app:layout_constraintTop_toTopOf="parent" />

@@ -69,6 +69,10 @@ class MainViewModel(
     val messageFullListVisibilityState: LiveData<MessageFullListVisibilityState>
         get() = _messageFullListVisibilityState
 
+    private val _ipAddress = MutableLiveData<String>()
+    val ipAddress: LiveData<String>
+        get() = _ipAddress
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
@@ -176,5 +180,9 @@ class MainViewModel(
 
     fun getServiceRemainingTime() {
         _serviceRemainingTimeInSec.value = getServiceRemainingTime.execute() / 1000
+    }
+
+    fun setDeviceIpAddress(address: String) {
+        _ipAddress.value = address
     }
 }

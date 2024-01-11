@@ -18,6 +18,7 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.telephony.SmsManager
 import android.util.Log
+import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.Sender
@@ -29,6 +30,7 @@ import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
+import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.presentation.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
 import io.ktor.application.call
@@ -71,6 +73,7 @@ open class NetworkService : Service() {
     private lateinit var smsReceiver: SMSBroadcastReceiver
     private lateinit var intentFilter: IntentFilter
     private lateinit var timer: CountDownTimer
+    private var ipAddress: String? = null
 
     val TAG = "NetworkService"
 
@@ -92,18 +95,13 @@ open class NetworkService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.e(TAG, "onStartCommand executed with startId: $startId")
         if (intent != null) {
-            val extras = intent.extras
+            val action = intent.action
+            ipAddress = intent.extras?.getString("ipAddress").toString()
             try {
-                val serviceIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    extras!!.getSerializable("intent", ServiceIntent::class.java)
-                } else {
-                    extras!!.getSerializable("intent") as ServiceIntent
-                }
-                Log.e(TAG, "using a intent with $serviceIntent")
-                when (serviceIntent) {
-                    ServiceIntent.Disable -> stopService()
-                    ServiceIntent.Enable -> startService()
-                    null -> {}
+                Log.e(TAG, "using a intent with $action")
+                when (action) {
+                    ServiceIntent.Disable.toString() -> stopService()
+                    ServiceIntent.Enable.toString() -> startService()
                 }
             } catch (e: NullPointerException) {
                 e.printStackTrace()
@@ -235,8 +233,6 @@ open class NetworkService : Service() {
                 it.description = "SMS Service channel"
                 it.enableLights(true)
                 it.lightColor = Color.RED
-//                it.enableVibration(true)
-//                it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
                 it
             }
             notificationManager.createNotificationChannel(channel)
@@ -253,18 +249,18 @@ open class NetworkService : Service() {
                     )
                 }
 
-        val builder: Notification.Builder =
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
-                Notification.Builder(this, notificationChannelId)
-            else
-                Notification.Builder(this)
-
-        val notification = builder
+        return NotificationCompat.Builder(this, notificationChannelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("SMS Service")
-            .setContentText("SMS Service is running")
+            .setContentText(
+                if (ipAddress != null) {
+                    "SMS Service is running with ip $ipAddress:${getPort.execute().value}"
+                } else {
+                    "SMS Service is running"
+                }
+            )
             .setContentIntent(pendingIntent)
             .build()
-        return notification
     }
 
     private fun sendSMS(phoneNumber: String, message: String) {
