@@ -73,7 +73,10 @@ open class NetworkService : Service() {
     private lateinit var smsReceiver: SMSBroadcastReceiver
     private lateinit var intentFilter: IntentFilter
     private lateinit var timer: CountDownTimer
-    private var ipAddress: String? = null
+    private lateinit var ipAddress: String
+    private lateinit var notificationManager: NotificationManager
+
+    val notificationChannelId = "SMS_SERVICE_CHANNEL"
 
     val TAG = "NetworkService"
 
@@ -97,6 +100,8 @@ open class NetworkService : Service() {
         if (intent != null) {
             val action = intent.action
             ipAddress = intent.extras?.getString("ipAddress").toString()
+            if ((::ipAddress.isInitialized) && (ipAddress != "null"))
+                notificationManager.notify(1, createNotification())
             try {
                 Log.e(TAG, "using a intent with $action")
                 when (action) {
@@ -118,6 +123,7 @@ open class NetworkService : Service() {
 //        AndroidInjection.inject(this)
         broadcaster = LocalBroadcastManager.getInstance(this)
 
+        createNotificationChannel()
         val notification: Notification = createNotification()
         startForeground(1, notification)
     }
@@ -209,7 +215,8 @@ open class NetworkService : Service() {
                             System.currentTimeMillis() / 1000,
                             getCurrentLocale(applicationContext)
                         )
-                        call.respondText("Date $date,Message $message sent to $phone")
+                        //TODO return json code
+                        call.respondText("$date: Message $message sent to $phone")
                     } else {
                         call.respondText("Error")
                     }
@@ -219,12 +226,11 @@ open class NetworkService : Service() {
         Log.e(TAG, "Server created")
     }
 
-    fun createNotification(): Notification {
-        val notificationChannelId = "SMS_SERVICE_CHANNEL"
+    fun createNotificationChannel() {
+        notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             val channel = NotificationChannel(
                 notificationChannelId,
                 "SMS service",
@@ -238,7 +244,10 @@ open class NetworkService : Service() {
             notificationManager.createNotificationChannel(channel)
         }
 
-        val pendingIntent: PendingIntent =
+    }
+
+    fun createNotification(): Notification {
+        val notificationClickPendingIntent =
             Intent(this, MainActivity::class.java)
                 .let { notificationIntent ->
                     PendingIntent.getActivity(
@@ -249,17 +258,34 @@ open class NetworkService : Service() {
                     )
                 }
 
+        val notificationButtonPendingIntent =
+                Intent(this, NetworkService::class.java)
+                    .apply { action = ServiceIntent.Disable.toString() }
+                    .let { notificationIntent ->
+                        PendingIntent.getService(
+                            this,
+                            0,
+                            notificationIntent,
+                            PendingIntent.FLAG_MUTABLE
+                        )
+                    }
+
         return NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentTitle("SMS Service")
             .setContentText(
-                if (ipAddress != null) {
-                    "SMS Service is running with ip $ipAddress:${getPort.execute().value}"
+                if (this::ipAddress.isInitialized) {
+                    getString(
+                        R.string.sms_service_is_running_with_ip,
+                        ipAddress,
+                        getPort.execute().value.toString()
+                    )
                 } else {
-                    "SMS Service is running"
+                    getString(R.string.sms_service_is_running)
                 }
             )
-            .setContentIntent(pendingIntent)
+            .addAction(R.drawable.baseline_close_24, "Stop service", notificationButtonPendingIntent)
+            .setContentIntent(notificationClickPendingIntent)
             .build()
     }
 
