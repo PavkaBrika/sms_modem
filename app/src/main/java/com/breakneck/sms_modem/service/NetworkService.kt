@@ -28,6 +28,7 @@ import com.breakneck.domain.usecase.message.SaveSentMessage
 import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
+import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.presentation.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
 import io.ktor.application.call
@@ -42,6 +43,7 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
 import java.lang.StringBuilder
+import java.util.Locale
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_REMAINING_RESULT"
@@ -205,7 +207,11 @@ open class NetworkService : Service() {
                     val message = call.parameters["message"]
                     if ((phone != "") && (message != "")) {
                         sendSMS(phoneNumber = phone!!, message = message!!)
-                        call.respondText("Message $message sent to $phone")
+                        val date = FromTimestampToDateString().execute(
+                            System.currentTimeMillis() / 1000,
+                            getCurrentLocale(applicationContext)
+                        )
+                        call.respondText("Date $date,Message $message sent to $phone")
                     } else {
                         call.respondText("Error")
                     }
@@ -273,7 +279,17 @@ open class NetworkService : Service() {
         for (text in messageParts) {
             messageText.append("$text ")
         }
-        saveSentMessage.execute(Message(cellNumber = phoneNumber, text = messageText.toString(), sender = Sender.Server))
+        saveSentMessage.execute(
+            Message(
+                cellNumber = phoneNumber,
+                text = messageText.toString(),
+                date = FromTimestampToDateString().execute(
+                    System.currentTimeMillis() / 1000,
+                    getCurrentLocale(applicationContext)
+                ),
+                sender = Sender.Server
+            )
+        )
         Log.e(TAG, "Message sent")
     }
 
@@ -288,7 +304,9 @@ open class NetworkService : Service() {
         val intent = Intent("android.provider.Telephony.SMS_RECEIVED")
         val infos: List<ResolveInfo> = packageManager.queryBroadcastReceivers(intent, 0)
         for (info in infos) {
-            Log.i("TAG", "Receiver name:" + info.activityInfo.name.toString() + "; priority=" + info.priority
+            Log.i(
+                "TAG",
+                "Receiver name:" + info.activityInfo.name.toString() + "; priority=" + info.priority
             )
         }
     }
@@ -313,7 +331,7 @@ open class NetworkService : Service() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
-        timer = object: CountDownTimer(getServiceRemainingTime.execute(), 1000) {
+        timer = object : CountDownTimer(getServiceRemainingTime.execute(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
 //                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
@@ -327,6 +345,14 @@ open class NetworkService : Service() {
                 stopService()
             }
         }.start()
+    }
+
+    private fun getCurrentLocale(context: Context): Locale {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            context.resources.configuration.locales.get(0);
+        } else {
+            context.resources.configuration.locale;
+        }
     }
 
     inner class NetworkServiceBinder : Binder() {

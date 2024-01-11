@@ -40,7 +40,7 @@ class MessageAdapter(private val messagesList: List<Message>) :
             }
         )
         //TODO ADD NEW FIELD DATE TO MESSAGE AND SHOW IT IN THIS PLACE
-        holder.dateTextView.text = message.sender.toString()
+        holder.dateTextView.text = message.date
         holder.textTextView.text = message.text
     }
 }

@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.content.res.Resources.Theme
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.wifi.WifiManager
@@ -18,11 +17,9 @@ import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
 import android.widget.Button
-import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.breakneck.domain.model.MessageDestinationUrl
@@ -40,8 +37,6 @@ import com.breakneck.sms_modem.viewmodel.MainViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
@@ -92,16 +87,28 @@ class MainActivity : AppCompatActivity() {
                 android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
             ) != PackageManager.PERMISSION_GRANTED
         ) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    android.Manifest.permission.READ_SMS,
-                    android.Manifest.permission.RECEIVE_SMS,
-                    android.Manifest.permission.SEND_SMS,
-                    android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
-                ),
-                10
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.READ_SMS,
+                        android.Manifest.permission.RECEIVE_SMS,
+                        android.Manifest.permission.SEND_SMS,
+                        android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                    ),
+                    10
+                )
+            } else {
+                ActivityCompat.requestPermissions(
+                    this,
+                    arrayOf(
+                        android.Manifest.permission.READ_SMS,
+                        android.Manifest.permission.RECEIVE_SMS,
+                        android.Manifest.permission.SEND_SMS,
+                    ),
+                    10
+                )
+            }
         }
 
         binding.ipAddressTextView.text = getDeviceIpAddress()
@@ -202,7 +209,7 @@ class MainActivity : AppCompatActivity() {
 
                 ServiceState.Loading -> {
                     //TODO do something animation on loading
-                    binding.stateTextView.text = "Loading..."
+                    binding.stateTextView.text = getString(R.string.loading)
                     binding.settingsButton.isEnabled = false
                     binding.activateServiceButton.isEnabled = false
                 }
@@ -225,7 +232,7 @@ class MainActivity : AppCompatActivity() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent!!.action.equals(SERVICE_STATE_RESULT))
                     vm.changeServiceIntent()
-                else if (intent!!.action.equals(SERVICE_TIME_REMAINING_RESULT)) {
+                else if (intent.action.equals(SERVICE_TIME_REMAINING_RESULT)) {
                     vm.getServiceRemainingTime()
                 }
             }

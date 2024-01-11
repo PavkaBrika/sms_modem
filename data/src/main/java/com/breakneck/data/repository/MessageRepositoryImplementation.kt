@@ -18,7 +18,11 @@ class MessageRepositoryImplementation(
     override suspend fun sendMessageToServer(url: MessageDestinationUrl, message: Message) {
         networkStorage.sendMessageToServer(
             url = MessageDestinationUrlData(url = url.url),
-            message = MessageData(cellNumber = message.cellNumber, text = message.text)
+            message = MessageData(
+                cellNumber = message.cellNumber,
+                text = message.text,
+                date = message.date
+            )
         )
     }
 
@@ -27,6 +31,7 @@ class MessageRepositoryImplementation(
             message = MessageData(
                 cellNumber = message.cellNumber,
                 text = message.text,
+                date = message.date,
                 sender = when (message.sender) {
                     Sender.Phone -> SenderData.Phone
                     Sender.Server -> SenderData.Server
@@ -39,7 +44,11 @@ class MessageRepositoryImplementation(
 
     override fun getLastSentMessage(): Message {
         databaseStorage.getLastSentMessage().also {
-            return Message(cellNumber = it.cellNumber, text = it.text)
+            return Message(
+                cellNumber = it.cellNumber,
+                text = it.text,
+                date = it.date
+            )
         }
     }
 
@@ -49,6 +58,7 @@ class MessageRepositoryImplementation(
             Message(
                 cellNumber = it.cellNumber,
                 text = it.text,
+                date = it.date,
                 sender = when (it.sender) {
                     SenderData.Phone -> Sender.Phone
                     SenderData.Server -> Sender.Server
