@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.MessageFullListVisibilityState
+import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -37,6 +38,7 @@ import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
+import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
 import com.breakneck.sms_modem.service.NetworkService
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
@@ -64,6 +66,7 @@ class MainActivity : AppCompatActivity() {
     private val vm by viewModel<MainViewModel>()
 
     lateinit var boundNetworkService: NetworkService
+    lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     lateinit var receiver: BroadcastReceiver
 
@@ -227,7 +230,13 @@ class MainActivity : AppCompatActivity() {
                             R.color.disabled_card
                         )
                     )
-                    vm.setDeviceIpAddress(address = IpAddress(value = getDeviceIpAddress()))
+                    try {
+                        vm.setDeviceIpAddress(address = IpAddress(value = getDeviceIpAddress()))
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        vm.changeNetworkState()
+                    }
+
                 }
 
                 ServiceState.Loading -> {
@@ -272,6 +281,38 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        vm.networkState.observe(this) { state ->
+            when (state) {
+                NetworkState.Available -> {
+
+                }
+                NetworkState.Unavailable -> {
+                    binding.stateTextView.text = getString(R.string.network_connection_unavailable)
+                    binding.settingsButton.apply {
+                        isEnabled = true
+                        setStrokeColorResource(R.color.disabled_button)
+                        setRippleColorResource(R.color.disabled_button)
+                    }
+                    binding.activateServiceButton.apply {
+                        isEnabled = false
+                        setBackgroundColor(
+                            ContextCompat.getColor(
+                                this@MainActivity,
+                                R.color.disabled_button
+                            )
+                        )
+                        setRippleColorResource(R.color.black)
+                    }
+                    binding.stateCardView.setCardBackgroundColor(
+                        ContextCompat.getColor(
+                            this,
+                            R.color.disabled_card
+                        )
+                    )
+                }
+            }
+        }
+
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
                 if (intent!!.action.equals(SERVICE_STATE_RESULT))
@@ -289,6 +330,7 @@ class MainActivity : AppCompatActivity() {
             .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(receiver, IntentFilter(SERVICE_TIME_REMAINING_RESULT))
+
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
             val intent = Intent(this, NetworkService::class.java)
             bindService(intent, networkServiceConnection, 0)

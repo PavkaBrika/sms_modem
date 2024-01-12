@@ -9,6 +9,7 @@ import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.MessageFullListVisibilityState
+import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -75,6 +76,10 @@ class MainViewModel(
     private val _serverIpAddress = MutableLiveData<IpAddress>()
     val serverIpAddress: LiveData<IpAddress>
         get() = _serverIpAddress
+
+    private val _networkState = MutableLiveData<NetworkState>(NetworkState.Available)
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -194,5 +199,14 @@ class MainViewModel(
 
     fun setDeviceIpAddress(address: IpAddress) {
         _serverIpAddress.value = address
+    }
+
+    fun changeNetworkState() {
+        when (_networkState.value!!) {
+            NetworkState.Available ->
+                _networkState.value = NetworkState.Unavailable
+            NetworkState.Unavailable ->
+                _networkState.value = NetworkState.Available
+        }
     }
 }
