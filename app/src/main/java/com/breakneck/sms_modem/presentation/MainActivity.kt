@@ -122,8 +122,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        if (vm.ipAddress.value == null)
-            getDeviceIpAddress()
         vm.ipAddress.observe(this) { address ->
             binding.ipAddressTextView.text = address
         }
@@ -228,6 +226,7 @@ class MainActivity : AppCompatActivity() {
                             R.color.disabled_card
                         )
                     )
+                    getDeviceIpAddress()
                 }
 
                 ServiceState.Loading -> {
@@ -315,7 +314,7 @@ class MainActivity : AppCompatActivity() {
         portTextInputLayout!!.editText!!.setText(vm.port.value!!.value.toString())
 
         val urlTextInputLayout = dialog.findViewById<TextInputLayout>(R.id.urlTextInput)
-        urlTextInputLayout!!.editText!!.setText(vm.messageDestinationUrl.value!!.url)
+        urlTextInputLayout!!.editText!!.setText(vm.messageDestinationUrl.value!!.value)
 
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
             val portInputString = portTextInputLayout.editText!!.text.toString()

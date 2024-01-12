@@ -20,6 +20,7 @@ import android.telephony.SmsManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.breakneck.domain.model.DeviceIpAddress
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.Sender
 import com.breakneck.domain.model.ServiceIntent
@@ -29,6 +30,8 @@ import com.breakneck.domain.usecase.message.SaveSentMessage
 import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
+import com.breakneck.domain.usecase.settings.GetDeviceIpAddress
+import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.presentation.MainActivity
@@ -66,6 +69,7 @@ open class NetworkService : Service() {
     val saveSentMessage: SaveSentMessage by inject()
     val getServiceRemainingTime: GetServiceRemainingTime by inject()
     val saveServiceRemainingTime: SaveServiceRemainingTime by inject()
+    val saveDeviceIpAddress: SaveDeviceIpAddress by inject()
 
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
@@ -100,8 +104,10 @@ open class NetworkService : Service() {
         if (intent != null) {
             val action = intent.action
             ipAddress = intent.extras?.getString("ipAddress").toString()
-            if ((::ipAddress.isInitialized) && (ipAddress != "null"))
+            if ((::ipAddress.isInitialized) && (ipAddress != "null")) {
                 notificationManager.notify(1, createNotification())
+                saveDeviceIpAddress.execute(ipAddress = DeviceIpAddress(ipAddress))
+            }
             try {
                 Log.e(TAG, "using a intent with $action")
                 when (action) {
@@ -140,6 +146,7 @@ open class NetworkService : Service() {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+        saveDeviceIpAddress.execute(ipAddress = DeviceIpAddress(value = ""))
         Log.e(TAG, "Service destroyed")
     }
 

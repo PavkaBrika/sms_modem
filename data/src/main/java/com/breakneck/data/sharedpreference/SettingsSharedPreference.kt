@@ -1,6 +1,7 @@
 package com.breakneck.data.sharedpreference
 
 import android.content.Context
+import com.breakneck.data.entity.DeviceIpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
 import com.breakneck.data.storage.SettingsStorage
@@ -8,6 +9,7 @@ import com.breakneck.data.storage.SettingsStorage
 const val SETTINGS_SHARED_PREFERENCES_NAME = "SETTINGS_SHARED_PREFERENCES"
 const val PORT = "PORT"
 const val MESSAGE_DESTINATION_URL = "MESSAGE_DESTINATION_URL"
+const val DEVICE_IP_ADDRESS = "DEVICE_IP_ADDRESS"
 
 class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
@@ -22,10 +24,18 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
     }
 
     override fun saveMessageDestinationUrl(url: MessageDestinationUrlData) {
-        sharedPreference.edit().putString(MESSAGE_DESTINATION_URL, url.url).apply()
+        sharedPreference.edit().putString(MESSAGE_DESTINATION_URL, url.value).apply()
     }
 
     override fun getMessageDestinationUrl(): MessageDestinationUrlData {
-        return MessageDestinationUrlData(url = sharedPreference.getString(MESSAGE_DESTINATION_URL, "")!!)
+        return MessageDestinationUrlData(value = sharedPreference.getString(MESSAGE_DESTINATION_URL, "")!!)
+    }
+
+    override fun saveDeviceIpAddress(ipAddress: DeviceIpAddressData) {
+        sharedPreference.edit().putString(DEVICE_IP_ADDRESS, ipAddress.value).apply()
+    }
+
+    override fun getDeviceIpAddress(): DeviceIpAddressData {
+        return DeviceIpAddressData(value = sharedPreference.getString(DEVICE_IP_ADDRESS, "")!!)
     }
 }

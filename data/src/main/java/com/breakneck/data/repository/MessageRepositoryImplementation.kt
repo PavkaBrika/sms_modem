@@ -17,7 +17,7 @@ class MessageRepositoryImplementation(
 
     override suspend fun sendMessageToServer(url: MessageDestinationUrl, message: Message) {
         networkStorage.sendMessageToServer(
-            url = MessageDestinationUrlData(url = url.url),
+            url = MessageDestinationUrlData(value = url.value),
             message = MessageData(
                 cellNumber = message.cellNumber,
                 text = message.text,

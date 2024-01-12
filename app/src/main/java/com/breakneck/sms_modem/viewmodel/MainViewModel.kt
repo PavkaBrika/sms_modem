@@ -18,6 +18,7 @@ import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.service.GetServiceState
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
+import com.breakneck.domain.usecase.settings.GetDeviceIpAddress
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import kotlinx.coroutines.Dispatchers
@@ -32,7 +33,8 @@ class MainViewModel(
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
     private val getAllMessages: GetAllMessages,
     private val saveServiceRemainingTime: SaveServiceRemainingTime,
-    private val getServiceRemainingTime: GetServiceRemainingTime
+    private val getServiceRemainingTime: GetServiceRemainingTime,
+    private val getDeviceIpAddress: GetDeviceIpAddress
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -80,6 +82,7 @@ class MainViewModel(
         changeServiceIntent()
         getAllMessages()
         getServiceRemainingTime()
+        getDeviceIpAddress()
     }
 
     override fun onCleared() {
@@ -180,6 +183,12 @@ class MainViewModel(
 
     fun getServiceRemainingTime() {
         _serviceRemainingTimeInSec.value = getServiceRemainingTime.execute() / 1000
+    }
+
+    fun getDeviceIpAddress() {
+        val ipAddress = getDeviceIpAddress.execute().value
+        if (!ipAddress.equals(""))
+            _ipAddress.value = ipAddress
     }
 
     fun setDeviceIpAddress(address: String) {

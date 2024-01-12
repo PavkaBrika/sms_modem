@@ -8,7 +8,7 @@ class Network(private val networkApi: NetworkApi): NetworkStorage {
 
     override suspend fun sendMessageToServer(url: MessageDestinationUrlData, message: MessageData) {
         networkApi.pushMessage(
-            url = url.url,
+            url = url.value,
             message.cellNumber,
             message.text
         )
