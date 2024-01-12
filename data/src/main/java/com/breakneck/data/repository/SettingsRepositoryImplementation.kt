@@ -1,10 +1,10 @@
 package com.breakneck.data.repository
 
-import com.breakneck.data.entity.DeviceIpAddressData
+import com.breakneck.data.entity.IpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
 import com.breakneck.data.storage.SettingsStorage
-import com.breakneck.domain.model.DeviceIpAddress
+import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.repository.SettingsRepository
@@ -27,11 +27,11 @@ class SettingsRepositoryImplementation(private val settingsStorage: SettingsStor
         return MessageDestinationUrl(value = settingsStorage.getMessageDestinationUrl().value)
     }
 
-    override fun saveDeviceIpAddress(ipAddress: DeviceIpAddress) {
-        settingsStorage.saveDeviceIpAddress(DeviceIpAddressData(ipAddress.value))
+    override fun saveDeviceIpAddress(ipAddress: IpAddress) {
+        settingsStorage.saveDeviceIpAddress(IpAddressData(ipAddress.value))
     }
 
-    override fun getDeviceIpAddress(): DeviceIpAddress {
-        return DeviceIpAddress(value = settingsStorage.getDeviceIpAddress().value)
+    override fun getDeviceIpAddress(): IpAddress {
+        return IpAddress(value = settingsStorage.getDeviceIpAddress().value)
     }
 }

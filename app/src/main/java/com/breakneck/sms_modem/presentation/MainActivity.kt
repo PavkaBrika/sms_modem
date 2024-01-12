@@ -27,6 +27,7 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.MessageFullListVisibilityState
 import com.breakneck.domain.model.Port
@@ -122,8 +123,8 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        vm.ipAddress.observe(this) { address ->
-            binding.ipAddressTextView.text = address
+        vm.serverIpAddress.observe(this) { address ->
+            binding.ipAddressTextView.text = address.value
         }
 
         vm.port.observe(this) { port ->
@@ -226,7 +227,7 @@ class MainActivity : AppCompatActivity() {
                             R.color.disabled_card
                         )
                     )
-                    getDeviceIpAddress()
+                    vm.setDeviceIpAddress(address = IpAddress(value = getDeviceIpAddress()))
                 }
 
                 ServiceState.Loading -> {
@@ -339,7 +340,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun getDeviceIpAddress() {
+    private fun getDeviceIpAddress(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val ipRegex = "\\d+(\\.)\\d+(\\.)\\d+(\\.)\\d+".toRegex()
             val connectivityManager =
@@ -348,22 +349,22 @@ class MainActivity : AppCompatActivity() {
                 connectivityManager.getLinkProperties(connectivityManager.activeNetwork) as LinkProperties
             for (address in link.linkAddresses.indices) {
                 if (link.linkAddresses[address].address.hostAddress.matches(ipRegex)) {
-                    vm.setDeviceIpAddress(link.linkAddresses[address].address.hostAddress)
+                    return link.linkAddresses[address].address.hostAddress
                 }
             }
             //TODO MAKE ERROR IN THIS RETURN
-//            return link.linkAddresses[0].address.hostAddress
+            return link.linkAddresses[0].address.hostAddress
         } else {
             val wifiManager =
                 applicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
-            vm.setDeviceIpAddress(Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress))
+            return Formatter.formatIpAddress(wifiManager.connectionInfo.ipAddress)
         }
     }
 
     private fun serviceAction(intent: ServiceIntent) {
         val serviceIntent = Intent(this, NetworkService::class.java)
         serviceIntent.action = intent.toString()
-        serviceIntent.putExtra("ipAddress", vm.ipAddress.value)
+        serviceIntent.putExtra("ipAddress", vm.serverIpAddress.value?.value.toString())
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(serviceIntent)
         } else {

@@ -1,7 +1,7 @@
 package com.breakneck.data.sharedpreference
 
 import android.content.Context
-import com.breakneck.data.entity.DeviceIpAddressData
+import com.breakneck.data.entity.IpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
 import com.breakneck.data.storage.SettingsStorage
@@ -31,11 +31,11 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
         return MessageDestinationUrlData(value = sharedPreference.getString(MESSAGE_DESTINATION_URL, "")!!)
     }
 
-    override fun saveDeviceIpAddress(ipAddress: DeviceIpAddressData) {
+    override fun saveDeviceIpAddress(ipAddress: IpAddressData) {
         sharedPreference.edit().putString(DEVICE_IP_ADDRESS, ipAddress.value).apply()
     }
 
-    override fun getDeviceIpAddress(): DeviceIpAddressData {
-        return DeviceIpAddressData(value = sharedPreference.getString(DEVICE_IP_ADDRESS, "")!!)
+    override fun getDeviceIpAddress(): IpAddressData {
+        return IpAddressData(value = sharedPreference.getString(DEVICE_IP_ADDRESS, "")!!)
     }
 }

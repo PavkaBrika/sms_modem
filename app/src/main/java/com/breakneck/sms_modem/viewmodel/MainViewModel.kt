@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.MessageFullListVisibilityState
@@ -71,9 +72,9 @@ class MainViewModel(
     val messageFullListVisibilityState: LiveData<MessageFullListVisibilityState>
         get() = _messageFullListVisibilityState
 
-    private val _ipAddress = MutableLiveData<String>()
-    val ipAddress: LiveData<String>
-        get() = _ipAddress
+    private val _serverIpAddress = MutableLiveData<IpAddress>()
+    val serverIpAddress: LiveData<IpAddress>
+        get() = _serverIpAddress
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -82,7 +83,7 @@ class MainViewModel(
         changeServiceIntent()
         getAllMessages()
         getServiceRemainingTime()
-        getDeviceIpAddress()
+        getServiceIpAddress()
     }
 
     override fun onCleared() {
@@ -185,13 +186,13 @@ class MainViewModel(
         _serviceRemainingTimeInSec.value = getServiceRemainingTime.execute() / 1000
     }
 
-    fun getDeviceIpAddress() {
-        val ipAddress = getDeviceIpAddress.execute().value
+    fun getServiceIpAddress() {
+        val ipAddress = getDeviceIpAddress.execute()
         if (!ipAddress.equals(""))
-            _ipAddress.value = ipAddress
+            _serverIpAddress.value = ipAddress
     }
 
-    fun setDeviceIpAddress(address: String) {
-        _ipAddress.value = address
+    fun setDeviceIpAddress(address: IpAddress) {
+        _serverIpAddress.value = address
     }
 }
