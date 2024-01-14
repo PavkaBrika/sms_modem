@@ -6,6 +6,6 @@ import com.breakneck.domain.repository.MessageRepository
 class GetAllMessages(private val messageRepository: MessageRepository) {
 
     fun execute(): List<Message> {
-        return messageRepository.getAllMessages()
+        return messageRepository.getAllMessages().asReversed()
     }
 }

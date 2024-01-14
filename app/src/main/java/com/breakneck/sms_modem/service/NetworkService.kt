@@ -51,6 +51,8 @@ import java.util.Locale
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_REMAINING_RESULT"
+const val SERVICE_NEW_MESSAGE = "com.breakneck.sms_modem.SERVICE_NEW_MESSAGE"
+const val NEW_MESSAGE = "com.breakneck.sms_modem.NEW_MESSAGE"
 
 open class NetworkService : Service() {
 
@@ -307,18 +309,18 @@ open class NetworkService : Service() {
         for (text in messageParts) {
             messageText.append("$text ")
         }
-        saveSentMessage.execute(
-            Message(
-                cellNumber = phoneNumber,
-                text = messageText.toString(),
-                date = FromTimestampToDateString().execute(
-                    System.currentTimeMillis() / 1000,
-                    getCurrentLocale(applicationContext)
-                ),
-                sender = Sender.Server
-            )
+        val message = Message(
+            cellNumber = phoneNumber,
+            text = messageText.toString(),
+            date = FromTimestampToDateString().execute(
+                System.currentTimeMillis() / 1000,
+                getCurrentLocale(applicationContext)
+            ),
+            sender = Sender.Server
         )
+        saveSentMessage.execute(message = message)
         Log.e(TAG, "Message sent")
+        addMessageItemToRecyclerView(item = message)
     }
 
     private fun createSmsReceiver() {
@@ -348,6 +350,14 @@ open class NetworkService : Service() {
 
     fun updateServiceTimeRemainingInActivity() {
         Intent(SERVICE_TIME_REMAINING_RESULT)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
+    fun addMessageItemToRecyclerView(item: Message) {
+        Intent(SERVICE_NEW_MESSAGE)
+            .putExtra(NEW_MESSAGE, item)
             .also {
                 broadcaster.sendBroadcast(it)
             }

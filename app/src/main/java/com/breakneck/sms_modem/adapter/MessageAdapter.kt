@@ -10,7 +10,7 @@ import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.Sender
 import com.breakneck.sms_modem.R
 
-class MessageAdapter(private val messagesList: List<Message>) :
+class MessageAdapter(private val messagesList: MutableList<Message>) :
     RecyclerView.Adapter<MessageAdapter.MessageViewHolder>() {
 
     class MessageViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -18,6 +18,11 @@ class MessageAdapter(private val messagesList: List<Message>) :
         val dateTextView = itemView.findViewById<TextView>(R.id.dateTextView)
         val senderImageView = itemView.findViewById<ImageView>(R.id.senderImageView)
         val textTextView = itemView.findViewById<TextView>(R.id.textTextView)
+    }
+
+    fun addItem(item: Message) {
+        messagesList.add(item)
+        notifyItemInserted(messagesList.size - 1)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {

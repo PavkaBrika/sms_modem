@@ -51,6 +51,12 @@
             </intent-filter>
         </service>
 
+<!--        <receiver android:name=".receiver.NetworkChangeReceiver">-->
+<!--            <intent-filter>-->
+<!--                <action android:name="W"-->
+<!--            </intent-filter>-->
+<!--        </receiver>-->
+
     </application>
 
 </manifest>

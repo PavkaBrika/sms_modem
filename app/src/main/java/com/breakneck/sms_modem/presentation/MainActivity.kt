@@ -39,7 +39,9 @@ import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
+import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
 import com.breakneck.sms_modem.service.NetworkService
+import com.breakneck.sms_modem.service.SERVICE_NEW_MESSAGE
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.viewmodel.MainViewModel
@@ -66,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     private val vm by viewModel<MainViewModel>()
 
     lateinit var boundNetworkService: NetworkService
-    lateinit var networkChangeReceiver: NetworkChangeReceiver
+//    lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     lateinit var receiver: BroadcastReceiver
 
@@ -250,10 +252,9 @@ class MainActivity : AppCompatActivity() {
 
         vm.messageList.observe(this) { list ->
             binding.messagesRecyclerView.apply {
-                adapter = MessageAdapter(messagesList = list)
+                adapter = MessageAdapter(messagesList = list.toMutableList())
                 addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
             }
-
         }
 
         vm.serviceRemainingTime.observe(this) { time ->
@@ -281,37 +282,37 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        vm.networkState.observe(this) { state ->
-            when (state) {
-                NetworkState.Available -> {
-
-                }
-                NetworkState.Unavailable -> {
-                    binding.stateTextView.text = getString(R.string.network_connection_unavailable)
-                    binding.settingsButton.apply {
-                        isEnabled = true
-                        setStrokeColorResource(R.color.disabled_button)
-                        setRippleColorResource(R.color.disabled_button)
-                    }
-                    binding.activateServiceButton.apply {
-                        isEnabled = false
-                        setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@MainActivity,
-                                R.color.disabled_button
-                            )
-                        )
-                        setRippleColorResource(R.color.black)
-                    }
-                    binding.stateCardView.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.disabled_card
-                        )
-                    )
-                }
-            }
-        }
+//        vm.networkState.observe(this) { state ->
+//            when (state) {
+//                NetworkState.Available -> {
+//
+//                }
+//                NetworkState.Unavailable -> {
+//                    binding.stateTextView.text = getString(R.string.network_connection_unavailable)
+//                    binding.settingsButton.apply {
+//                        isEnabled = true
+//                        setStrokeColorResource(R.color.disabled_button)
+//                        setRippleColorResource(R.color.disabled_button)
+//                    }
+//                    binding.activateServiceButton.apply {
+//                        isEnabled = false
+//                        setBackgroundColor(
+//                            ContextCompat.getColor(
+//                                this@MainActivity,
+//                                R.color.disabled_button
+//                            )
+//                        )
+//                        setRippleColorResource(R.color.black)
+//                    }
+//                    binding.stateCardView.setCardBackgroundColor(
+//                        ContextCompat.getColor(
+//                            this,
+//                            R.color.disabled_card
+//                        )
+//                    )
+//                }
+//            }
+//        }
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -319,6 +320,10 @@ class MainActivity : AppCompatActivity() {
                     vm.changeServiceIntent()
                 else if (intent.action.equals(SERVICE_TIME_REMAINING_RESULT)) {
                     vm.getServiceRemainingTime()
+                } else if (intent.action.equals(SERVICE_NEW_MESSAGE)) {
+                    vm.getAllMessages()
+                } else if (intent.action.equals(RECEIVER_NEW_MESSAGE)) {
+                    vm.getAllMessages()
                 }
             }
         }
@@ -326,10 +331,12 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
-        LocalBroadcastManager.getInstance(this)
-            .registerReceiver(receiver, IntentFilter(SERVICE_TIME_REMAINING_RESULT))
+        LocalBroadcastManager.getInstance(this).apply {
+            registerReceiver(receiver, IntentFilter(SERVICE_STATE_RESULT))
+            registerReceiver(receiver, IntentFilter(SERVICE_TIME_REMAINING_RESULT))
+            registerReceiver(receiver, IntentFilter(SERVICE_NEW_MESSAGE))
+            registerReceiver(receiver, IntentFilter(RECEIVER_NEW_MESSAGE))
+        }
 
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
             val intent = Intent(this, NetworkService::class.java)
