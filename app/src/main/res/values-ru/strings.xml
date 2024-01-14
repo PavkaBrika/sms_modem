@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sms_modem</string>
+    <string name="settings">Настройки</string>
+    <string name="enable">Включить</string>
+    <string name="disable">Выключить</string>
+    <string name="enabled">Включен</string>
+    <string name="disabled">Выключен</string>
+    <string name="messages_history">История сообщений</string>
+    <string name="subscribe">Подписаться</string>
+    <string name="loading">Загрузка...</string>
+    <string name="close_list_of_messages_history">Закрыть список сообщений</string>
+    <string name="sms_service_is_running_with_ip">SMS Сервис работает на IP %1$s:%2$s</string>
+    <string name="sms_service_is_running">SMS Сервис работает</string>
+    <string name="network_connection_unavailable">Подключение к интернету недоступно</string>
+</resources>

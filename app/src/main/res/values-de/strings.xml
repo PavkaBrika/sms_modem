@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">sms_modem</string>
+    <string name="settings">Einstellungen</string>
+    <string name="enable">Anmachen</string>
+    <string name="disable">Abschalten</string>
+    <string name="enabled">Aktiviert</string>
+    <string name="disabled">Deaktiviert</string>
+    <string name="messages_history">Geschichte der Nachrichten</string>
+    <string name="subscribe">Abonnieren</string>
+    <string name="loading">Laden...</string>
+    <string name="close_list_of_messages_history">Liste der Nachrichten schließen</string>
+    <string name="sms_service_is_running_with_ip">SMS-Dienst läuft mit IP %1$s:%2$s</string>
+    <string name="sms_service_is_running">"Der SMS-Dienst läuft "</string>
+    <string name="network_connection_unavailable">Netzwerkverbindung nicht verfügbar</string>
+</resources>
