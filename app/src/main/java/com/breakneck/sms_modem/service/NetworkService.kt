@@ -218,11 +218,11 @@ open class NetworkService : Service() {
                     val phone = call.parameters["phone"]
                     val message = call.parameters["message"]
                     if ((phone != "") && (message != "")) {
-                        sendSMS(phoneNumber = phone!!, message = message!!)
                         val date = FromTimestampToDateString().execute(
-                            System.currentTimeMillis() / 1000,
+                            System.currentTimeMillis(),
                             getCurrentLocale(applicationContext)
                         )
+                        sendSMS(phoneNumber = phone!!, message = message!!, date = date)
                         //TODO return json code
                         call.respondText("$date: Message $message sent to $phone")
                     } else {
@@ -297,7 +297,7 @@ open class NetworkService : Service() {
             .build()
     }
 
-    private fun sendSMS(phoneNumber: String, message: String) {
+    private fun sendSMS(phoneNumber: String, message: String, date: String) {
         val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             applicationContext.getSystemService(SmsManager::class.java)
         } else {
@@ -312,10 +312,7 @@ open class NetworkService : Service() {
         val message = Message(
             cellNumber = phoneNumber,
             text = messageText.toString(),
-            date = FromTimestampToDateString().execute(
-                System.currentTimeMillis() / 1000,
-                getCurrentLocale(applicationContext)
-            ),
+            date = date,
             sender = Sender.Server
         )
         saveSentMessage.execute(message = message)
