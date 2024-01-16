@@ -80,7 +80,7 @@ class MainFragment: Fragment() {
                     mainActivityVM.setServiceStateLoading()
                 } else {
                     //TODO change location of this message in layout
-                    Toast.makeText(requireActivity(), "Watch ads", Toast.LENGTH_SHORT).show()
+                    mainActivityVM.setServiceError(getString(R.string.unable_to_start_service_please_watch_ads))
                 }
             } catch (e: NullPointerException) {
                 e.printStackTrace()

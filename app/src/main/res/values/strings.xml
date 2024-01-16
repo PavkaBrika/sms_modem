@@ -13,7 +13,7 @@
     <string name="sms_service_is_running_with_ip">SMS Service is running with IP %1$s:%2$s</string>
     <string name="sms_service_is_running">SMS Service is running</string>
     <string name="network_connection_unavailable">Network connection unavailable</string>
-    <string name="unable_to_create_service_please_change_port_and_try_again">Unable to create service. Please, change PORT and try again!</string>
+    <string name="unable_to_create_service_please_change_port_and_try_again">Unable to start service. Please, change PORT and try again!</string>
     <string name="main">Main</string>
     <string name="info">Info</string>
     <string name="messages">Messages</string>
@@ -22,4 +22,5 @@
     <string name="write_email_to_developers">Write email to developers</string>
     <string name="app_version">App version</string>
     <string name="no_messages_yet">No messages yet</string>
+    <string name="unable_to_start_service_please_watch_ads">Unable to start service. Please, watch ads</string>
 </resources>
