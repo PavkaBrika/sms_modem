@@ -246,13 +246,18 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     )
                 )
             }
-            vm.saveMessageDestinationUrl(
-                MessageDestinationUrl(
-                    //TODO add validation to url
-                    urlTextInputLayout.editText!!.text.toString()
+            val urlInputString = urlTextInputLayout.editText!!.text.toString()
+            if ((urlInputString.startsWith("http://")) || (urlInputString.startsWith("https://"))) {
+                vm.saveMessageDestinationUrl(
+                    MessageDestinationUrl(
+                        urlInputString
+                    )
                 )
-            )
-            dialog.dismiss()
+                urlTextInputLayout.error = null
+                dialog.dismiss()
+            }
+            else
+                urlTextInputLayout.error = getString(R.string.url_must_begin_with_http_or_https)
         }
         dialog.show()
     }

@@ -47,7 +47,7 @@ val appModule = module {
 
         val retrofit = Retrofit.Builder()
             .client(okHttpClient)
-            .baseUrl("https://helloworld")
+            .baseUrl("https://asdasd")
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
