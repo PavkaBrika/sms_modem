@@ -14,4 +14,7 @@
     <string name="sms_service_is_running">SMS Service is running</string>
     <string name="network_connection_unavailable">Network connection unavailable</string>
     <string name="unable_to_create_service_please_change_port_and_try_again">Unable to create service. Please, change PORT and try again!</string>
+    <string name="main">Main</string>
+    <string name="info">Info</string>
+    <string name="messages">Messages</string>
 </resources>
