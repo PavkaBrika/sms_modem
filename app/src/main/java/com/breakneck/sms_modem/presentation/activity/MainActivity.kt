@@ -19,8 +19,11 @@ import android.util.Log
 import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.breakneck.domain.model.FragmentTag
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
@@ -127,23 +130,17 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.item_main -> {
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+                    replaceFragment(FragmentTag.Main)
                     binding.toolbar.title = resources.getString(R.string.main)
                     true
                 }
                 R.id.item_list -> {
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.frameLayout, MessagesFragment()).commit()
+                    replaceFragment(FragmentTag.Message)
                     binding.toolbar.title = resources.getString(R.string.messages)
                     true
                 }
                 R.id.item_info -> {
-                    val fragmentManager = supportFragmentManager
-                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.replace(R.id.frameLayout, InfoFragment()).commit()
+                    replaceFragment(FragmentTag.Info)
                     binding.toolbar.title = resources.getString(R.string.info)
                     true
                 }
@@ -151,7 +148,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         }
         binding.bottomNavigationView.selectedItemId = R.id.item_main
-
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -198,6 +194,35 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
+    }
+
+    private fun replaceFragment(fragmentTag: FragmentTag) {
+        val fragmentManager = supportFragmentManager
+        val transaction = fragmentManager.beginTransaction()
+        val currentFragment = fragmentManager.findFragmentById(R.id.frameLayout)
+        var nextFragment = fragmentManager.findFragmentByTag(fragmentTag.toString())
+
+        try {
+            if (currentFragment != null)
+                transaction.detach(currentFragment)
+        } catch (e: NullPointerException) {
+            e.printStackTrace()
+        }
+        if (nextFragment == null) {
+            nextFragment = createFragment(fragmentTag)
+            transaction.add(R.id.frameLayout, nextFragment, fragmentTag.toString())
+        } else {
+            transaction.attach(nextFragment)
+        }
+        transaction.commit()
+    }
+
+    private fun createFragment(tag: FragmentTag): Fragment {
+        return when (tag) {
+            FragmentTag.Main -> MainFragment()
+            FragmentTag.Message -> MessagesFragment()
+            FragmentTag.Info -> InfoFragment()
+        }
     }
 
     override fun showSettingsBottomSheetDialog() {

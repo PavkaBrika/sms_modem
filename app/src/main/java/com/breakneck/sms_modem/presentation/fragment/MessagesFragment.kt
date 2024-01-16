@@ -49,4 +49,12 @@ class MessagesFragment: Fragment() {
 
         return view
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+    }
 }
