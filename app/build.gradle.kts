@@ -75,7 +75,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.1")
 
     //Koin
-    val koinVersion = "3.2.0"
+    val koinVersion = "3.5.3"
     implementation("io.insert-koin:koin-core:$koinVersion")
     implementation("io.insert-koin:koin-android:$koinVersion")
 

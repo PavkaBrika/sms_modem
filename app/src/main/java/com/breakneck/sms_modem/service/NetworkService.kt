@@ -33,7 +33,7 @@ import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.R
-import com.breakneck.sms_modem.presentation.MainActivity
+import com.breakneck.sms_modem.presentation.activity.MainActivity
 import com.breakneck.sms_modem.receiver.SMSBroadcastReceiver
 import io.ktor.application.call
 import io.ktor.application.install

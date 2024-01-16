@@ -1,14 +1,10 @@
 package com.breakneck.sms_modem.di
 
 import android.app.Application
-import android.content.Context
-import com.breakneck.sms_modem.app.App
-import com.breakneck.sms_modem.presentation.MainActivity
+import com.breakneck.sms_modem.presentation.activity.MainActivity
 import com.breakneck.sms_modem.service.NetworkService
-import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
-import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
 

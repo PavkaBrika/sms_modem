@@ -1,7 +1,5 @@
-package com.breakneck.sms_modem.presentation
+package com.breakneck.sms_modem.presentation.activity
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -26,13 +24,13 @@ import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentTransaction
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.MessageFullListVisibilityState
-import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
@@ -40,7 +38,7 @@ import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
-import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
+import com.breakneck.sms_modem.presentation.fragment.MainFragment
 import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
 import com.breakneck.sms_modem.service.ERROR
 import com.breakneck.sms_modem.service.NetworkService
@@ -57,7 +55,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 import java.lang.NullPointerException
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -133,213 +131,11 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        vm.serverIpAddress.observe(this) { address ->
-            binding.ipAddressTextView.text = address.value
+        if (savedInstanceState == null) {
+            val fragmentManager = supportFragmentManager
+            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
         }
-
-        vm.port.observe(this) { port ->
-            binding.portTextView.text = getString(R.string.colon_port, port.value)
-        }
-
-        binding.activateServiceButton.setOnClickListener {
-            try {
-                if (vm.serviceRemainingTime.value!! > 0) {
-                    serviceAction(vm.networkServiceIntent.value!!)
-                    vm.changeServiceIntent()
-                    vm.setServiceStateLoading()
-                } else {
-                    //TODO change location of this message in layout
-                    Toast.makeText(this, "Watch ads", Toast.LENGTH_SHORT).show()
-                }
-            } catch (e: NullPointerException) {
-                e.printStackTrace()
-                //TODO change hardcode strings to string file
-                Toast.makeText(this, "Error", Toast.LENGTH_SHORT).show()
-            }
-        }
-
-        binding.settingsButton.setOnClickListener {
-            openSettingsBottomSheetDialog()
-        }
-
-        binding.watchAdButton.setOnClickListener {
-            vm.saveServiceRemainingTime()
-            if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                boundNetworkService.updateServiceRemainingTimer()
-        }
-
-        binding.messagesRecyclerView.enableClickListener()
-        binding.messagesRecyclerView.setOnClickListener {
-            vm.changeMessageFullListVisibilityState()
-        }
-        binding.closeMessageHistoryImageView.setOnClickListener {
-            vm.changeMessageFullListVisibilityState()
-        }
-
-        vm.networkServiceIntent.observe(this) { intent ->
-            when (intent) {
-                ServiceIntent.Disable -> {
-                    binding.activateServiceButton.text = getString(R.string.disable)
-                }
-
-                ServiceIntent.Enable -> {
-                    binding.activateServiceButton.text = getString(R.string.enable)
-                }
-            }
-        }
-
-        vm.networkServiceState.observe(this) { state ->
-            when (state) {
-                ServiceState.Enabled -> {
-                    binding.stateTextView.text = getString(R.string.enabled)
-                    binding.settingsButton.apply {
-                        isEnabled = false
-                        setStrokeColorResource(R.color.enabled_button)
-                    }
-                    binding.activateServiceButton.apply {
-                        isEnabled = true
-                        setRippleColorResource(R.color.black)
-                        setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@MainActivity,
-                                R.color.enabled_button
-                            )
-                        )
-                    }
-                    binding.stateCardView.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.enabled_card
-                        )
-                    )
-                }
-
-                ServiceState.Disabled -> {
-                    binding.stateTextView.text = getString(R.string.disabled)
-                    binding.settingsButton.apply {
-                        isEnabled = true
-                        setStrokeColorResource(R.color.disabled_button)
-                        setRippleColorResource(R.color.disabled_button)
-                    }
-                    binding.activateServiceButton.apply {
-                        isEnabled = true
-                        setBackgroundColor(
-                            ContextCompat.getColor(
-                                this@MainActivity,
-                                R.color.disabled_button
-                            )
-                        )
-                        setRippleColorResource(R.color.black)
-                    }
-                    binding.stateCardView.setCardBackgroundColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.disabled_card
-                        )
-                    )
-                    try {
-                        vm.setDeviceIpAddress(address = IpAddress(value = getDeviceIpAddress()))
-                    } catch (e: Exception) {
-                        e.printStackTrace()
-                        vm.changeNetworkState()
-                    }
-
-                }
-
-                ServiceState.Loading -> {
-                    //TODO do something animation on loading
-                    binding.stateTextView.text = getString(R.string.loading)
-                    binding.settingsButton.isEnabled = false
-                    binding.activateServiceButton.isEnabled = false
-                }
-            }
-        }
-
-        vm.messageList.observe(this) { list ->
-            binding.messagesRecyclerView.apply {
-                adapter = MessageAdapter(messagesList = list.toMutableList())
-                addItemDecoration(
-                    DividerItemDecoration(
-                        view.context,
-                        DividerItemDecoration.VERTICAL
-                    )
-                )
-            }
-        }
-
-        vm.serviceRemainingTime.observe(this) { time ->
-            binding.serviceTimeRemainingTextView.text = time.toString()
-        }
-
-        vm.messageFullListVisibilityState.observe(this) { state ->
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.root)
-            when (state) {
-                MessageFullListVisibilityState.Gone -> {
-                    binding.closeMessageHistoryImageView.visibility = View.GONE
-                    binding.messagesListCardView.layoutParams.height =
-                        (200 * this.resources.displayMetrics.density).toInt()
-                    binding.stateCardView.visibility = View.VISIBLE
-                    binding.subscriptionCardView.visibility = View.VISIBLE
-                    constraintSet.clear(R.id.messagesListCardView, ConstraintSet.BOTTOM)
-                }
-
-                MessageFullListVisibilityState.Visible -> {
-                    binding.closeMessageHistoryImageView.visibility = View.VISIBLE
-                    binding.messagesListCardView.layoutParams.height = 0
-                    binding.stateCardView.visibility = View.GONE
-                    binding.subscriptionCardView.visibility = View.GONE
-                    constraintSet.connect(
-                        R.id.messagesListCardView,
-                        ConstraintSet.BOTTOM,
-                        R.id.rootView,
-                        ConstraintSet.BOTTOM,
-                        16
-                    )
-                }
-            }
-        }
-
-        vm.serviceError.observe(this) { error ->
-            if (!error.equals("")) {
-                binding.errorCardView.visibility = View.VISIBLE
-                binding.errorTextView.text = error
-            } else {
-                binding.errorCardView.visibility = View.GONE
-            }
-        }
-
-//        vm.networkState.observe(this) { state ->
-//            when (state) {
-//                NetworkState.Available -> {
-//
-//                }
-//                NetworkState.Unavailable -> {
-//                    binding.stateTextView.text = getString(R.string.network_connection_unavailable)
-//                    binding.settingsButton.apply {
-//                        isEnabled = true
-//                        setStrokeColorResource(R.color.disabled_button)
-//                        setRippleColorResource(R.color.disabled_button)
-//                    }
-//                    binding.activateServiceButton.apply {
-//                        isEnabled = false
-//                        setBackgroundColor(
-//                            ContextCompat.getColor(
-//                                this@MainActivity,
-//                                R.color.disabled_button
-//                            )
-//                        )
-//                        setRippleColorResource(R.color.black)
-//                    }
-//                    binding.stateCardView.setCardBackgroundColor(
-//                        ContextCompat.getColor(
-//                            this,
-//                            R.color.disabled_card
-//                        )
-//                    )
-//                }
-//            }
-//        }
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -388,7 +184,7 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
-    private fun openSettingsBottomSheetDialog() {
+    override fun showSettingsBottomSheetDialog() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
 
@@ -421,7 +217,7 @@ class MainActivity : AppCompatActivity() {
         dialog.show()
     }
 
-    private fun getDeviceIpAddress(): String {
+    override fun getDeviceIpAddress(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             val ipRegex = "\\d+(\\.)\\d+(\\.)\\d+(\\.)\\d+".toRegex()
             val connectivityManager =
@@ -442,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun serviceAction(intent: ServiceIntent) {
+    override fun serviceAction(intent: ServiceIntent) {
         val serviceIntent = Intent(this, NetworkService::class.java)
         serviceIntent.action = intent.toString()
         serviceIntent.putExtra("ipAddress", vm.serverIpAddress.value?.value.toString())
@@ -474,14 +270,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun RecyclerView.enableClickListener() {
-        val gesture = object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                this@enableClickListener.performClick()
-                return super.onSingleTapConfirmed(e)
-            }
-        }
-        val detector = GestureDetector(this.context, gesture)
-        this.setOnTouchListener { v, event -> detector.onTouchEvent(event) }
+    override fun updateServiceRemainingTimer() {
+        boundNetworkService.updateServiceRemainingTimer()
     }
 }
