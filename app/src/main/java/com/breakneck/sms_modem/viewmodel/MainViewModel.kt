@@ -81,6 +81,10 @@ class MainViewModel(
     val networkState: LiveData<NetworkState>
         get() = _networkState
 
+    private val _serviceError = MutableLiveData<String>()
+    val serviceError: LiveData<String>
+        get() = _serviceError
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
@@ -208,5 +212,9 @@ class MainViewModel(
             NetworkState.Unavailable ->
                 _networkState.value = NetworkState.Available
         }
+    }
+
+    fun setServiceError(error: String) {
+        _serviceError.value = error
     }
 }

@@ -1,5 +1,7 @@
 package com.breakneck.sms_modem.presentation
 
+import android.animation.ArgbEvaluator
+import android.animation.ValueAnimator
 import android.content.BroadcastReceiver
 import android.content.ComponentName
 import android.content.Context
@@ -40,8 +42,11 @@ import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
 import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
+import com.breakneck.sms_modem.service.ERROR
 import com.breakneck.sms_modem.service.NetworkService
+import com.breakneck.sms_modem.service.SERVICE_ERROR
 import com.breakneck.sms_modem.service.SERVICE_NEW_MESSAGE
+import com.breakneck.sms_modem.service.SERVICE_START_SUCCESS
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.viewmodel.MainViewModel
@@ -253,7 +258,12 @@ class MainActivity : AppCompatActivity() {
         vm.messageList.observe(this) { list ->
             binding.messagesRecyclerView.apply {
                 adapter = MessageAdapter(messagesList = list.toMutableList())
-                addItemDecoration(DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL))
+                addItemDecoration(
+                    DividerItemDecoration(
+                        view.context,
+                        DividerItemDecoration.VERTICAL
+                    )
+                )
             }
         }
 
@@ -267,18 +277,35 @@ class MainActivity : AppCompatActivity() {
             when (state) {
                 MessageFullListVisibilityState.Gone -> {
                     binding.closeMessageHistoryImageView.visibility = View.GONE
-                    binding.messagesListCardView.layoutParams.height = (200 * this.resources.displayMetrics.density).toInt()
+                    binding.messagesListCardView.layoutParams.height =
+                        (200 * this.resources.displayMetrics.density).toInt()
                     binding.stateCardView.visibility = View.VISIBLE
                     binding.subscriptionCardView.visibility = View.VISIBLE
                     constraintSet.clear(R.id.messagesListCardView, ConstraintSet.BOTTOM)
                 }
+
                 MessageFullListVisibilityState.Visible -> {
                     binding.closeMessageHistoryImageView.visibility = View.VISIBLE
                     binding.messagesListCardView.layoutParams.height = 0
                     binding.stateCardView.visibility = View.GONE
                     binding.subscriptionCardView.visibility = View.GONE
-                    constraintSet.connect(R.id.messagesListCardView, ConstraintSet.BOTTOM, R.id.rootView, ConstraintSet.BOTTOM, 16)
+                    constraintSet.connect(
+                        R.id.messagesListCardView,
+                        ConstraintSet.BOTTOM,
+                        R.id.rootView,
+                        ConstraintSet.BOTTOM,
+                        16
+                    )
                 }
+            }
+        }
+
+        vm.serviceError.observe(this) { error ->
+            if (!error.equals("")) {
+                binding.errorCardView.visibility = View.VISIBLE
+                binding.errorTextView.text = error
+            } else {
+                binding.errorCardView.visibility = View.GONE
             }
         }
 
@@ -322,6 +349,10 @@ class MainActivity : AppCompatActivity() {
                     vm.getServiceRemainingTime()
                 } else if (intent.action.equals(SERVICE_NEW_MESSAGE)) {
                     vm.getAllMessages()
+                } else if (intent.action.equals(SERVICE_ERROR)) {
+                    vm.setServiceError(intent.extras!!.getString(ERROR, ""))
+                } else if (intent.action.equals(SERVICE_START_SUCCESS)) {
+                    vm.setServiceError("")
                 } else if (intent.action.equals(RECEIVER_NEW_MESSAGE)) {
                     vm.getAllMessages()
                 }
@@ -336,6 +367,8 @@ class MainActivity : AppCompatActivity() {
             registerReceiver(receiver, IntentFilter(SERVICE_TIME_REMAINING_RESULT))
             registerReceiver(receiver, IntentFilter(SERVICE_NEW_MESSAGE))
             registerReceiver(receiver, IntentFilter(RECEIVER_NEW_MESSAGE))
+            registerReceiver(receiver, IntentFilter(SERVICE_ERROR))
+            registerReceiver(receiver, IntentFilter(SERVICE_START_SUCCESS))
         }
 
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
@@ -352,7 +385,6 @@ class MainActivity : AppCompatActivity() {
             vm.changeServiceBoundState()
         }
 
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
     }
 
@@ -442,8 +474,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun RecyclerView.enableClickListener(){
-        val gesture = object : GestureDetector.SimpleOnGestureListener(){
+    fun RecyclerView.enableClickListener() {
+        val gesture = object : GestureDetector.SimpleOnGestureListener() {
             override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
                 this@enableClickListener.performClick()
                 return super.onSingleTapConfirmed(e)

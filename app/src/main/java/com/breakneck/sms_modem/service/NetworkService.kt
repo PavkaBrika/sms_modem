@@ -47,12 +47,17 @@ import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
 import java.lang.StringBuilder
+import java.net.BindException
 import java.util.Locale
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_REMAINING_RESULT"
 const val SERVICE_NEW_MESSAGE = "com.breakneck.sms_modem.SERVICE_NEW_MESSAGE"
+const val SERVICE_ERROR = "com.breakneck.sms_modem.SERVICE_ERROR"
+const val SERVICE_START_SUCCESS = "com.breakneck.sms_modem.SERVICE_START_SUCCESS"
+
 const val NEW_MESSAGE = "com.breakneck.sms_modem.NEW_MESSAGE"
+const val ERROR = "com.breakneck.sms_modem.ERROR"
 
 open class NetworkService : Service() {
 
@@ -113,7 +118,15 @@ open class NetworkService : Service() {
                 Log.e(TAG, "using a intent with $action")
                 when (action) {
                     ServiceIntent.Disable.toString() -> stopService()
-                    ServiceIntent.Enable.toString() -> startService()
+                    ServiceIntent.Enable.toString() -> {
+                        try {
+                            startService()
+                        } catch (e: BindException) {
+                            e.printStackTrace()
+                            sendErrorWithService(getString(R.string.unable_to_create_service_please_change_port_and_try_again))
+                            stopService()
+                        }
+                    }
                 }
             } catch (e: NullPointerException) {
                 e.printStackTrace()
@@ -176,6 +189,7 @@ open class NetworkService : Service() {
 
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
+        hideErrorCardInActivity()
         changeServiceStateInActivity()
         updateServiceRemainingTimer()
 
@@ -251,7 +265,6 @@ open class NetworkService : Service() {
             }
             notificationManager.createNotificationChannel(channel)
         }
-
     }
 
     fun createNotification(): Notification {
@@ -355,6 +368,21 @@ open class NetworkService : Service() {
     fun addMessageItemToRecyclerView(item: Message) {
         Intent(SERVICE_NEW_MESSAGE)
             .putExtra(NEW_MESSAGE, item)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
+    fun sendErrorWithService(error: String) {
+        Intent(SERVICE_ERROR)
+            .putExtra(ERROR, error)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
+    fun hideErrorCardInActivity() {
+        Intent(SERVICE_START_SUCCESS)
             .also {
                 broadcaster.sendBroadcast(it)
             }
