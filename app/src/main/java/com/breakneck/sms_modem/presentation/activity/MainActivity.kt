@@ -127,21 +127,23 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         }
 
+        val toolbar = supportActionBar
+
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.item_main -> {
                     replaceFragment(FragmentTag.Main)
-                    binding.toolbar.title = resources.getString(R.string.main)
+                    toolbar!!.title = resources.getString(R.string.main)
                     true
                 }
                 R.id.item_list -> {
                     replaceFragment(FragmentTag.Message)
-                    binding.toolbar.title = resources.getString(R.string.messages)
+                    toolbar!!.title = resources.getString(R.string.messages)
                     true
                 }
                 R.id.item_info -> {
                     replaceFragment(FragmentTag.Info)
-                    binding.toolbar.title = resources.getString(R.string.info)
+                    toolbar!!.title = resources.getString(R.string.info)
                     true
                 }
                 else -> false

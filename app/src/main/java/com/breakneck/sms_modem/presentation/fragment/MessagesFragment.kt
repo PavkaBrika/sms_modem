@@ -36,25 +36,26 @@ class MessagesFragment: Fragment() {
 
         vm.messageList.observe(viewLifecycleOwner) { list ->
             binding.messagesRecyclerView.apply {
-                adapter = MessageAdapter(messagesList = list.toMutableList())
-                addItemDecoration(
-                    DividerItemDecoration(
-                        view.context,
-                        DividerItemDecoration.VERTICAL
+                if (list.isEmpty()) {
+                    binding.noMessagesHintTextView.visibility = View.VISIBLE
+                    binding.messagesLinearLayout.visibility = View.GONE
+                } else {
+                    binding.noMessagesHintTextView.visibility = View.GONE
+                    binding.messagesLinearLayout.visibility = View.VISIBLE
+                    adapter = MessageAdapter(messagesList = list.toMutableList())
+                    addItemDecoration(
+                        DividerItemDecoration(
+                            view.context,
+                            DividerItemDecoration.VERTICAL
+                        )
                     )
-                )
+                }
+
+
             }
         }
 
 
         return view
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-    }
-
-    override fun onDetach() {
-        super.onDetach()
     }
 }

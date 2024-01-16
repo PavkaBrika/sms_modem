@@ -21,4 +21,5 @@
     <string name="rate_this_app">Rate this app</string>
     <string name="write_email_to_developers">Write email to developers</string>
     <string name="app_version">App version</string>
+    <string name="no_messages_yet">No messages yet</string>
 </resources>
