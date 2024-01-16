@@ -191,6 +191,15 @@ class MainFragment: Fragment() {
             }
         }
 
+        mainActivityVM.messageDestinationUrl.observe(viewLifecycleOwner) { url ->
+            if (url.value.isEmpty()) {
+                binding.messageDestinationTextView.visibility = View.GONE
+            } else {
+                binding.messageDestinationTextView.visibility = View.VISIBLE
+                binding.messageDestinationTextView.text = url.value
+            }
+        }
+
 //        vm.networkState.observe(this) { state ->
 //            when (state) {
 //                NetworkState.Available -> {

@@ -246,15 +246,12 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     )
                 )
             }
-            val urlInputString = urlTextInputLayout.editText!!.text.toString()
-            if (urlInputString.isNotEmpty()) {
-                vm.saveMessageDestinationUrl(
-                    MessageDestinationUrl(
-                        //TODO add validation to url
-                        urlTextInputLayout.editText!!.text.toString()
-                    )
+            vm.saveMessageDestinationUrl(
+                MessageDestinationUrl(
+                    //TODO add validation to url
+                    urlTextInputLayout.editText!!.text.toString()
                 )
-            }
+            )
             dialog.dismiss()
         }
         dialog.show()
