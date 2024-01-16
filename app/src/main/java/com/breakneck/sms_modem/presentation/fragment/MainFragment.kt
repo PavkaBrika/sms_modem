@@ -21,9 +21,10 @@ import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMainBinding
-import com.breakneck.sms_modem.viewmodel.MainViewModel
-import org.koin.androidx.scope.scopeActivity
+import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
+import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 
 class MainFragment: Fragment() {
@@ -32,7 +33,8 @@ class MainFragment: Fragment() {
 
     val TAG = "MainFragment"
 
-    private val vm by activityViewModel<MainViewModel>()
+    private val mainActivityVM by activityViewModel<MainActivityViewModel>()
+    private val vm by viewModel<MainFragmentViewModel>()
 
     interface ActivityInterface {
         fun serviceAction(intent: ServiceIntent)
@@ -62,20 +64,20 @@ class MainFragment: Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        vm.serverIpAddress.observe(viewLifecycleOwner) { address ->
+        mainActivityVM.serverIpAddress.observe(viewLifecycleOwner) { address ->
             binding.ipAddressTextView.text = address.value
         }
 
-        vm.port.observe(viewLifecycleOwner) { port ->
+        mainActivityVM.port.observe(viewLifecycleOwner) { port ->
             binding.portTextView.text = getString(R.string.colon_port, port.value)
         }
 
         binding.activateServiceButton.setOnClickListener {
             try {
-                if (vm.serviceRemainingTime.value!! > 0) {
-                    activityInterface.serviceAction(vm.networkServiceIntent.value!!)
-                    vm.changeServiceIntent()
-                    vm.setServiceStateLoading()
+                if (mainActivityVM.serviceRemainingTime.value!! > 0) {
+                    activityInterface.serviceAction(mainActivityVM.networkServiceIntent.value!!)
+                    mainActivityVM.changeServiceIntent()
+                    mainActivityVM.setServiceStateLoading()
                 } else {
                     //TODO change location of this message in layout
                     Toast.makeText(requireActivity(), "Watch ads", Toast.LENGTH_SHORT).show()
@@ -92,20 +94,20 @@ class MainFragment: Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
-            vm.saveServiceRemainingTime()
-            if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded)
+            mainActivityVM.saveServiceRemainingTime()
+            if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
                 activityInterface.updateServiceRemainingTimer()
         }
 
         binding.messagesRecyclerView.enableClickListener()
         binding.messagesRecyclerView.setOnClickListener {
-            vm.changeMessageFullListVisibilityState()
+            mainActivityVM.changeMessageFullListVisibilityState()
         }
         binding.closeMessageHistoryImageView.setOnClickListener {
-            vm.changeMessageFullListVisibilityState()
+            mainActivityVM.changeMessageFullListVisibilityState()
         }
 
-        vm.networkServiceIntent.observe(viewLifecycleOwner) { intent ->
+        mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->
             when (intent) {
                 ServiceIntent.Disable -> {
                     binding.activateServiceButton.text = getString(R.string.disable)
@@ -117,7 +119,7 @@ class MainFragment: Fragment() {
             }
         }
 
-        vm.networkServiceState.observe(viewLifecycleOwner) { state ->
+        mainActivityVM.networkServiceState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 ServiceState.Enabled -> {
                     binding.stateTextView.text = getString(R.string.enabled)
@@ -167,7 +169,7 @@ class MainFragment: Fragment() {
                         )
                     )
                     try {
-                        vm.setDeviceIpAddress(address = IpAddress(value = activityInterface.getDeviceIpAddress()))
+                        mainActivityVM.setDeviceIpAddress(address = IpAddress(value = activityInterface.getDeviceIpAddress()))
                     } catch (e: Exception) {
                         e.printStackTrace()
                         vm.changeNetworkState()
@@ -184,7 +186,7 @@ class MainFragment: Fragment() {
             }
         }
 
-        vm.messageList.observe(viewLifecycleOwner) { list ->
+        mainActivityVM.messageList.observe(viewLifecycleOwner) { list ->
             binding.messagesRecyclerView.apply {
                 adapter = MessageAdapter(messagesList = list.toMutableList())
                 addItemDecoration(
@@ -196,11 +198,11 @@ class MainFragment: Fragment() {
             }
         }
 
-        vm.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
+        mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
             binding.serviceTimeRemainingTextView.text = time.toString()
         }
 
-        vm.messageFullListVisibilityState.observe(viewLifecycleOwner) { state ->
+        mainActivityVM.messageFullListVisibilityState.observe(viewLifecycleOwner) { state ->
             val constraintSet = ConstraintSet()
             constraintSet.clone(binding.root)
             when (state) {
@@ -229,7 +231,7 @@ class MainFragment: Fragment() {
             }
         }
 
-        vm.serviceError.observe(viewLifecycleOwner) { error ->
+        mainActivityVM.serviceError.observe(viewLifecycleOwner) { error ->
             if (!error.equals("")) {
                 binding.errorCardView.visibility = View.VISIBLE
                 binding.errorTextView.text = error

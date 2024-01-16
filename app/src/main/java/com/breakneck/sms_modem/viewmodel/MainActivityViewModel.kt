@@ -27,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class MainViewModel(
+class MainActivityViewModel(
     private val savePort: SavePort,
     private val getPort: GetPort,
     private val getServiceState: GetServiceState,
@@ -76,10 +76,6 @@ class MainViewModel(
     private val _serverIpAddress = MutableLiveData<IpAddress>()
     val serverIpAddress: LiveData<IpAddress>
         get() = _serverIpAddress
-
-    private val _networkState = MutableLiveData<NetworkState>(NetworkState.Available)
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
 
     private val _serviceError = MutableLiveData<String>()
     val serviceError: LiveData<String>
@@ -203,15 +199,6 @@ class MainViewModel(
 
     fun setDeviceIpAddress(address: IpAddress) {
         _serverIpAddress.value = address
-    }
-
-    fun changeNetworkState() {
-        when (_networkState.value!!) {
-            NetworkState.Available ->
-                _networkState.value = NetworkState.Unavailable
-            NetworkState.Unavailable ->
-                _networkState.value = NetworkState.Available
-        }
     }
 
     fun setServiceError(error: String) {

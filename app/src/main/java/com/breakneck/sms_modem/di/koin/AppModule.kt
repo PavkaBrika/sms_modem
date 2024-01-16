@@ -2,7 +2,8 @@ package com.breakneck.sms_modem.di.koin
 
 import android.util.Log
 import com.breakneck.data.network.NetworkApi
-import com.breakneck.sms_modem.viewmodel.MainViewModel
+import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
+import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -12,8 +13,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
 
-    viewModel<MainViewModel> {
-        MainViewModel(
+    viewModel<MainActivityViewModel> {
+        MainActivityViewModel(
             savePort = get(),
             getPort = get(),
             getServiceState = get(),
@@ -24,6 +25,10 @@ val appModule = module {
             getServiceRemainingTime = get(),
             getDeviceIpAddress = get()
         )
+    }
+
+    viewModel<MainFragmentViewModel> {
+        MainFragmentViewModel()
     }
 
     single<NetworkApi> {
