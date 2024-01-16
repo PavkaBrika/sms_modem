@@ -130,18 +130,21 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+                    binding.toolbar.title = resources.getString(R.string.main)
                     true
                 }
                 R.id.item_list -> {
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.frameLayout, MessagesFragment()).commit()
+                    binding.toolbar.title = resources.getString(R.string.messages)
                     true
                 }
                 R.id.item_info -> {
                     val fragmentManager = supportFragmentManager
                     val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.replace(R.id.frameLayout, InfoFragment()).commit()
+                    binding.toolbar.title = resources.getString(R.string.info)
                     true
                 }
                 else -> false
