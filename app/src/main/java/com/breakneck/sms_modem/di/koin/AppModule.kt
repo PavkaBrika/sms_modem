@@ -4,6 +4,7 @@ import android.util.Log
 import com.breakneck.data.network.NetworkApi
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
+import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -20,7 +21,6 @@ val appModule = module {
             getServiceState = get(),
             saveMessageDestinationUrl = get(),
             getMessageDestinationUrl = get(),
-            getAllMessages = get(),
             saveServiceRemainingTime = get(),
             getServiceRemainingTime = get(),
             getDeviceIpAddress = get()
@@ -29,6 +29,12 @@ val appModule = module {
 
     viewModel<MainFragmentViewModel> {
         MainFragmentViewModel()
+    }
+
+    viewModel<MessageFragmentViewModel> {
+        MessageFragmentViewModel(
+            getAllMessages = get()
+        )
     }
 
     single<NetworkApi> {

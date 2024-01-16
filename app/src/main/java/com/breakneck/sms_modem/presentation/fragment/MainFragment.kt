@@ -99,14 +99,6 @@ class MainFragment: Fragment() {
                 activityInterface.updateServiceRemainingTimer()
         }
 
-        binding.messagesRecyclerView.enableClickListener()
-        binding.messagesRecyclerView.setOnClickListener {
-            mainActivityVM.changeMessageFullListVisibilityState()
-        }
-        binding.closeMessageHistoryImageView.setOnClickListener {
-            mainActivityVM.changeMessageFullListVisibilityState()
-        }
-
         mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->
             when (intent) {
                 ServiceIntent.Disable -> {
@@ -186,49 +178,8 @@ class MainFragment: Fragment() {
             }
         }
 
-        mainActivityVM.messageList.observe(viewLifecycleOwner) { list ->
-            binding.messagesRecyclerView.apply {
-                adapter = MessageAdapter(messagesList = list.toMutableList())
-                addItemDecoration(
-                    DividerItemDecoration(
-                        view.context,
-                        DividerItemDecoration.VERTICAL
-                    )
-                )
-            }
-        }
-
         mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
             binding.serviceTimeRemainingTextView.text = time.toString()
-        }
-
-        mainActivityVM.messageFullListVisibilityState.observe(viewLifecycleOwner) { state ->
-            val constraintSet = ConstraintSet()
-            constraintSet.clone(binding.root)
-            when (state) {
-                MessageFullListVisibilityState.Gone -> {
-                    binding.closeMessageHistoryImageView.visibility = View.GONE
-                    binding.messagesListCardView.layoutParams.height =
-                        (200 * this.resources.displayMetrics.density).toInt()
-                    binding.stateCardView.visibility = View.VISIBLE
-                    binding.subscriptionCardView.visibility = View.VISIBLE
-                    constraintSet.clear(R.id.messagesListCardView, ConstraintSet.BOTTOM)
-                }
-
-                MessageFullListVisibilityState.Visible -> {
-                    binding.closeMessageHistoryImageView.visibility = View.VISIBLE
-                    binding.messagesListCardView.layoutParams.height = 0
-                    binding.stateCardView.visibility = View.GONE
-                    binding.subscriptionCardView.visibility = View.GONE
-                    constraintSet.connect(
-                        R.id.messagesListCardView,
-                        ConstraintSet.BOTTOM,
-                        R.id.rootView,
-                        ConstraintSet.BOTTOM,
-                        16
-                    )
-                }
-            }
         }
 
         mainActivityVM.serviceError.observe(viewLifecycleOwner) { error ->
@@ -274,17 +225,5 @@ class MainFragment: Fragment() {
 
         return view
     }
-
-    fun RecyclerView.enableClickListener() {
-        val gesture = object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapConfirmed(e: MotionEvent): Boolean {
-                this@enableClickListener.performClick()
-                return super.onSingleTapConfirmed(e)
-            }
-        }
-        val detector = GestureDetector(this.context, gesture)
-        this.setOnTouchListener { v, event -> detector.onTouchEvent(event) }
-    }
-
 
 }

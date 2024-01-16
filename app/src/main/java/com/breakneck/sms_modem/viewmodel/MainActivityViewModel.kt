@@ -33,7 +33,6 @@ class MainActivityViewModel(
     private val getServiceState: GetServiceState,
     private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
-    private val getAllMessages: GetAllMessages,
     private val saveServiceRemainingTime: SaveServiceRemainingTime,
     private val getServiceRemainingTime: GetServiceRemainingTime,
     private val getDeviceIpAddress: GetDeviceIpAddress
@@ -61,17 +60,9 @@ class MainActivityViewModel(
     val messageDestinationUrl: LiveData<MessageDestinationUrl>
         get() = _messageDestinationUrl
 
-    private val _messagesList = MutableLiveData<List<Message>>()
-    val messageList: LiveData<List<Message>>
-        get() = _messagesList
-
     private val _serviceRemainingTimeInSec = MutableLiveData<Long>()
     val serviceRemainingTime: LiveData<Long>
         get() = _serviceRemainingTimeInSec
-
-    private val _messageFullListVisibilityState = MutableLiveData<MessageFullListVisibilityState>(MessageFullListVisibilityState.Gone)
-    val messageFullListVisibilityState: LiveData<MessageFullListVisibilityState>
-        get() = _messageFullListVisibilityState
 
     private val _serverIpAddress = MutableLiveData<IpAddress>()
     val serverIpAddress: LiveData<IpAddress>
@@ -86,7 +77,6 @@ class MainActivityViewModel(
         getPort()
         getMessageDestinationUrl()
         changeServiceIntent()
-        getAllMessages()
         getServiceRemainingTime()
         getServiceIpAddress()
     }
@@ -158,26 +148,6 @@ class MainActivityViewModel(
             }
             ServiceBoundState.Unbounded -> {
                 _networkServiceBoundState.value = ServiceBoundState.Bounded
-            }
-        }
-    }
-
-    fun changeMessageFullListVisibilityState() {
-        when (messageFullListVisibilityState.value!!) {
-            MessageFullListVisibilityState.Gone -> {
-                _messageFullListVisibilityState.value = MessageFullListVisibilityState.Visible
-            }
-            MessageFullListVisibilityState.Visible -> {
-                _messageFullListVisibilityState.value = MessageFullListVisibilityState.Gone
-            }
-        }
-    }
-
-    fun getAllMessages() {
-        viewModelScope.launch(Dispatchers.IO) {
-            val messageList = getAllMessages.execute()
-            withContext(Dispatchers.Main) {
-                _messagesList.value = messageList
             }
         }
     }

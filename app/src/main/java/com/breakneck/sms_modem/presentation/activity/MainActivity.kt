@@ -28,7 +28,9 @@ import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
+import com.breakneck.sms_modem.presentation.fragment.InfoFragment
 import com.breakneck.sms_modem.presentation.fragment.MainFragment
+import com.breakneck.sms_modem.presentation.fragment.MessagesFragment
 import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
 import com.breakneck.sms_modem.service.ERROR
 import com.breakneck.sms_modem.service.NetworkService
@@ -38,6 +40,7 @@ import com.breakneck.sms_modem.service.SERVICE_START_SUCCESS
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
+import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 //    lateinit var getPort: GetPort
 
     private val vm by viewModel<MainActivityViewModel>()
+    private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
 
     lateinit var boundNetworkService: NetworkService
 //    lateinit var networkChangeReceiver: NetworkChangeReceiver
@@ -120,11 +124,29 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         }
 
-        if (savedInstanceState == null) {
-            val fragmentManager = supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.item_main -> {
+                    val fragmentManager = supportFragmentManager
+                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.frameLayout, MainFragment()).commit()
+                    true
+                }
+                R.id.item_list -> {
+                    val fragmentManager = supportFragmentManager
+                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.frameLayout, MessagesFragment()).commit()
+                    true
+                }
+                R.id.item_info -> {
+//                    fragmentTransaction.replace(R.id.frameLayout, InfoFragment()).commit()
+                    true
+                }
+                else -> false
+            }
         }
+        binding.bottomNavigationView.selectedItemId = R.id.item_main
+
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -133,13 +155,13 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 else if (intent.action.equals(SERVICE_TIME_REMAINING_RESULT)) {
                     vm.getServiceRemainingTime()
                 } else if (intent.action.equals(SERVICE_NEW_MESSAGE)) {
-                    vm.getAllMessages()
+                    messageFragmentViewModel.getAllMessages()
                 } else if (intent.action.equals(SERVICE_ERROR)) {
                     vm.setServiceError(intent.extras!!.getString(ERROR, ""))
                 } else if (intent.action.equals(SERVICE_START_SUCCESS)) {
                     vm.setServiceError("")
                 } else if (intent.action.equals(RECEIVER_NEW_MESSAGE)) {
-                    vm.getAllMessages()
+                    messageFragmentViewModel.getAllMessages()
                 }
             }
         }
