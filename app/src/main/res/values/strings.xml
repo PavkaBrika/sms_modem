@@ -17,4 +17,8 @@
     <string name="main">Main</string>
     <string name="info">Info</string>
     <string name="messages">Messages</string>
+    <string name="app_theme">App theme</string>
+    <string name="rate_this_app">Rate this app</string>
+    <string name="write_email_to_developers">Write email to developers</string>
+    <string name="app_version">App version</string>
 </resources>

@@ -139,7 +139,9 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     true
                 }
                 R.id.item_info -> {
-//                    fragmentTransaction.replace(R.id.frameLayout, InfoFragment()).commit()
+                    val fragmentManager = supportFragmentManager
+                    val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.replace(R.id.frameLayout, InfoFragment()).commit()
                     true
                 }
                 else -> false
