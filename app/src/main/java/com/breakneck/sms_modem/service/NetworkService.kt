@@ -55,9 +55,15 @@ const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_
 const val SERVICE_NEW_MESSAGE = "com.breakneck.sms_modem.SERVICE_NEW_MESSAGE"
 const val SERVICE_ERROR = "com.breakneck.sms_modem.SERVICE_ERROR"
 const val SERVICE_START_SUCCESS = "com.breakneck.sms_modem.SERVICE_START_SUCCESS"
+const val SERVICE_REMIND_LATER = "com.breakneck.sms_modem.REMIND_LATER"
 
 const val NEW_MESSAGE = "com.breakneck.sms_modem.NEW_MESSAGE"
 const val ERROR = "com.breakneck.sms_modem.ERROR"
+
+const val SERVICE_NOTIFICATION_ID = 21343214
+const val REMINDER_NOTIFICATION_ID = 21343215
+
+const val DEFAULT_REMIND_TIME = 1990
 
 open class NetworkService : Service() {
 
@@ -88,6 +94,8 @@ open class NetworkService : Service() {
 
     val notificationChannelId = "SMS_SERVICE_CHANNEL"
 
+    var remindTime = DEFAULT_REMIND_TIME
+
     val TAG = "NetworkService"
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -111,7 +119,7 @@ open class NetworkService : Service() {
             val action = intent.action
             ipAddress = intent.extras?.getString("ipAddress").toString()
             if ((::ipAddress.isInitialized) && (ipAddress != "null")) {
-                notificationManager.notify(1, createNotification())
+                notificationManager.notify(SERVICE_NOTIFICATION_ID, createServiceNotification())
                 saveDeviceIpAddress.execute(ipAddress = IpAddress(ipAddress))
             }
             try {
@@ -125,6 +133,12 @@ open class NetworkService : Service() {
                             e.printStackTrace()
                             sendErrorWithService(getString(R.string.unable_to_create_service_please_change_port_and_try_again))
                             stopService()
+                        }
+                    }
+                    SERVICE_REMIND_LATER -> {
+                        if (getServiceRemainingTime.execute() > 20) {
+                            remindTime -= 40
+                            notificationManager.cancel(REMINDER_NOTIFICATION_ID)
                         }
                     }
                 }
@@ -144,8 +158,8 @@ open class NetworkService : Service() {
         broadcaster = LocalBroadcastManager.getInstance(this)
 
         createNotificationChannel()
-        val notification: Notification = createNotification()
-        startForeground(1, notification)
+        val notification: Notification = createServiceNotification()
+        startForeground(SERVICE_NOTIFICATION_ID, notification)
     }
 
     override fun onDestroy() {
@@ -212,6 +226,7 @@ open class NetworkService : Service() {
             } else {
                 stopForeground(true)
             }
+            notificationManager.cancelAll()
             stopSelf()
         } catch (e: Exception) {
             Log.e("TAG", "Service stopped without being started: ${e.message}")
@@ -267,7 +282,7 @@ open class NetworkService : Service() {
         }
     }
 
-    fun createNotification(): Notification {
+    fun createServiceNotification(): Notification {
         val notificationClickPendingIntent =
             Intent(this, MainActivity::class.java)
                 .let { notificationIntent ->
@@ -293,21 +308,58 @@ open class NetworkService : Service() {
 
         return NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("SMS Service")
+            .setContentTitle(getString(R.string.sms_service_is_running))
             .setContentText(
                 if (this::ipAddress.isInitialized) {
                     getString(
-                        R.string.sms_service_is_running_with_ip,
+                        R.string.with_ip,
                         ipAddress,
                         getPort.execute().value.toString()
                     )
                 } else {
-                    getString(R.string.sms_service_is_running)
+                    getString(R.string.unable_to_get_ip_address)
                 }
             )
             .addAction(R.drawable.baseline_close_24, "Stop service", notificationButtonPendingIntent)
+            .setOngoing(true)
             .setContentIntent(notificationClickPendingIntent)
             .build()
+    }
+
+    private fun createReminderNotification() {
+        val notificationClickPendingIntent =
+            Intent(this, MainActivity::class.java)
+                .let { notificationIntent ->
+                    PendingIntent.getActivity(
+                        this,
+                        0,
+                        notificationIntent,
+                        PendingIntent.FLAG_MUTABLE
+                    )
+                }
+
+        val notificationButtonPendingIntent =
+            Intent(this, NetworkService::class.java)
+                .apply { action = SERVICE_REMIND_LATER }
+                .let { notificationIntent ->
+                    PendingIntent.getService(
+                        this,
+                        0,
+                        notificationIntent,
+                        PendingIntent.FLAG_MUTABLE
+                    )
+                }
+
+        val notification = NotificationCompat.Builder(this, notificationChannelId)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle(getString(R.string.service_will_stop_after_3_hours))
+            .setContentText(getString(R.string.please_watch_ads_or_buy_a_subscription_to_continue_service_work))
+            .addAction(R.drawable.baseline_close_24,
+                getString(R.string.remind_later), notificationButtonPendingIntent)
+            .setContentIntent(notificationClickPendingIntent)
+            .setAutoCancel(true)
+
+        notificationManager.notify(REMINDER_NOTIFICATION_ID, notification.build())
     }
 
     private fun sendSMS(phoneNumber: String, message: String, date: String) {
@@ -398,6 +450,9 @@ open class NetworkService : Service() {
 
             override fun onTick(millisUntilFinished: Long) {
 //                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
+                if ((millisUntilFinished / 1000).toInt() == remindTime) {
+                    createReminderNotification()
+                }
                 updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
             }
@@ -419,7 +474,6 @@ open class NetworkService : Service() {
     }
 
     inner class NetworkServiceBinder : Binder() {
-
         fun getService(): NetworkService {
             return this@NetworkService
         }

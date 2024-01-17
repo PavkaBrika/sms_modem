@@ -10,7 +10,7 @@
     <string name="subscribe">S\'abonner</string>
     <string name="loading">Chargement...</string>
     <string name="close_list_of_messages_history">Fermer la liste des messages</string>
-    <string name="sms_service_is_running_with_ip">Le service SMS fonctionne avec l\'IP %1$s:%2$s</string>
+    <string name="with_ip">Le service SMS fonctionne avec l\'IP %1$s:%2$s</string>
     <string name="sms_service_is_running">Le service SMS est en cours d\'exécution</string>
     <string name="network_connection_unavailable">Connexion réseau indisponible</string>
 </resources>

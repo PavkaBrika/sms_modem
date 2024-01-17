@@ -316,6 +316,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
     }
 
     override fun updateServiceRemainingTimer() {
-        boundNetworkService.updateServiceRemainingTimer()
+        if (::boundNetworkService.isInitialized)
+            boundNetworkService.updateServiceRemainingTimer()
     }
 }

@@ -10,7 +10,7 @@
     <string name="subscribe">Subscribe</string>
     <string name="loading">Loading...</string>
     <string name="close_list_of_messages_history">Close list of messages</string>
-    <string name="sms_service_is_running_with_ip">SMS Service is running with IP %1$s:%2$s</string>
+    <string name="with_ip">IP %1$s:%2$s</string>
     <string name="sms_service_is_running">SMS Service is running</string>
     <string name="network_connection_unavailable">Network connection unavailable</string>
     <string name="unable_to_create_service_please_change_port_and_try_again">Unable to start service. Please, change PORT and try again!</string>
@@ -24,4 +24,8 @@
     <string name="no_messages_yet">No messages yet</string>
     <string name="unable_to_start_service_please_watch_ads">Unable to start service. Please, watch ads</string>
     <string name="url_must_begin_with_http_or_https">URL must begin with http:// or https://</string>
+    <string name="unable_to_get_ip_address">Unable to get IP Address</string>
+    <string name="service_will_stop_after_3_hours">Service will stop after 3 hours</string>
+    <string name="please_watch_ads_or_buy_a_subscription_to_continue_service_work">Please, watch ads or buy a subscription to continue service work</string>
+    <string name="remind_later">Remind later</string>
 </resources>

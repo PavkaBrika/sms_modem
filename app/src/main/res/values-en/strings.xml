@@ -10,7 +10,7 @@
     <string name="subscribe">Subscribe</string>
     <string name="loading">Loading...</string>
     <string name="close_list_of_messages_history">Close list of messages</string>
-    <string name="sms_service_is_running_with_ip">SMS Service is running with IP %1$s:%2$s</string>
+    <string name="with_ip">SMS Service is running with IP %1$s:%2$s</string>
     <string name="sms_service_is_running">SMS Service is running</string>
     <string name="network_connection_unavailable">Network connection unavailable</string>
 </resources>
