@@ -26,6 +26,8 @@ import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
+import java.text.SimpleDateFormat
+import java.util.Date
 
 class MainFragment: Fragment() {
 
@@ -35,6 +37,10 @@ class MainFragment: Fragment() {
 
     private val mainActivityVM by activityViewModel<MainActivityViewModel>()
     private val vm by viewModel<MainFragmentViewModel>()
+
+    private val sdf = SimpleDateFormat("HH:mm:ss")
+    val date = Date()
+
 
     interface ActivityInterface {
         fun serviceAction(intent: ServiceIntent)
@@ -179,7 +185,8 @@ class MainFragment: Fragment() {
         }
 
         mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
-            binding.serviceTimeRemainingTextView.text = time.toString()
+            val millis = time * 1000
+            binding.serviceTimeRemainingTextView.text = sdf.format(Date(millis))
         }
 
         mainActivityVM.serviceError.observe(viewLifecycleOwner) { error ->

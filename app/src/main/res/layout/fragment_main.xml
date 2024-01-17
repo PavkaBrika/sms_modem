@@ -37,12 +37,6 @@
                 android:layout_height="wrap_content"
                 android:text="It means that you can use app only after watching ads" />
 
-            <TextView
-                android:id="@+id/serviceTimeRemainingTextView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="fsdfasdf" />
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -149,6 +143,16 @@
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="40sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/serviceTimeRemainingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Remaining time"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="36sp"
                 android:textStyle="bold" />
 
             <LinearLayout

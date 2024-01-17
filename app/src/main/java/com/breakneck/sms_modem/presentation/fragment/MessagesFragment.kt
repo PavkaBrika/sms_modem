@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.usecase.message.SendMessageToServer
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
+import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMessagesBinding
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
@@ -45,10 +46,11 @@ class MessagesFragment : Fragment() {
         vm.messageList.observe(viewLifecycleOwner) { list ->
             binding.messagesRecyclerView.apply {
                 if (list.isEmpty()) {
-                    binding.noMessagesHintTextView.visibility = View.VISIBLE
+                    binding.messagesHintTextView.visibility = View.VISIBLE
+                    binding.messagesHintTextView.setText(R.string.no_messages_yet)
                     binding.messagesLinearLayout.visibility = View.GONE
                 } else {
-                    binding.noMessagesHintTextView.visibility = View.GONE
+                    binding.messagesHintTextView.visibility = View.GONE
                     binding.messagesLinearLayout.visibility = View.VISIBLE
                     val onMessageClickListener = object : MessageAdapter.OnMessageClickListener {
                         override fun onErrorMessageClick(message: Message, position: Int) {
@@ -66,8 +68,6 @@ class MessagesFragment : Fragment() {
                         )
                     )
                 }
-
-
             }
         }
 

@@ -7,14 +7,14 @@
     tools:context=".presentation.fragment.MessagesFragment">
 
     <TextView
-        android:id="@+id/noMessagesHintTextView"
+        android:id="@+id/messagesHintTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="2dp"
-        android:text="@string/no_messages_yet"
+        android:text="@string/loading"
         android:textSize="25sp"
         android:textAlignment="center"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:animateLayoutChanges="true"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/messagesRecyclerView"
