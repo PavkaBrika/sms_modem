@@ -30,6 +30,7 @@ import com.breakneck.domain.usecase.message.SaveSentMessage
 import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
+import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.R
@@ -46,6 +47,7 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
+import org.koin.core.component.inject
 import java.lang.StringBuilder
 import java.net.BindException
 import java.util.Locale
@@ -82,6 +84,8 @@ open class NetworkService : Service() {
     val getServiceRemainingTime: GetServiceRemainingTime by inject()
     val saveServiceRemainingTime: SaveServiceRemainingTime by inject()
     val saveDeviceIpAddress: SaveDeviceIpAddress by inject()
+    val getMessageDestinationUrl: GetMessageDestinationUrl by inject()
+
 
     private lateinit var server: NettyApplicationEngine
     private var serviceState: ServiceState = ServiceState.Disabled
@@ -199,7 +203,8 @@ open class NetworkService : Service() {
             return
 
         createServer()
-        createSmsReceiver()
+        if (getMessageDestinationUrl.execute().value.isNotEmpty())
+            createSmsReceiver()
 
         serviceState = ServiceState.Enabled
         saveServiceState.execute(serviceState)
