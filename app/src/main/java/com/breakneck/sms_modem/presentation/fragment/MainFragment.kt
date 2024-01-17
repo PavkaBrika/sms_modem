@@ -28,6 +28,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
 import java.text.SimpleDateFormat
 import java.util.Date
+import java.util.concurrent.TimeUnit
 
 class MainFragment: Fragment() {
 
@@ -186,7 +187,13 @@ class MainFragment: Fragment() {
 
         mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
             val millis = time * 1000
-            binding.serviceTimeRemainingTextView.text = sdf.format(Date(millis))
+//            binding.serviceTimeRemainingTextView.text = sdf.format(Date(millis))
+            binding.serviceTimeRemainingTextView.text = String.format("%02d:%02d:%02d",
+                TimeUnit.MILLISECONDS.toHours(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toSeconds(millis) -
+                        TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
+            );
         }
 
         mainActivityVM.serviceError.observe(viewLifecycleOwner) { error ->
