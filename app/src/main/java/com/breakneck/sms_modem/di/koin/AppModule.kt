@@ -33,7 +33,10 @@ val appModule = module {
 
     viewModel<MessageFragmentViewModel> {
         MessageFragmentViewModel(
-            getAllMessages = get()
+            getAllMessages = get(),
+            sendMessageToServer = get(),
+            getMessageDestinationUrl = get(),
+            updateMessage = get()
         )
     }
 

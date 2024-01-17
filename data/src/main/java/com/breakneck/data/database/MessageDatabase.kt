@@ -17,11 +17,11 @@ class MessageDatabase(private val context: Context): DatabaseStorage {
         Log.e("TAG", "message saved")
     }
 
-    override fun getLastSentMessage(): MessageData {
-        return db.messageDao().getLastMessage()
-    }
-
     override fun getAllMessages(): List<MessageData> {
         return db.messageDao().getAllMessages()
+    }
+
+    override fun updateMessage(message: MessageData) {
+        db.messageDao().updateMessage(message = message)
     }
 }

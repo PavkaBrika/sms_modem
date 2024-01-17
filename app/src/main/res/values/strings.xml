@@ -28,4 +28,5 @@
     <string name="service_will_stop_after_3_hours">Service will stop after 3 hours</string>
     <string name="please_watch_ads_or_buy_a_subscription_to_continue_service_work">Please, watch ads or buy a subscription to continue service work</string>
     <string name="remind_later">Remind later</string>
+    <string name="this_message_was_not_sent_to_the_server_tap_to_send">This message was not sent to the server. Tap to send.</string>
 </resources>

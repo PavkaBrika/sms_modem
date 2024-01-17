@@ -9,8 +9,8 @@ interface MessageRepository {
 
     fun saveSentMessage(message: Message)
 
-    fun getLastSentMessage(): Message
-
     fun getAllMessages(): List<Message>
+
+    fun updateMessage(message: Message)
 
 }

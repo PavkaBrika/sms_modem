@@ -66,8 +66,13 @@ class SMSBroadcastReceiver : BroadcastReceiver(), KoinComponent {
                     date = FromTimestampToDateString().execute(timestampMillis, getCurrentLocale(context)),
                     sender = Sender.Phone
                 )
+                try {
+                    sendMessageToServer.execute(url = getMessageDestinationUrl.execute(), message = message)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    message.sent = false
+                }
                 saveSentMessage.execute(message)
-                sendMessageToServer.execute(url = getMessageDestinationUrl.execute(), message = message)
             } finally {
                 pendingResult.finish()
             }

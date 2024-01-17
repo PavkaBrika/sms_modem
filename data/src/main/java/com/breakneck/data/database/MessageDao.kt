@@ -13,10 +13,6 @@ interface MessageDao {
     @Query("SELECT * FROM messagedata")
     fun getAllMessages(): List<MessageData>
 
-
-    @Query("SELECT * FROM messagedata ORDER BY id DESC LIMIT 1")
-    fun getLastMessage(): MessageData
-
     @Insert
     fun insertMessage(message: MessageData)
 

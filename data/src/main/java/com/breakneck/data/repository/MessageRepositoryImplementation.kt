@@ -37,25 +37,17 @@ class MessageRepositoryImplementation(
                     Sender.Server -> SenderData.Server
                     null -> null
                 },
+                sent = message.sent,
                 id = null
             )
         )
-    }
-
-    override fun getLastSentMessage(): Message {
-        databaseStorage.getLastSentMessage().also {
-            return Message(
-                cellNumber = it.cellNumber,
-                text = it.text,
-                date = it.date
-            )
-        }
     }
 
     override fun getAllMessages(): List<Message> {
         val messagesDataList = databaseStorage.getAllMessages()
         return messagesDataList.map {
             Message(
+                id = it.id,
                 cellNumber = it.cellNumber,
                 text = it.text,
                 date = it.date,
@@ -63,8 +55,26 @@ class MessageRepositoryImplementation(
                     SenderData.Phone -> Sender.Phone
                     SenderData.Server -> Sender.Server
                     else -> null
-                }
+                },
+                sent = it.sent
             )
         }
+    }
+
+    override fun updateMessage(message: Message) {
+        databaseStorage.updateMessage(
+            MessageData(
+                id = message.id,
+                cellNumber = message.cellNumber,
+                text = message.text,
+                date = message.date,
+                sender = when (message.sender) {
+                    Sender.Phone -> SenderData.Phone
+                    Sender.Server -> SenderData.Server
+                    null -> null
+                },
+                sent = message.sent
+            )
+        )
     }
 }

@@ -6,13 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.breakneck.domain.model.Message
+import com.breakneck.domain.usecase.message.SendMessageToServer
+import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMessagesBinding
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
+import org.koin.core.component.inject
 
-class MessagesFragment: Fragment() {
+class MessagesFragment : Fragment() {
 
     lateinit var binding: FragmentMessagesBinding
 
@@ -31,7 +39,7 @@ class MessagesFragment: Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMessagesBinding.inflate(inflater,container, false)
+        binding = FragmentMessagesBinding.inflate(inflater, container, false)
         val view = binding.root
 
         vm.messageList.observe(viewLifecycleOwner) { list ->
@@ -42,7 +50,15 @@ class MessagesFragment: Fragment() {
                 } else {
                     binding.noMessagesHintTextView.visibility = View.GONE
                     binding.messagesLinearLayout.visibility = View.VISIBLE
-                    adapter = MessageAdapter(messagesList = list.toMutableList())
+                    val onMessageClickListener = object : MessageAdapter.OnMessageClickListener {
+                        override fun onErrorMessageClick(message: Message, position: Int) {
+                            vm.sendMessageToServer(message)
+                        }
+                    }
+                    adapter = MessageAdapter(
+                        messagesList = list.toMutableList(),
+                        onMessageClickListener = onMessageClickListener
+                    )
                     addItemDecoration(
                         DividerItemDecoration(
                             view.context,
