@@ -16,8 +16,14 @@ class InfoFragment: Fragment() {
 
     lateinit var binding: FragmentInfoBinding
 
+    interface InfoInterface {
+        fun showRemindNotificationDialog()
+    }
+
+    lateinit var infoInterface: InfoInterface
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        infoInterface = context as InfoInterface
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +52,10 @@ class InfoFragment: Fragment() {
         }
 
         binding.appVersionTextView.text = getString(R.string.app_version, version)
+
+        binding.reminderNotificationTimeLayout.setOnClickListener {
+            infoInterface.showRemindNotificationDialog()
+        }
 
         return view
     }

@@ -50,7 +50,7 @@ import com.google.android.material.textfield.TextInputLayout
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 
-class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
+class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFragment.InfoInterface {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -247,17 +247,21 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 )
             }
             val urlInputString = urlTextInputLayout.editText!!.text.toString()
-            if ((urlInputString.startsWith("http://")) || (urlInputString.startsWith("https://"))) {
-                vm.saveMessageDestinationUrl(
-                    MessageDestinationUrl(
-                        urlInputString
+            if (urlInputString.isNotEmpty()) {
+                if ((urlInputString.startsWith("http://")) || (urlInputString.startsWith("https://"))) {
+                    vm.saveMessageDestinationUrl(
+                        MessageDestinationUrl(
+                            urlInputString
+                        )
                     )
-                )
-                urlTextInputLayout.error = null
+                    urlTextInputLayout.error = null
+                    dialog.dismiss()
+                }
+                else
+                    urlTextInputLayout.error = getString(R.string.url_must_begin_with_http_or_https)
+            } else {
                 dialog.dismiss()
             }
-            else
-                urlTextInputLayout.error = getString(R.string.url_must_begin_with_http_or_https)
         }
         dialog.show()
     }
@@ -318,5 +322,13 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
     override fun updateServiceRemainingTimer() {
         if (::boundNetworkService.isInitialized)
             boundNetworkService.updateServiceRemainingTimer()
+    }
+
+    override fun showRemindNotificationDialog() {
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(R.layout.dialog_settings)
+
+
+
     }
 }
