@@ -2,6 +2,7 @@ package com.breakneck.sms_modem.di.koin
 
 import android.util.Log
 import com.breakneck.data.network.NetworkApi
+import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
@@ -27,16 +28,19 @@ val appModule = module {
         )
     }
 
-    viewModel<MainFragmentViewModel> {
-        MainFragmentViewModel()
-    }
-
     viewModel<MessageFragmentViewModel> {
         MessageFragmentViewModel(
             getAllMessages = get(),
             sendMessageToServer = get(),
             getMessageDestinationUrl = get(),
             updateMessage = get()
+        )
+    }
+
+    viewModel<InfoFragmentViewModel> {
+        InfoFragmentViewModel(
+            saveRemindNotificationTime = get(),
+            deleteAllMessages = get()
         )
     }
 

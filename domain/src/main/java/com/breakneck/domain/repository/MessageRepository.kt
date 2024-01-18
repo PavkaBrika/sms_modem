@@ -13,4 +13,6 @@ interface MessageRepository {
 
     fun updateMessage(message: Message)
 
+    fun deleteAllMessages()
+
 }

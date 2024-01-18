@@ -38,4 +38,6 @@
     <string name="_6_hours">6 hours</string>
     <string name="_9_hours">9 hours</string>
     <string name="_12_hours">12 hours</string>
+    <string name="delete_messages_history">Delete messages history</string>
+    <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Are you sure? It will delete all messages on Message screen.</string>
 </resources>

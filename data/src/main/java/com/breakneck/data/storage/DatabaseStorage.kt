@@ -10,4 +10,6 @@ interface DatabaseStorage {
     fun getAllMessages(): List<MessageData>
 
     fun updateMessage(message: MessageData)
+
+    fun deleteAllMessages()
 }

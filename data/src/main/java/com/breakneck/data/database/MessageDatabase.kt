@@ -24,4 +24,8 @@ class MessageDatabase(private val context: Context): DatabaseStorage {
     override fun updateMessage(message: MessageData) {
         db.messageDao().updateMessage(message = message)
     }
+
+    override fun deleteAllMessages() {
+        db.messageDao().deleteAllMessages()
+    }
 }

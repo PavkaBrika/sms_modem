@@ -77,4 +77,8 @@ class MessageRepositoryImplementation(
             )
         )
     }
+
+    override fun deleteAllMessages() {
+        databaseStorage.deleteAllMessages()
+    }
 }

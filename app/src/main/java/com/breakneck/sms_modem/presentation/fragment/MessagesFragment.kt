@@ -43,6 +43,9 @@ class MessagesFragment : Fragment() {
         binding = FragmentMessagesBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        if (vm.isMessagesDeleted.value == true)
+            vm.getAllMessages()
+
         vm.messageList.observe(viewLifecycleOwner) { list ->
             binding.messagesRecyclerView.apply {
                 if (list.isEmpty()) {

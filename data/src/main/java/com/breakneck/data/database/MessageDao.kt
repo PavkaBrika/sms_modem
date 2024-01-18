@@ -13,6 +13,9 @@ interface MessageDao {
     @Query("SELECT * FROM messagedata")
     fun getAllMessages(): List<MessageData>
 
+    @Query("DELETE FROM messagedata")
+    fun deleteAllMessages()
+
     @Insert
     fun insertMessage(message: MessageData)
 

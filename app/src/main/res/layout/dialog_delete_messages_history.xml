@@ -10,50 +10,15 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/service_settings"
+        android:text="@string/delete_messages_history"
         android:textSize="24sp"
         android:layout_marginBottom="16dp"/>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/portTextInput"
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="PORT"
-        app:boxStrokeColor="@color/black"
-        app:endIconMode="clear_text"
-        app:errorEnabled="true"
-        app:hintTextColor="@color/black">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/portEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            android:maxLength="4">
-
-        </com.google.android.material.textfield.TextInputEditText>
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/urlTextInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="URL"
-        app:boxStrokeColor="@color/black"
-        app:endIconMode="clear_text"
-        app:errorEnabled="true"
-        app:helperText="Enter the URL where SMS will be sent"
-        app:hintTextColor="@color/black">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/urlEditText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </com.google.android.material.textfield.TextInputEditText>
-
-    </com.google.android.material.textfield.TextInputLayout>
+        android:textSize="16sp"
+        android:text="@string/are_you_sure_it_will_delete_all_messages_on_message_screen"/>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

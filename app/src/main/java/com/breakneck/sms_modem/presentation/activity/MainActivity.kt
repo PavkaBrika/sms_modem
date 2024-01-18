@@ -45,6 +45,7 @@ import com.breakneck.sms_modem.service.SERVICE_NEW_MESSAGE
 import com.breakneck.sms_modem.service.SERVICE_START_SUCCESS
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
+import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
@@ -54,7 +55,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 
-class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFragment.InfoInterface {
+class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
     private lateinit var binding: ActivityMainBinding
 
@@ -69,7 +70,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
 
     private val vm by viewModel<MainActivityViewModel>()
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
-    private val saveRemindNotificationTime: SaveRemindNotificationTime by inject()
 
     lateinit var boundNetworkService: NetworkService
 //    lateinit var networkChangeReceiver: NetworkChangeReceiver
@@ -327,29 +327,5 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
     override fun updateServiceRemainingTimer() {
         if (::boundNetworkService.isInitialized)
             boundNetworkService.updateServiceRemainingTimer()
-    }
-
-    override fun showRemindNotificationDialog() {
-        val dialog = BottomSheetDialog(this)
-        dialog.setContentView(R.layout.dialog_notification_settings)
-
-        val onClickListener = object: View.OnClickListener {
-            override fun onClick(view: View?) {
-                when (view!!.id) {
-                    //TODO CHANGE TO HOURS
-                    R.id.hours3Layout -> saveRemindNotificationTime.execute(3000)
-                    R.id.hours6Layout -> saveRemindNotificationTime.execute(6000)
-                    R.id.hours9Layout -> saveRemindNotificationTime.execute(9000)
-                    R.id.hours12Layout -> saveRemindNotificationTime.execute(12000)
-                }
-                dialog.dismiss()
-            }
-        }
-
-        dialog.findViewById<LinearLayout>(R.id.hours3Layout)!!.setOnClickListener(onClickListener)
-        dialog.findViewById<LinearLayout>(R.id.hours6Layout)!!.setOnClickListener(onClickListener)
-        dialog.findViewById<LinearLayout>(R.id.hours9Layout)!!.setOnClickListener(onClickListener)
-        dialog.findViewById<LinearLayout>(R.id.hours12Layout)!!.setOnClickListener(onClickListener)
-        dialog.show()
     }
 }

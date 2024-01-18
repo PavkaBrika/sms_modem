@@ -38,11 +38,16 @@ class MessageFragmentViewModel(
     val messageList: LiveData<List<Message>>
         get() = _messagesList
 
+    private val _isMessagesDeleted = MutableLiveData<Boolean>(false)
+    val isMessagesDeleted: LiveData<Boolean>
+        get() = _isMessagesDeleted
+
     fun getAllMessages() {
         viewModelScope.launch(Dispatchers.IO) {
             val messageList = getAllMessages.execute()
             withContext(Dispatchers.Main) {
                 _messagesList.value = messageList
+                changeIsMessageDeleted()
             }
         }
     }
@@ -59,5 +64,12 @@ class MessageFragmentViewModel(
         }.invokeOnCompletion {
             getAllMessages()
         }
+    }
+
+    fun changeIsMessageDeleted() {
+        if (isMessagesDeleted.value == true)
+            _isMessagesDeleted.value = false
+        else
+            _isMessagesDeleted.value = true
     }
 }
