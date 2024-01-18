@@ -154,7 +154,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 else -> false
             }
         }
-        binding.bottomNavigationView.selectedItemId = R.id.item_main
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -268,6 +267,11 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 dialog.dismiss()
             }
         }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
         dialog.show()
     }
 

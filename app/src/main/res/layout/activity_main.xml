@@ -9,6 +9,7 @@
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/frameLayout"
         android:layout_width="match_parent"
+        android:name="com.breakneck.sms_modem.presentation.fragment.MainFragment"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/bottomNavigationView"
         app:layout_constraintEnd_toEndOf="parent"
