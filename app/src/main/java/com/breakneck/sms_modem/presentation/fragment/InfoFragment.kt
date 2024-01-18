@@ -77,6 +77,7 @@ class InfoFragment: Fragment() {
             override fun onClick(view: View?) {
                 when (view!!.id) {
                     //TODO CHANGE TO HOURS
+                    R.id.offLayout -> vm.saveRemindNotificationTime(0)
                     R.id.hours3Layout -> vm.saveRemindNotificationTime(3000)
                     R.id.hours6Layout -> vm.saveRemindNotificationTime(6000)
                     R.id.hours9Layout -> vm.saveRemindNotificationTime(9000)

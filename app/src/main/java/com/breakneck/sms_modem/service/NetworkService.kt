@@ -458,9 +458,10 @@ open class NetworkService : Service() {
 
             override fun onTick(millisUntilFinished: Long) {
 //                Log.e(TAG, "CountDownTimer second remaining until finished = $millisUntilFinished")
-                if ((millisUntilFinished / 1000) == (remindTime / 1000)) {
-                    createReminderNotification()
-                }
+                if (remindTime != 0L)
+                    if ((millisUntilFinished / 1000) == (remindTime / 1000)) {
+                        createReminderNotification()
+                    }
                 updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
             }
