@@ -34,4 +34,12 @@ class SettingsRepositoryImplementation(private val settingsStorage: SettingsStor
     override fun getDeviceIpAddress(): IpAddress {
         return IpAddress(value = settingsStorage.getDeviceIpAddress().value)
     }
+
+    override fun saveRemindNotificationTime(timeInMillis: Long) {
+        return settingsStorage.saveRemindNotificationTime(timeInMillis = timeInMillis)
+    }
+
+    override fun getRemindNotificationTime(): Long {
+        return settingsStorage.getRemindNotificationTime()
+    }
 }

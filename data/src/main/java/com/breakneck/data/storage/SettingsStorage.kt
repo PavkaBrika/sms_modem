@@ -17,4 +17,8 @@ interface SettingsStorage {
     fun saveDeviceIpAddress(ipAddress: IpAddressData)
 
     fun getDeviceIpAddress(): IpAddressData
+
+    fun getRemindNotificationTime(): Long
+
+    fun saveRemindNotificationTime(timeInMillis: Long)
 }

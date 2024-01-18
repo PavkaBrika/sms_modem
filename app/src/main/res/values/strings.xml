@@ -31,4 +31,11 @@
     <string name="remind_later">Remind later</string>
     <string name="this_message_was_not_sent_to_the_server_tap_to_send">This message was not sent to the server. Tap to send.</string>
     <string name="remind_notification">Remind notification</string>
+    <string name="service_settings">Service settings</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
+    <string name="_3_hours">3 hours</string>
+    <string name="_6_hours">6 hours</string>
+    <string name="_9_hours">9 hours</string>
+    <string name="_12_hours">12 hours</string>
 </resources>

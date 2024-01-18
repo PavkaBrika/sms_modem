@@ -18,4 +18,8 @@ interface SettingsRepository {
 
     fun getDeviceIpAddress(): IpAddress
 
+    fun getRemindNotificationTime(): Long
+
+    fun saveRemindNotificationTime(timeInMillis: Long)
+
 }

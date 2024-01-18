@@ -16,7 +16,9 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
+import android.view.View
 import android.widget.Button
+import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -326,9 +328,23 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
 
     override fun showRemindNotificationDialog() {
         val dialog = BottomSheetDialog(this)
-        dialog.setContentView(R.layout.dialog_settings)
+        dialog.setContentView(R.layout.dialog_notification_settings)
 
+        val onClickListener = object: View.OnClickListener {
+            override fun onClick(view: View?) {
+                when (view!!.id) {
+                    R.id.hours3Layout ->{}
+                    R.id.hours6Layout ->{}
+                    R.id.hours9Layout ->{}
+                    R.id.hours12Layout ->{}
+                }
+            }
+        }
 
+        dialog.findViewById<LinearLayout>(R.id.hours3Layout)!!.setOnClickListener(onClickListener)
+        dialog.findViewById<LinearLayout>(R.id.hours6Layout)!!.setOnClickListener(onClickListener)
+        dialog.findViewById<LinearLayout>(R.id.hours9Layout)!!.setOnClickListener(onClickListener)
+        dialog.findViewById<LinearLayout>(R.id.hours12Layout)!!.setOnClickListener(onClickListener)
 
     }
 }

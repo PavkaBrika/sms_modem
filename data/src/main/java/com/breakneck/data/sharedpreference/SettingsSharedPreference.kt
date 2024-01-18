@@ -10,6 +10,7 @@ const val SETTINGS_SHARED_PREFERENCES_NAME = "SETTINGS_SHARED_PREFERENCES"
 const val PORT = "PORT"
 const val MESSAGE_DESTINATION_URL = "MESSAGE_DESTINATION_URL"
 const val DEVICE_IP_ADDRESS = "DEVICE_IP_ADDRESS"
+const val REMIND_NOTIFICATION = "REMIND_NOTIFICATION"
 
 class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
@@ -37,5 +38,13 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
     override fun getDeviceIpAddress(): IpAddressData {
         return IpAddressData(value = sharedPreference.getString(DEVICE_IP_ADDRESS, "")!!)
+    }
+
+    override fun saveRemindNotificationTime(timeInMillis: Long) {
+        sharedPreference.edit().putLong(REMIND_NOTIFICATION, timeInMillis).apply()
+    }
+
+    override fun getRemindNotificationTime(): Long {
+        return sharedPreference.getLong(REMIND_NOTIFICATION, 0)
     }
 }
