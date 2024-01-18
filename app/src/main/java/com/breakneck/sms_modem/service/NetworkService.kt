@@ -140,10 +140,13 @@ open class NetworkService : Service() {
                         }
                     }
                     SERVICE_REMIND_LATER -> {
-                        if (getServiceRemainingTime.execute() > 20) {
-                            remindTime -= 40
-                            notificationManager.cancel(REMINDER_NOTIFICATION_ID)
+                        //TODO CHANGE TO HOURS (now 1000 = 1 hour)
+                        if (getServiceRemainingTime.execute() > 3000) {
+                            remindTime = 3000
+                        } else if (getServiceRemainingTime.execute() > 1000) {
+                            remindTime = 1000
                         }
+                        notificationManager.cancel(REMINDER_NOTIFICATION_ID)
                     }
                 }
             } catch (e: NullPointerException) {

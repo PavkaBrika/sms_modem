@@ -153,6 +153,7 @@ class MainActivityViewModel(
     }
 
     fun saveServiceRemainingTime() {
+        //TODO CHANGE TO HOURS
         saveServiceRemainingTime.execute(24000)
         getServiceRemainingTime()
     }

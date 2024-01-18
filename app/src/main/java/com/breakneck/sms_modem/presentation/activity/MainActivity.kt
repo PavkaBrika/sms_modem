@@ -336,6 +336,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
         val onClickListener = object: View.OnClickListener {
             override fun onClick(view: View?) {
                 when (view!!.id) {
+                    //TODO CHANGE TO HOURS
                     R.id.hours3Layout -> saveRemindNotificationTime.execute(3000)
                     R.id.hours6Layout -> saveRemindNotificationTime.execute(6000)
                     R.id.hours9Layout -> saveRemindNotificationTime.execute(9000)
