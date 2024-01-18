@@ -9,13 +9,13 @@
               <type value="RUNNING_DEVICE_TARGET" />
               <deviceKey>
                 <Key>
-                  <type value="SERIAL_NUMBER" />
-                  <value value="RF8M21MAHEY" />
+                  <type value="VIRTUAL_DEVICE_PATH" />
+                  <value value="C:\Users\badek\.android\avd\Galaxy_Nexus_API_33.avd" />
                 </Key>
               </deviceKey>
             </Target>
           </runningDeviceTargetSelectedWithDropDown>
-          <timeTargetWasSelectedWithDropDown value="2024-01-18T10:21:21.400483Z" />
+          <timeTargetWasSelectedWithDropDown value="2024-01-18T11:08:28.092287300Z" />
         </State>
       </entry>
     </value>
