@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">sms_modem</string>
     <string name="settings">Paramètres</string>
     <string name="enable">Allumer</string>
     <string name="disable">Désactiver</string>
@@ -10,7 +9,35 @@
     <string name="subscribe">S\'abonner</string>
     <string name="loading">Chargement...</string>
     <string name="close_list_of_messages_history">Fermer la liste des messages</string>
-    <string name="with_ip">Le service SMS fonctionne avec l\'IP %1$s:%2$s</string>
     <string name="sms_service_is_running">Le service SMS est en cours d\'exécution</string>
     <string name="network_connection_unavailable">Connexion réseau indisponible</string>
+    <string name="email_subject">Email à propos de SMS Modem App, version %s</string>
+    <string name="app_version">Version de l\'application</string>
+    <string name="unable_to_create_service_please_change_port_and_try_again">Impossible de démarrer le service. Veuillez changer de PORT et réessayer !</string>
+    <string name="main">Principal</string>
+    <string name="info">Info</string>
+    <string name="messages">Messages</string>
+    <string name="write_email_to_developers">Écrire un courriel aux développeurs</string>
+    <string name="no_messages_yet">Aucun message pour l\'instant</string>
+    <string name="unable_to_start_service_please_watch_ads">Impossible de démarrer le service. Veuillez regarder les annonces</string>
+    <string name="url_must_begin_with_http_or_https">L\'URL doit commencer par http:// ou https://</string>
+    <string name="unable_to_get_ip_address">Impossible d\'obtenir l\'adresse IP</string>
+    <string name="service_will_stop_after_hours">Le modem SMS s\'arrête après %d h.</string>
+    <string name="please_watch_ads_or_buy_a_subscription_to_continue_service_work">S\'il vous plaît, regardez les publicités ou achetez un abonnement pour continuer le travail de service.</string>
+    <string name="remind_later">Rappeler plus tard</string>
+    <string name="this_message_was_not_sent_to_the_server_tap_to_send">Ce message n\'a pas été envoyé au serveur. Tapez sur pour l\'envoyer.</string>
+    <string name="remind_notification">Notification de rappel</string>
+    <string name="service_settings">Paramètres de service</string>
+    <string name="confirm">Confirmer</string>
+    <string name="cancel">Annuler</string>
+    <string name="_3_hours">3 heures</string>
+    <string name="_6_hours">6 heures</string>
+    <string name="_9_hours">9 heures</string>
+    <string name="_12_hours">12 heures</string>
+    <string name="delete_messages_history">Supprimer l\'historique des messages</string>
+    <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Êtes-vous sûr ? Il supprimera tous les messages sur l\'écran Message.</string>
+    <string name="subscription_is_not_connected">L\'abonnement n\'est pas connecté</string>
+    <string name="watch_ad">Voir l\'annonce</string>
+    <string name="subscription_error">Cela signifie que vous ne pouvez utiliser l\'application qu\'après avoir regardé les publicités. 5 publicités en plein écran vous donnent accès aux fonctionnalités de l\'application pendant 24 heures. Vous pouvez accumuler du temps d\'accès jusqu\'à 72 heures. L\'abonnement lève ces restrictions et supprime les publicités de l\'application.</string>
+    <string name="notification_settings_hint">Définir le délai jusqu\'à la fin du service, lorsqu\'une notification push sera envoyée pour vous rappeler de regarder les publicités.</string>
 </resources>

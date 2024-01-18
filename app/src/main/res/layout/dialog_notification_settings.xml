@@ -5,108 +5,112 @@
     android:orientation="vertical"
     android:padding="24dp">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/service_settings"
-            android:textSize="24sp"
-            android:layout_marginBottom="16dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="@string/remind_notification"
+        android:textSize="24sp" />
 
-        <LinearLayout
-            android:id="@+id/hours3Layout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="24dp"
+        android:text="@string/notification_settings_hint"
+        android:textSize="16sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="@string/_3_hours"
-                android:textSize="20sp" />
 
-        </LinearLayout>
+    <LinearLayout
+        android:id="@+id/hours3Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="16dp"
-            android:background="@color/gray" />
-
-        <LinearLayout
-            android:id="@+id/hours6Layout"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:background="@android:color/transparent"
+            android:text="@string/_3_hours"
+            android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="@string/_6_hours"
-                android:textSize="20sp" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:id="@+id/hours6Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="16dp"
-            android:background="@color/gray" />
-
-        <LinearLayout
-            android:id="@+id/hours9Layout"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:background="@android:color/transparent"
+            android:text="@string/_6_hours"
+            android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="@string/_9_hours"
-                android:textSize="20sp" />
+    </LinearLayout>
 
-        </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:id="@+id/hours9Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginHorizontal="16dp"
-            android:background="@color/gray" />
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="@string/_9_hours"
+            android:textSize="20sp" />
 
-        <LinearLayout
-            android:id="@+id/hours12Layout"
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginHorizontal="16dp"
+        android:background="@color/gray" />
+
+    <LinearLayout
+        android:id="@+id/hours12Layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:orientation="horizontal"
+        android:paddingVertical="12dp">
+
+        <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="?android:attr/selectableItemBackground"
-            android:clickable="true"
-            android:focusable="true"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:paddingVertical="12dp">
+            android:background="@android:color/transparent"
+            android:text="@string/_12_hours"
+            android:textSize="20sp" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:text="@string/_12_hours"
-                android:textSize="20sp" />
-
-        </LinearLayout>
+    </LinearLayout>
 </LinearLayout>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">sms_modem</string>
     <string name="settings">Настройки</string>
     <string name="enable">Включить</string>
     <string name="disable">Выключить</string>
@@ -10,7 +9,35 @@
     <string name="subscribe">Подписаться</string>
     <string name="loading">Загрузка...</string>
     <string name="close_list_of_messages_history">Закрыть список сообщений</string>
-    <string name="with_ip">SMS Сервис работает на IP %1$s:%2$s</string>
     <string name="sms_service_is_running">SMS Сервис работает</string>
     <string name="network_connection_unavailable">Подключение к интернету недоступно</string>
+    <string name="email_subject">Письмо о приложении SMS Modem App, версия Электронная почта о приложении SMS Modem, версия %s</string>
+    <string name="app_version">Версия приложения</string>
+    <string name="unable_to_create_service_please_change_port_and_try_again">Невозможно запустить службу. Пожалуйста, измените PORT и попробуйте снова!</string>
+    <string name="main">Главная</string>
+    <string name="info">Инфо</string>
+    <string name="messages">Сообщения</string>
+    <string name="write_email_to_developers">Написать эл. письмо разработчикам</string>
+    <string name="no_messages_yet">Сообщений пока нет</string>
+    <string name="unable_to_start_service_please_watch_ads">Невозможно запустить службу. Пожалуйста, посмотрите рекламу</string>
+    <string name="url_must_begin_with_http_or_https">URL-адрес должен начинаться с http:// или https://.</string>
+    <string name="unable_to_get_ip_address">Не удается получить IP-адрес</string>
+    <string name="service_will_stop_after_hours">SMS-модем прекратит работу через %d  ч.</string>
+    <string name="please_watch_ads_or_buy_a_subscription_to_continue_service_work">Пожалуйста, посмотрите рекламу или купите подписку, чтобы продолжить работу сервиса.</string>
+    <string name="remind_later">Напомнить позже</string>
+    <string name="this_message_was_not_sent_to_the_server_tap_to_send">Это сообщение не было отправлено на сервер. Нажмите, чтобы отправить.</string>
+    <string name="remind_notification">Уведомление-напоминание</string>
+    <string name="service_settings">Настройки службы</string>
+    <string name="confirm">Подтвердить</string>
+    <string name="cancel">Отмена</string>
+    <string name="_3_hours">3 часа</string>
+    <string name="_6_hours">6 часов</string>
+    <string name="_9_hours">9 часов</string>
+    <string name="_12_hours">12 часов</string>
+    <string name="delete_messages_history">Удалить историю сообщений</string>
+    <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Вы уверены? Он удалит все сообщения на экране \"Сообщения\".</string>
+    <string name="subscription_is_not_connected">Подписка не подключена</string>
+    <string name="watch_ad">Смотреть рекламу</string>
+    <string name="subscription_error">Это значит, что пользоваться приложением можно только после просмотра рекламы. 5 полноэкранных объявлений дают 24 часа доступа к функциям приложения. Вы можете накапливать время доступа до 72 часов. Подписка снимает эти ограничения и убирает рекламу из приложения.</string>
+    <string name="notification_settings_hint">Установите время до окончания работы сервиса, когда будет отправлено push-уведомление с напоминанием о необходимости просмотра рекламы</string>
 </resources>
