@@ -153,7 +153,7 @@ class MainActivityViewModel(
     }
 
     fun saveServiceRemainingTime() {
-        saveServiceRemainingTime.execute(2000000)
+        saveServiceRemainingTime.execute(24000)
         getServiceRemainingTime()
     }
 

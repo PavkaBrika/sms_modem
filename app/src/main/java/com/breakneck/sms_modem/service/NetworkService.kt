@@ -31,6 +31,7 @@ import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
+import com.breakneck.domain.usecase.settings.GetRemindNotificationTime
 import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.R
@@ -47,10 +48,10 @@ import io.ktor.server.engine.embeddedServer
 import io.ktor.server.netty.Netty
 import io.ktor.server.netty.NettyApplicationEngine
 import org.koin.android.ext.android.inject
-import org.koin.core.component.inject
 import java.lang.StringBuilder
 import java.net.BindException
 import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 const val SERVICE_STATE_RESULT = "com.breakneck.sms_modem.SERVICE_STATE_RESULT"
 const val SERVICE_TIME_REMAINING_RESULT = "com.breakneck.sms_modem.SERVICE_TIME_REMAINING_RESULT"
@@ -64,8 +65,6 @@ const val ERROR = "com.breakneck.sms_modem.ERROR"
 
 const val SERVICE_NOTIFICATION_ID = 21343214
 const val REMINDER_NOTIFICATION_ID = 21343215
-
-const val DEFAULT_REMIND_TIME = 1990
 
 open class NetworkService : Service() {
 
@@ -85,6 +84,7 @@ open class NetworkService : Service() {
     val saveServiceRemainingTime: SaveServiceRemainingTime by inject()
     val saveDeviceIpAddress: SaveDeviceIpAddress by inject()
     val getMessageDestinationUrl: GetMessageDestinationUrl by inject()
+    val getRemindNotificationTime: GetRemindNotificationTime by inject()
 
 
     private lateinit var server: NettyApplicationEngine
@@ -98,7 +98,7 @@ open class NetworkService : Service() {
 
     val notificationChannelId = "SMS_SERVICE_CHANNEL"
 
-    var remindTime = DEFAULT_REMIND_TIME
+    var remindTime = getRemindNotificationTime.execute()
 
     val TAG = "NetworkService"
 
@@ -357,7 +357,7 @@ open class NetworkService : Service() {
 
         val notification = NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(getString(R.string.service_will_stop_after_3_hours))
+            .setContentTitle(getString(R.string.service_will_stop_after_hours, TimeUnit.MILLISECONDS.toHours(remindTime)))
             .setContentText(getString(R.string.please_watch_ads_or_buy_a_subscription_to_continue_service_work))
             .addAction(R.drawable.baseline_close_24,
                 getString(R.string.remind_later), notificationButtonPendingIntent)
@@ -454,8 +454,8 @@ open class NetworkService : Service() {
         timer = object : CountDownTimer(getServiceRemainingTime.execute(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-//                Log.e(TAG, "CountDownTimer second remaining until finished = ${millisUntilFinished / 1000}")
-                if ((millisUntilFinished / 1000).toInt() == remindTime) {
+//                Log.e(TAG, "CountDownTimer second remaining until finished = $millisUntilFinished")
+                if ((millisUntilFinished / 1000) == (remindTime / 1000)) {
                     createReminderNotification()
                 }
                 updateServiceTimeRemainingInActivity()

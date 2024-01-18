@@ -31,6 +31,7 @@ import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.usecase.settings.SaveRemindNotificationTime
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
@@ -49,6 +50,7 @@ import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 
@@ -67,6 +69,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
 
     private val vm by viewModel<MainActivityViewModel>()
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
+    private val saveRemindNotificationTime: SaveRemindNotificationTime by inject()
 
     lateinit var boundNetworkService: NetworkService
 //    lateinit var networkChangeReceiver: NetworkChangeReceiver
@@ -333,11 +336,12 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
         val onClickListener = object: View.OnClickListener {
             override fun onClick(view: View?) {
                 when (view!!.id) {
-                    R.id.hours3Layout ->{}
-                    R.id.hours6Layout ->{}
-                    R.id.hours9Layout ->{}
-                    R.id.hours12Layout ->{}
+                    R.id.hours3Layout -> saveRemindNotificationTime.execute(3000)
+                    R.id.hours6Layout -> saveRemindNotificationTime.execute(6000)
+                    R.id.hours9Layout -> saveRemindNotificationTime.execute(9000)
+                    R.id.hours12Layout -> saveRemindNotificationTime.execute(12000)
                 }
+                dialog.dismiss()
             }
         }
 
@@ -345,6 +349,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface, InfoFr
         dialog.findViewById<LinearLayout>(R.id.hours6Layout)!!.setOnClickListener(onClickListener)
         dialog.findViewById<LinearLayout>(R.id.hours9Layout)!!.setOnClickListener(onClickListener)
         dialog.findViewById<LinearLayout>(R.id.hours12Layout)!!.setOnClickListener(onClickListener)
-
+        dialog.show()
     }
 }
