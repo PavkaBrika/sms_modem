@@ -3,10 +3,12 @@ package com.breakneck.data.repository
 import com.breakneck.data.entity.IpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
+import com.breakneck.data.entity.RemainingAdsQuantityData
 import com.breakneck.data.storage.SettingsStorage
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
+import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.repository.SettingsRepository
 
 class SettingsRepositoryImplementation(private val settingsStorage: SettingsStorage): SettingsRepository {
@@ -36,10 +38,18 @@ class SettingsRepositoryImplementation(private val settingsStorage: SettingsStor
     }
 
     override fun saveRemindNotificationTime(timeInMillis: Long) {
-        return settingsStorage.saveRemindNotificationTime(timeInMillis = timeInMillis)
+        settingsStorage.saveRemindNotificationTime(timeInMillis = timeInMillis)
     }
 
     override fun getRemindNotificationTime(): Long {
         return settingsStorage.getRemindNotificationTime()
+    }
+
+    override fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantity) {
+        settingsStorage.saveRemainingAdsQuantity(quantity = RemainingAdsQuantityData(value = quantity.value))
+    }
+
+    override fun getRemainingAdsQuantity(): RemainingAdsQuantity {
+        return RemainingAdsQuantity(value = settingsStorage.getRemainingAdsQuantity().value)
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import com.breakneck.data.entity.IpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
+import com.breakneck.data.entity.RemainingAdsQuantityData
 import com.breakneck.data.storage.SettingsStorage
 
 const val SETTINGS_SHARED_PREFERENCES_NAME = "SETTINGS_SHARED_PREFERENCES"
@@ -11,6 +12,7 @@ const val PORT = "PORT"
 const val MESSAGE_DESTINATION_URL = "MESSAGE_DESTINATION_URL"
 const val DEVICE_IP_ADDRESS = "DEVICE_IP_ADDRESS"
 const val REMIND_NOTIFICATION = "REMIND_NOTIFICATION"
+const val REMAINING_ADS = "REMAINING_ADS"
 
 class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
@@ -46,5 +48,13 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
     override fun getRemindNotificationTime(): Long {
         return sharedPreference.getLong(REMIND_NOTIFICATION, 0)
+    }
+
+    override fun getRemainingAdsQuantity(): RemainingAdsQuantityData {
+        return RemainingAdsQuantityData(value = sharedPreference.getInt(REMAINING_ADS, 15))
+    }
+
+    override fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantityData) {
+        sharedPreference.edit().putInt(REMAINING_ADS, quantity.value).apply()
     }
 }

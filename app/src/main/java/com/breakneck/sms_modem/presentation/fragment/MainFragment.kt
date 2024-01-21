@@ -101,6 +101,7 @@ class MainFragment: Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
+
             mainActivityVM.saveServiceRemainingTime()
             if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
                 activityInterface.updateServiceRemainingTimer()

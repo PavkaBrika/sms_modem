@@ -59,12 +59,16 @@ const val SERVICE_NEW_MESSAGE = "com.breakneck.sms_modem.SERVICE_NEW_MESSAGE"
 const val SERVICE_ERROR = "com.breakneck.sms_modem.SERVICE_ERROR"
 const val SERVICE_START_SUCCESS = "com.breakneck.sms_modem.SERVICE_START_SUCCESS"
 const val SERVICE_REMIND_LATER = "com.breakneck.sms_modem.REMIND_LATER"
+const val SERVICE_UPDATE_ADS = "com.breakneck.sms_modem.SERVICE_UPDATE_ADS"
 
 const val NEW_MESSAGE = "com.breakneck.sms_modem.NEW_MESSAGE"
 const val ERROR = "com.breakneck.sms_modem.ERROR"
 
 const val SERVICE_NOTIFICATION_ID = 21343214
 const val REMINDER_NOTIFICATION_ID = 21343215
+
+const val HOURS_24_IN_SECONDS = 86400L
+const val HOURS_48_IN_SECONDS = 172800L
 
 open class NetworkService : Service() {
 
@@ -448,6 +452,13 @@ open class NetworkService : Service() {
             }
     }
 
+    fun updateRemainingAdsQuantityInActivity() {
+        Intent(SERVICE_UPDATE_ADS)
+            .also {
+                broadcaster.sendBroadcast(it)
+            }
+    }
+
     fun updateServiceRemainingTimer() {
         try {
             timer.cancel()
@@ -462,6 +473,10 @@ open class NetworkService : Service() {
                     if ((millisUntilFinished / 1000) == (remindTime / 1000)) {
                         createReminderNotification()
                     }
+                when (millisUntilFinished / 1000) {
+                    HOURS_24_IN_SECONDS -> updateRemainingAdsQuantityInActivity()
+                    HOURS_48_IN_SECONDS -> updateRemainingAdsQuantityInActivity()
+                }
                 updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
             }
