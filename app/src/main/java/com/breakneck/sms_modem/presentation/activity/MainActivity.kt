@@ -25,6 +25,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.BannerCallbacks
 import com.breakneck.domain.model.FragmentTag
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
@@ -81,6 +83,38 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
         setContentView(view)
+
+        Appodeal.setBannerViewId(R.id.bannerView)
+        Appodeal.show(this, Appodeal.BANNER_VIEW)
+        Appodeal.set728x90Banners(true)
+        Appodeal.setLogLevel(com.appodeal.ads.utils.Log.LogLevel.debug)
+        Appodeal.setChildDirectedTreatment(false)
+        Appodeal.muteVideosIfCallsMuted(true)
+        Appodeal.setBannerCallbacks(object: BannerCallbacks {
+            override fun onBannerClicked() {
+                Log.e("Appodeal", "Banner clicked")
+            }
+
+            override fun onBannerExpired() {
+                Log.e("Appodeal", "Banner expired")
+            }
+
+            override fun onBannerFailedToLoad() {
+                Log.e("Appodeal", "Banner failed to load")
+            }
+
+            override fun onBannerLoaded(height: Int, isPrecache: Boolean) {
+                Log.e("Appodeal", "Banner loaded")
+            }
+
+            override fun onBannerShowFailed() {
+                Log.e("Appodeal", "Banner show failed")
+            }
+
+            override fun onBannerShown() {
+                Log.e("Appodeal", "Banner shown")
+            }
+        })
 
         //TODO implement dagger instead koin
 //        (applicationContext as App).appComponent.inject(this)

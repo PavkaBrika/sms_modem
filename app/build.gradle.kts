@@ -67,7 +67,7 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:$okhttpVersion")
 
     //MVVM
-    val lifecycleVersion = "2.6.2"
+    val lifecycleVersion = "2.7.0"
     implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
     implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
 
@@ -92,10 +92,25 @@ dependencies {
     implementation(project(path = ":domain"))
     implementation(project(path = ":data"))
 
+    //Appodeal ads
+    implementation("com.appodeal.ads.sdk:core:3.2.0")
+    implementation("com.appodeal.ads.sdk.networks:bidmachine:3.2.0.0")
+    implementation("com.appodeal.ads.sdk.networks:bidon:3.2.0.0")
+    implementation("com.appodeal.ads.sdk.services:sentry_analytics:3.2.0.0")
+    implementation("com.appodeal.ads.sdk.services:stack_analytics:3.2.0.0")
+    implementation("com.appodeal.ads.sdk.networks:yandex:3.2.0.0")
+    implementation("com.appodeal.ads.sdk.networks:iab:3.2.0.0")
+//    implementation("com.appodeal.ads:sdk:3.2.0.+") {
+//        exclude(group = "com.appodeal.ads.sdk.services", module = "adjust")
+//        exclude(group = "com.appodeal.ads.sdk.services", module = "appsflyer")
+//        exclude(group = "com.appodeal.ads.sdk.services", module = "firebase")
+//        exclude(group = "com.appodeal.ads.sdk.services", module = "facebook_analytics")
+//    }
+
     //Default
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
-    implementation("com.google.android.material:material:1.10.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("androidx.constraintlayout:constraintlayout:2.1.4")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
