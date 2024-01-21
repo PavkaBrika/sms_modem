@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
@@ -8,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".presentation.fragment.MainFragment" >
+    tools:context=".presentation.fragment.MainFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -61,6 +60,26 @@
                         android:gravity="end"
                         android:orientation="horizontal">
 
+                        <com.google.android.material.card.MaterialCardView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            app:cardCornerRadius="16dp"
+                            app:strokeColor="@color/black"
+                            android:layout_marginVertical="4dp"
+                            android:layout_marginEnd="4dp">
+
+                            <TextView
+                                android:id="@+id/adsToViewRemainingTextView"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:text="15"
+                                android:textColor="@color/black"
+                                android:paddingHorizontal="8dp"
+                                android:textSize="28sp"
+                                android:gravity="center" />
+
+                        </com.google.android.material.card.MaterialCardView>
+
                         <com.google.android.material.button.MaterialButton
                             android:id="@+id/watchAdButton"
                             style="@style/Widget.Material3.Button.OutlinedButton.Icon"
@@ -68,9 +87,10 @@
                             android:layout_height="wrap_content"
                             android:layout_marginEnd="4dp"
                             android:enabled="true"
-                            android:text="@string/watch_ad"
+                            android:text="@string/ad"
                             android:textColor="@color/black"
-                            app:icon="@drawable/baseline_settings_24"
+                            app:autoSizeTextType="uniform"
+                            app:icon="@drawable/baseline_play_circle_24"
                             app:iconTint="@color/black"
                             app:rippleColor="@color/black"
                             app:strokeColor="@color/black" />
@@ -82,8 +102,9 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="4dp"
                             android:backgroundTint="@color/enabled_button"
-                            android:text="@string/subscribe"
-                            app:icon="@drawable/baseline_power_24"
+                            android:text="@string/buy"
+                            app:autoSizeTextType="uniform"
+                            app:icon="@drawable/baseline_monetization_on_24"
                             app:rippleColor="@color/black" />
 
                     </LinearLayout>
@@ -148,21 +169,25 @@
                     android:id="@+id/stateTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="@string/enabled"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="40sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:autoSizeTextType="uniform" />
 
                 <TextView
                     android:id="@+id/serviceTimeRemainingTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:maxLines="1"
                     android:text="Remaining time"
                     android:textAllCaps="true"
                     android:textColor="@color/white"
                     android:textSize="36sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:autoSizeTextType="uniform" />
 
                 <LinearLayout
                     android:id="@+id/addressLayout"
@@ -214,6 +239,7 @@
                         android:layout_marginEnd="4dp"
                         android:enabled="true"
                         android:text="@string/settings"
+                        app:autoSizeTextType="uniform"
                         app:icon="@drawable/baseline_settings_24" />
 
                     <com.google.android.material.button.MaterialButton
@@ -224,6 +250,7 @@
                         android:layout_marginStart="4dp"
                         android:backgroundTint="@color/enabled_button"
                         android:text="@string/enable"
+                        app:autoSizeTextType="uniform"
                         app:icon="@drawable/baseline_power_24" />
 
                 </LinearLayout>

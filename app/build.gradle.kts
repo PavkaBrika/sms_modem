@@ -93,19 +93,22 @@ dependencies {
     implementation(project(path = ":data"))
 
     //Appodeal ads
-    implementation("com.appodeal.ads.sdk:core:3.2.0")
-    implementation("com.appodeal.ads.sdk.networks:bidmachine:3.2.0.0")
-    implementation("com.appodeal.ads.sdk.networks:bidon:3.2.0.0")
-    implementation("com.appodeal.ads.sdk.services:sentry_analytics:3.2.0.0")
-    implementation("com.appodeal.ads.sdk.services:stack_analytics:3.2.0.0")
-    implementation("com.appodeal.ads.sdk.networks:yandex:3.2.0.0")
-    implementation("com.appodeal.ads.sdk.networks:iab:3.2.0.0")
-//    implementation("com.appodeal.ads:sdk:3.2.0.+") {
-//        exclude(group = "com.appodeal.ads.sdk.services", module = "adjust")
-//        exclude(group = "com.appodeal.ads.sdk.services", module = "appsflyer")
-//        exclude(group = "com.appodeal.ads.sdk.services", module = "firebase")
-//        exclude(group = "com.appodeal.ads.sdk.services", module = "facebook_analytics")
-//    }
+//    implementation("com.appodeal.ads.sdk:core:3.2.0")
+//    implementation("com.appodeal.ads.sdk.networks:bidmachine:3.2.0.0")
+//    implementation("com.appodeal.ads.sdk.networks:bidon:3.2.0.0")
+//    implementation("com.appodeal.ads.sdk.services:sentry_analytics:3.2.0.0")
+//    implementation("com.appodeal.ads.sdk.services:stack_analytics:3.2.0.0")
+//    implementation("com.appodeal.ads.sdk.networks:yandex:3.2.0.0")
+//    implementation("com.appodeal.ads.sdk.networks:iab:3.2.0.0")
+    implementation("com.appodeal.ads:sdk:3.2.0.+") {
+        exclude(group = "com.appodeal.ads.sdk.networks", module = "admob")
+        exclude(group = "io.bidmachine", module = "ads.networks.notsy")
+        exclude(group = "com.google.android.gms", module = "play-services-ads")
+        exclude(group = "com.appodeal.ads.sdk.services", module = "adjust")
+        exclude(group = "com.appodeal.ads.sdk.services", module = "appsflyer")
+        exclude(group = "com.appodeal.ads.sdk.services", module = "firebase")
+        exclude(group = "com.appodeal.ads.sdk.services", module = "facebook_analytics")
+    }
 
     //Default
     implementation("androidx.core:core-ktx:1.12.0")

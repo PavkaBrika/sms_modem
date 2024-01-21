@@ -12,7 +12,7 @@
     <string name="sms_service_is_running">Le service SMS est en cours d\'exécution</string>
     <string name="network_connection_unavailable">Connexion réseau indisponible</string>
     <string name="email_subject">Email à propos de SMS Modem App, version %s</string>
-    <string name="app_version">Version de l\'application</string>
+    <string name="app_version">Version de l\'application %s</string>
     <string name="unable_to_create_service_please_change_port_and_try_again">Impossible de démarrer le service. Veuillez changer de PORT et réessayer !</string>
     <string name="main">Principal</string>
     <string name="info">Info</string>

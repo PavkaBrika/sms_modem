@@ -12,7 +12,7 @@
     <string name="sms_service_is_running">SMS Сервис работает</string>
     <string name="network_connection_unavailable">Подключение к интернету недоступно</string>
     <string name="email_subject">Письмо о приложении SMS Modem App, версия Электронная почта о приложении SMS Modem, версия %s</string>
-    <string name="app_version">Версия приложения</string>
+    <string name="app_version">Версия приложения %s</string>
     <string name="unable_to_create_service_please_change_port_and_try_again">Невозможно запустить службу. Пожалуйста, измените PORT и попробуйте снова!</string>
     <string name="main">Главная</string>
     <string name="info">Инфо</string>
@@ -35,7 +35,7 @@
     <string name="_9_hours">9 часов</string>
     <string name="_12_hours">12 часов</string>
     <string name="delete_messages_history">Удалить историю сообщений</string>
-    <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Вы уверены? Он удалит все сообщения на экране \"Сообщения\".</string>
+    <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Вы уверены? Это удалит все сообщения на экране \"Сообщения\".</string>
     <string name="subscription_is_not_connected">Подписка не подключена</string>
     <string name="watch_ad">Смотреть рекламу</string>
     <string name="subscription_error">Это значит, что пользоваться приложением можно только после просмотра рекламы. 5 полноэкранных объявлений дают 24 часа доступа к функциям приложения. Вы можете накапливать время доступа до 72 часов. Подписка снимает эти ограничения и убирает рекламу из приложения.</string>

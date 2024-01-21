@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/rootView"
@@ -8,7 +7,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:orientation="vertical"
-    tools:context=".presentation.fragment.MainFragment" >
+    tools:context=".presentation.fragment.MainFragment">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -56,16 +55,39 @@
                     android:gravity="end"
                     android:orientation="horizontal">
 
+                    <com.google.android.material.card.MaterialCardView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        app:cardCornerRadius="16dp"
+                        app:strokeColor="@color/black"
+                        android:layout_marginVertical="4dp"
+                        android:layout_marginEnd="4dp">
+
+                        <TextView
+                            android:id="@+id/adsToViewRemainingTextView"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="15"
+                            android:textColor="@color/black"
+                            android:paddingHorizontal="8dp"
+                            android:textSize="28sp"
+                            android:gravity="center" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/watchAdButton"
                         style="@style/Widget.Material3.Button.OutlinedButton.Icon"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
+                        android:layout_marginHorizontal="4dp"
                         android:enabled="true"
-                        android:text="@string/watch_ad"
+                        android:maxLines="1"
+                        android:text="@string/ad"
                         android:textColor="@color/black"
-                        app:icon="@drawable/baseline_settings_24"
+                        app:autoSizeTextType="uniform"
+                        app:icon="@drawable/baseline_play_circle_24"
                         app:iconTint="@color/black"
                         app:rippleColor="@color/black"
                         app:strokeColor="@color/black" />
@@ -77,8 +99,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="4dp"
                         android:backgroundTint="@color/enabled_button"
-                        android:text="@string/subscribe"
-                        app:icon="@drawable/baseline_power_24"
+                        android:maxLines="1"
+                        android:text="@string/buy"
+                        app:autoSizeTextType="uniform"
+                        app:icon="@drawable/baseline_monetization_on_24"
                         app:rippleColor="@color/black" />
 
                 </LinearLayout>
@@ -90,142 +114,150 @@
     </androidx.core.widget.NestedScrollView>
 
 
-        <com.google.android.material.card.MaterialCardView
-            android:id="@+id/stateCardView"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/stateCardView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        app:cardBackgroundColor="@color/enabled_card"
+        app:cardCornerRadius="32dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:cardBackgroundColor="@color/enabled_card"
-            app:cardCornerRadius="32dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            android:layout_height="match_parent"
+            android:layout_marginTop="8dp"
+            android:orientation="vertical"
+            android:padding="24dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="8dp"
-                android:orientation="vertical"
-                android:padding="24dp">
-
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/errorCardView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    app:cardBackgroundColor="@color/light_yellow">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="4dp">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginEnd="2dp"
-                            android:src="@drawable/outline_report_problem_24" />
-
-                        <TextView
-                            android:id="@+id/errorTextView"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_marginStart="2dp"
-                            android:text="There is some problem!" />
-
-                    </LinearLayout>
-
-                </com.google.android.material.card.MaterialCardView>
-
-                <TextView
-                    android:id="@+id/stateTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/enabled"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="40sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/serviceTimeRemainingTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Remaining time"
-                    android:textAllCaps="true"
-                    android:textColor="@color/white"
-                    android:textSize="36sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/errorCardView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:cardBackgroundColor="@color/light_yellow">
 
                 <LinearLayout
-                    android:id="@+id/addressLayout"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:layout_constraintBottom_toTopOf="@+id/activateServiceButton"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent">
+                    android:padding="4dp">
 
-                    <TextView
-                        android:id="@+id/ipAddressTextView"
+                    <ImageView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="IP ADDRESS"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="2dp"
+                        android:src="@drawable/outline_report_problem_24" />
 
                     <TextView
-                        android:id="@+id/portTextView"
+                        android:id="@+id/errorTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="PORT"
-                        android:textColor="@color/white"
-                        android:textSize="20sp" />
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginStart="2dp"
+                        android:text="There is some problem!" />
 
                 </LinearLayout>
 
+            </com.google.android.material.card.MaterialCardView>
+
+            <TextView
+                android:id="@+id/stateTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="@string/enabled"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="40sp"
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform" />
+
+            <TextView
+                android:id="@+id/serviceTimeRemainingTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:text="Remaining time"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="36sp"
+                android:textStyle="bold"
+                app:autoSizeTextType="uniform" />
+
+            <LinearLayout
+                android:id="@+id/addressLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@+id/activateServiceButton"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent">
+
                 <TextView
-                    android:id="@+id/messageDestinationTextView"
+                    android:id="@+id/ipAddressTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="URL"
+                    android:text="IP ADDRESS"
                     android:textColor="@color/white"
                     android:textSize="20sp" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/portTextView"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:gravity="end"
-                    android:orientation="horizontal">
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/settingsButton"
-                        style="@style/Widget.Material3.Button.OutlinedButton.Icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="4dp"
-                        android:enabled="true"
-                        android:text="@string/settings"
-                        app:icon="@drawable/baseline_settings_24" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/activateServiceButton"
-                        style="@style/Widget.Material3.Button.Icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="4dp"
-                        android:backgroundTint="@color/enabled_button"
-                        android:text="@string/enable"
-                        app:icon="@drawable/baseline_power_24" />
-
-                </LinearLayout>
+                    android:text="PORT"
+                    android:textColor="@color/white"
+                    android:textSize="20sp" />
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+            <TextView
+                android:id="@+id/messageDestinationTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="URL"
+                android:textColor="@color/white"
+                android:textSize="20sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/settingsButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"
+                    android:enabled="true"
+                    android:maxLines="1"
+                    android:text="@string/settings"
+                    app:autoSizeTextType="uniform"
+                    app:icon="@drawable/baseline_settings_24" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/activateServiceButton"
+                    style="@style/Widget.Material3.Button.Icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:backgroundTint="@color/enabled_button"
+                    android:maxLines="1"
+                    android:text="@string/enable"
+                    app:autoSizeTextType="uniform"
+                    app:icon="@drawable/baseline_power_24" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </com.google.android.material.card.MaterialCardView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
