@@ -329,7 +329,7 @@ open class NetworkService : Service() {
                 }
 
         return NotificationCompat.Builder(this, notificationChannelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification_icon)
             .setContentTitle(getString(R.string.sms_service_is_running))
             .setContentText(
                 if (this::ipAddress.isInitialized) {
@@ -365,7 +365,7 @@ open class NetworkService : Service() {
                 }
 
         val notification = NotificationCompat.Builder(this, notificationChannelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setSmallIcon(R.drawable.ic_notification_icon)
             .setContentTitle(
                 getString(
                     R.string.service_will_stop_after_hours,
