@@ -11,6 +11,10 @@ import android.widget.Button
 import android.widget.LinearLayout
 import androidx.core.os.BuildCompat
 import androidx.fragment.app.Fragment
+import com.breakneck.domain.HOURS_12_IN_SECONDS
+import com.breakneck.domain.HOURS_3_IN_SECONDS
+import com.breakneck.domain.HOURS_6_IN_SECONDS
+import com.breakneck.domain.HOURS_9_IN_SECONDS
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.FragmentInfoBinding
 import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
@@ -78,10 +82,10 @@ class InfoFragment: Fragment() {
                 when (view!!.id) {
                     //TODO CHANGE TO HOURS
                     R.id.offLayout -> vm.saveRemindNotificationTime(0)
-                    R.id.hours3Layout -> vm.saveRemindNotificationTime(3000)
-                    R.id.hours6Layout -> vm.saveRemindNotificationTime(6000)
-                    R.id.hours9Layout -> vm.saveRemindNotificationTime(9000)
-                    R.id.hours12Layout -> vm.saveRemindNotificationTime(12000)
+                    R.id.hours3Layout -> vm.saveRemindNotificationTime(HOURS_3_IN_SECONDS * 1000)
+                    R.id.hours6Layout -> vm.saveRemindNotificationTime(HOURS_6_IN_SECONDS * 1000)
+                    R.id.hours9Layout -> vm.saveRemindNotificationTime(HOURS_9_IN_SECONDS * 1000)
+                    R.id.hours12Layout -> vm.saveRemindNotificationTime(HOURS_12_IN_SECONDS * 1000)
                 }
                 dialog.dismiss()
             }

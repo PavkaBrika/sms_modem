@@ -3,3 +3,14 @@ package com.breakneck.domain
 const val TOTAL_ADS_QUANTITY = 6
 const val PART_ADS_QUANTITY = TOTAL_ADS_QUANTITY / 3
 
+//TODO CHANGE TO HOURS
+//const val HOURS_24_IN_SECONDS = 86400L
+//const val HOURS_48_IN_SECONDS = 172800L
+const val HOURS_48_IN_SECONDS = 48L
+const val HOURS_24_IN_SECONDS = 24L
+const val HOURS_12_IN_SECONDS = 12L
+const val HOURS_9_IN_SECONDS = 9L
+const val HOURS_6_IN_SECONDS = 6L
+const val HOURS_3_IN_SECONDS = 20L
+const val HOURS_1_IN_SECONDS = 15L
+

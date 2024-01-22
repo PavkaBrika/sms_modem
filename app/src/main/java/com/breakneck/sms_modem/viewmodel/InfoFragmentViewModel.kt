@@ -4,12 +4,12 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.usecase.message.DeleteAllMessages
-import com.breakneck.domain.usecase.settings.SaveRemindNotificationTime
+import com.breakneck.domain.usecase.settings.SaveRemindNotificationTimeInMillis
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class InfoFragmentViewModel(
-    private val saveRemindNotificationTime: SaveRemindNotificationTime,
+    private val saveRemindNotificationTimeInMillis: SaveRemindNotificationTimeInMillis,
     private val deleteAllMessages: DeleteAllMessages
 ): ViewModel() {
 
@@ -25,7 +25,7 @@ class InfoFragmentViewModel(
     }
 
     fun saveRemindNotificationTime(timeInMillis: Long) {
-        saveRemindNotificationTime.execute(timeInMillis)
+        saveRemindNotificationTimeInMillis.execute(timeInMillis)
     }
 
     fun deleteAllMessages() {

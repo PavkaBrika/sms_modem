@@ -43,7 +43,7 @@ val appModule = module {
 
     viewModel<InfoFragmentViewModel> {
         InfoFragmentViewModel(
-            saveRemindNotificationTime = get(),
+            saveRemindNotificationTimeInMillis = get(),
             deleteAllMessages = get()
         )
     }

@@ -4,12 +4,12 @@ import com.breakneck.domain.usecase.settings.GetDeviceIpAddress
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.settings.GetRemainingAds
-import com.breakneck.domain.usecase.settings.GetRemindNotificationTime
+import com.breakneck.domain.usecase.settings.GetRemindNotificationTimeInMillis
 import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import com.breakneck.domain.usecase.settings.SaveRemainingAds
-import com.breakneck.domain.usecase.settings.SaveRemindNotificationTime
+import com.breakneck.domain.usecase.settings.SaveRemindNotificationTimeInMillis
 import org.koin.dsl.module
 
 val settingsModule = module {
@@ -38,12 +38,12 @@ val settingsModule = module {
         SaveDeviceIpAddress(settingsRepository = get())
     }
 
-    factory<GetRemindNotificationTime> {
-        GetRemindNotificationTime(settingsRepository = get())
+    factory<GetRemindNotificationTimeInMillis> {
+        GetRemindNotificationTimeInMillis(settingsRepository = get())
     }
 
-    factory<SaveRemindNotificationTime> {
-        SaveRemindNotificationTime(settingsRepository = get())
+    factory<SaveRemindNotificationTimeInMillis> {
+        SaveRemindNotificationTimeInMillis(settingsRepository = get())
     }
 
     factory<GetRemainingAds> {

@@ -16,14 +16,10 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
-import android.view.View
 import android.widget.Button
-import android.widget.LinearLayout
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.BannerCallbacks
@@ -33,7 +29,6 @@ import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.settings.SaveRemindNotificationTime
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
@@ -48,13 +43,11 @@ import com.breakneck.sms_modem.service.SERVICE_START_SUCCESS
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.service.SERVICE_UPDATE_ADS
-import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 
