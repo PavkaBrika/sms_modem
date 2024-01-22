@@ -75,6 +75,7 @@ const val ERROR = "com.breakneck.sms_modem.ERROR"
 
 const val SERVICE_NOTIFICATION_ID = 213431121
 const val REMINDER_NOTIFICATION_ID = 21341122
+const val DISABLED_NOTIFICATION_ID = 21341123
 
 open class NetworkService : Service() {
 
@@ -248,7 +249,8 @@ open class NetworkService : Service() {
             } else {
                 stopForeground(true)
             }
-            notificationManager.cancelAll()
+            notificationManager.cancel(SERVICE_NOTIFICATION_ID)
+            notificationManager.cancel(REMINDER_NOTIFICATION_ID)
             stopSelf()
         } catch (e: Exception) {
             Log.e("TAG", "Service stopped without being started: ${e.message}")
@@ -398,6 +400,30 @@ open class NetworkService : Service() {
         notificationManager.notify(REMINDER_NOTIFICATION_ID, notification.build())
     }
 
+    private fun createDisabledNotification() {
+        val notificationClickPendingIntent =
+            Intent(this, MainActivity::class.java)
+                .let { notificationIntent ->
+                    PendingIntent.getActivity(
+                        this,
+                        0,
+                        notificationIntent,
+                        PendingIntent.FLAG_MUTABLE
+                    )
+                }
+
+        val notification = NotificationCompat.Builder(this, notificationChannelId)
+            .setSmallIcon(R.drawable.ic_notification_icon)
+            .setContentTitle(
+                getString(R.string.sms_modem_service_has_stopped_working)
+            )
+            .setContentText(getString(R.string.please_watch_ads_or_buy_a_subscription_to_continue_service_work))
+            .setContentIntent(notificationClickPendingIntent)
+            .setAutoCancel(true)
+
+        notificationManager.notify(DISABLED_NOTIFICATION_ID, notification.build())
+    }
+
     private fun sendSMS(phoneNumber: String, message: String, date: String) {
         val smsManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             applicationContext.getSystemService(SmsManager::class.java)
@@ -482,6 +508,7 @@ open class NetworkService : Service() {
                 saveServiceRemainingTimeInMillis.execute(0)
                 saveRemainingAdsQuantity.execute(RemainingAdsQuantity(TOTAL_ADS_QUANTITY))
                 updateRemainingAdsQuantityInActivity()
+                createDisabledNotification()
                 stopService()
             }
         }.start()
