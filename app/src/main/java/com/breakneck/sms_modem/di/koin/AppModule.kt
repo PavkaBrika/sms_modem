@@ -30,6 +30,8 @@ val appModule = module {
         )
     }
 
+    viewModel<MainFragmentViewModel>()
+
     viewModel<MessageFragmentViewModel> {
         MessageFragmentViewModel(
             getAllMessages = get(),

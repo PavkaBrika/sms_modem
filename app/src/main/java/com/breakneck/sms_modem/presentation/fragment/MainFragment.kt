@@ -2,37 +2,28 @@ package com.breakneck.sms_modem.presentation.fragment
 
 import android.content.Context
 import android.os.Bundle
-import android.view.GestureDetector
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.RecyclerView
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.RewardedVideoCallbacks
 import com.breakneck.domain.PART_ADS_QUANTITY
 import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
-import com.breakneck.domain.model.MessageFullListVisibilityState
-import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
-import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMainBinding
-import com.breakneck.sms_modem.service.HOURS_24_IN_SECONDS
-import com.breakneck.sms_modem.service.HOURS_48_IN_SECONDS
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.NullPointerException
-import java.text.SimpleDateFormat
-import java.util.Date
 import java.util.concurrent.TimeUnit
 
 class MainFragment : Fragment() {
@@ -72,6 +63,65 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         val view = binding.root
 
+        Appodeal.muteVideosIfCallsMuted(true)
+        Appodeal.setRewardedVideoCallbacks(object : RewardedVideoCallbacks {
+            override fun onRewardedVideoClicked() {
+                Log.e("Appodeal", "onRewardedVideoClicked")
+            }
+
+            override fun onRewardedVideoClosed(finished: Boolean) {
+                vm.isRewardAdLoading()
+                Log.e("Appodeal", "onRewardedVideoClosed")
+            }
+
+            override fun onRewardedVideoExpired() {
+                vm.isRewardAdLoading()
+                Log.e("Appodeal", "onRewardedVideoExpired")
+            }
+
+            override fun onRewardedVideoFailedToLoad() {
+                vm.isRewardAdLoading()
+                Log.e("Appodeal", "onRewardedVideoFailedToLoad")
+            }
+
+            override fun onRewardedVideoFinished(amount: Double, currency: String) {
+                Log.e("Appodeal", "onRewardedVideoFinished")
+                val quantity = mainActivityVM.remainingAds.value
+                if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+                    mainActivityVM.saveServiceRemainingTime()
+                    if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                        activityInterface.updateServiceRemainingTimer()
+                }
+                mainActivityVM.onAdView()
+                vm.isRewardAdLoading()
+            }
+
+            override fun onRewardedVideoLoaded(isPrecache: Boolean) {
+                vm.isRewardAdLoadSuccess()
+                Log.e("Appodeal", "onRewardedVideoLoaded")
+            }
+
+            override fun onRewardedVideoShowFailed() {
+                vm.isRewardAdLoading()
+                Log.e("Appodeal", "onRewardedVideoShowFailed")
+            }
+
+            override fun onRewardedVideoShown() {
+                Log.e("Appodeal", "onRewardedVideoShown")
+            }
+        })
+
+        vm.isRewardAdLoaded.observe(viewLifecycleOwner) { isLoaded ->
+            if (isLoaded) {
+                binding.watchAdButton.setText(R.string.ad)
+                binding.watchAdButton.isEnabled = true
+            }
+            else {
+                binding.watchAdButton.setText(R.string.loading)
+                binding.watchAdButton.isEnabled = false
+            }
+        }
+
         mainActivityVM.serverIpAddress.observe(viewLifecycleOwner) { address ->
             binding.ipAddressTextView.text = address.value
         }
@@ -101,13 +151,9 @@ class MainFragment : Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
-            val quantity = mainActivityVM.remainingAds.value
-            if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
-                mainActivityVM.saveServiceRemainingTime()
-                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                    activityInterface.updateServiceRemainingTimer()
+            if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)) {
+                Appodeal.show(requireActivity(), Appodeal.REWARDED_VIDEO)
             }
-            mainActivityVM.onAdView()
         }
 
         mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->

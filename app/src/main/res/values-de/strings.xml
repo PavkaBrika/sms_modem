@@ -38,6 +38,6 @@
     <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Sind Sie sicher? Es werden alle Nachrichten auf dem Nachrichtenbildschirm gelöscht.</string>
     <string name="subscription_is_not_connected">Abonnement ist nicht verbunden</string>
     <string name="watch_ad">Anzeige ansehen</string>
-    <string name="subscription_error">Das bedeutet, dass Sie die App erst nutzen können, nachdem Sie Werbung gesehen haben. Mit 3 Vollbildanzeigen haben Sie 24 Stunden lang Zugriff auf die Funktionen der App. Sie können bis zu 72 Stunden Zugriffszeit ansammeln. Mit einem Abonnement werden diese Einschränkungen aufgehoben und die Werbung aus der App entfernt.</string>
+    <string name="subscription_error">Das bedeutet, dass Sie die App erst nutzen können, nachdem Sie Werbung gesehen haben. Mit 2 Vollbildanzeigen haben Sie 24 Stunden lang Zugriff auf die Funktionen der App. Sie können bis zu 72 Stunden Zugriffszeit ansammeln. Mit einem Abonnement werden diese Einschränkungen aufgehoben und die Werbung aus der App entfernt.</string>
     <string name="notification_settings_hint">Legen Sie die Zeit bis zum Ende des Dienstes fest, in der eine Push-Benachrichtigung gesendet wird, um Sie daran zu erinnern, die Werbung zu sehen</string>
 </resources>

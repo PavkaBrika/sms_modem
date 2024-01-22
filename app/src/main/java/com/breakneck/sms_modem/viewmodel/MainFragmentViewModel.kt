@@ -14,6 +14,10 @@ class MainFragmentViewModel: ViewModel() {
     val networkState: LiveData<NetworkState>
         get() = _networkState
 
+    private val _isRewardAdLoaded = MutableLiveData<Boolean>(false)
+    val isRewardAdLoaded: LiveData<Boolean>
+        get() = _isRewardAdLoaded
+
     init {
         Log.e(TAG, "ViewModel Created")
     }
@@ -32,4 +36,11 @@ class MainFragmentViewModel: ViewModel() {
         }
     }
 
+    fun isRewardAdLoading() {
+        _isRewardAdLoaded.value = false
+    }
+
+    fun isRewardAdLoadSuccess() {
+        _isRewardAdLoaded.value = true
+    }
 }

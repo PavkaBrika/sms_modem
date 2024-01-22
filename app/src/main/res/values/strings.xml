@@ -42,7 +42,7 @@
     <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Are you sure? It will delete all messages on Message screen.</string>
     <string name="subscription_is_not_connected">Subscription is not connected</string>
     <string name="watch_ad">Watch ad</string>
-    <string name="subscription_error">It means that you can use app only after watching ads. 3 full-screen ads give you 24 hours access to the app\'s functionality. You can accumulate access time up to 72 hours. Subscription removes these restrictions and removes ads from the app. To subscribe or view ads, click the buttons below</string>
+    <string name="subscription_error">It means that you can use app only after watching ads. 2 full-screen ads give you 24 hours access to the app\'s functionality. You can accumulate access time up to 72 hours. Subscription removes these restrictions and removes ads from the app. To subscribe or view ads, click the buttons below</string>
     <string name="notification_settings_hint">Set the time until the end of the service, when a push notification will be sent to remind you to watch ads</string>
     <string name="ad">Ad</string>
     <string name="buy">Buy</string>
