@@ -42,6 +42,8 @@
     <string name="notification_settings_hint">Set the time until the end of the service, when a push notification will be sent to remind you to watch ads</string>
     <string name="ad">Ad</string>
     <string name="buy">Buy</string>
-    <string name="unable_to_start_service_please_check_your_internet_connection">Unable to start service. Please, check your internet connection.</string>
+    <string name="app_requires_permissions">App requires permissions</string>
+    <string name="this_app_is_made_primarily_for_startups_its_main_functionality_is_to_send_sms_messages_using_a_request_from_the_server_as_well_as_to_send_a_request_to_the_server_with_information_about_the_sms_message_that_came_to_the_phone_nthis_functionality_requires_access_to_receive_read_and_send_sms_messages_as_well_as_to_send_notifications_to_this_device_so_that_the_user_knows_when_the_application_is_running_nthese_permissions_will_be_requested_after_clicking_on_the_confirm_button">This app is made primarily for startups. Its main functionality is to send SMS messages using a request from the server, as well as to send a request to the server with information about the SMS message that came to the phone.  This functionality requires access to receive, read and send SMS messages, as well as to send notifications to this device so that the user knows when the application is running. These permissions will be requested after clicking on the \'Confirm\' button.</string>
     <string name="please_note_you_are_not_connected_to_the_internet">Please note, you are not connected to the internet!</string>
+    <string name="stop_service">Stop service</string>
 </resources>

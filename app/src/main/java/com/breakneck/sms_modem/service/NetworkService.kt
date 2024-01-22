@@ -344,7 +344,7 @@ open class NetworkService : Service() {
             )
             .addAction(
                 R.drawable.baseline_close_24,
-                "Stop service",
+                getString(R.string.stop_service),
                 notificationButtonPendingIntent
             )
             .setOngoing(true)
