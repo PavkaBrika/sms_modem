@@ -159,7 +159,8 @@ class MainActivityViewModel(
 
     fun saveServiceRemainingTime() {
         //TODO CHANGE TO HOURS
-        saveServiceRemainingTime.execute(getServiceRemainingTime.execute() / 1000 + 24000)
+        val t = getServiceRemainingTime.execute()
+        saveServiceRemainingTime.execute(getServiceRemainingTime.execute() + 24000)
         getServiceRemainingTime()
     }
 
@@ -190,10 +191,12 @@ class MainActivityViewModel(
     }
 
     fun onAdView() {
-        if (_remainingAds.value!!.value > 0)
+        if (_remainingAds.value!!.value <= 0)
+            _remainingAds.value = RemainingAdsQuantity(0)
+        else
             _remainingAds.value = RemainingAdsQuantity(_remainingAds.value!!.value - 1)
         saveRemainingAds()
-    }i
+    }
 
     fun saveRemainingAds() {
         saveRemainingAds.execute(_remainingAds.value!!)

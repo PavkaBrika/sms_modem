@@ -345,8 +345,14 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
         try {
             when (intent) {
-                ServiceIntent.Disable -> unbindService(networkServiceConnection)
-                ServiceIntent.Enable -> bindService(serviceIntent, networkServiceConnection, 0)
+                ServiceIntent.Disable -> {
+                    unbindService(networkServiceConnection)
+                    vm.changeServiceBoundState()
+                }
+                ServiceIntent.Enable -> {
+                    bindService(serviceIntent, networkServiceConnection, 0)
+                    vm.changeServiceBoundState()
+                }
             }
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
