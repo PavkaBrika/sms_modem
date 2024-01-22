@@ -10,10 +10,6 @@ class MainFragmentViewModel: ViewModel() {
 
     val TAG = "FragmentViewModel"
 
-    private val _networkState = MutableLiveData<NetworkState>(NetworkState.Available)
-    val networkState: LiveData<NetworkState>
-        get() = _networkState
-
     private val _isRewardAdLoaded = MutableLiveData<Boolean>(false)
     val isRewardAdLoaded: LiveData<Boolean>
         get() = _isRewardAdLoaded
@@ -25,15 +21,6 @@ class MainFragmentViewModel: ViewModel() {
     override fun onCleared() {
         super.onCleared()
         Log.e(TAG, "ViewModel cleared")
-    }
-
-    fun changeNetworkState() {
-        when (_networkState.value!!) {
-            NetworkState.Available ->
-                _networkState.value = NetworkState.Unavailable
-            NetworkState.Unavailable ->
-                _networkState.value = NetworkState.Available
-        }
     }
 
     fun isRewardAdLoading() {

@@ -9,6 +9,9 @@ import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.net.ConnectivityManager
 import android.net.LinkProperties
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.net.wifi.WifiManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -20,6 +23,7 @@ import android.widget.Button
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.appodeal.ads.Appodeal
 import com.appodeal.ads.BannerCallbacks
@@ -36,6 +40,7 @@ import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
 import com.breakneck.sms_modem.presentation.fragment.MainFragment
 import com.breakneck.sms_modem.presentation.fragment.MessagesFragment
+import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
 import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
 import com.breakneck.sms_modem.service.ERROR
 import com.breakneck.sms_modem.service.NetworkService
@@ -50,9 +55,12 @@ import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
+import kotlin.coroutines.coroutineContext
 
 class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
@@ -69,10 +77,9 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
     private val vm by viewModel<MainActivityViewModel>()
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
-    private val getIsFirstTimeAppOpened: GetIsFirstTimeAppOpened by inject()
 
     lateinit var boundNetworkService: NetworkService
-//    lateinit var networkChangeReceiver: NetworkChangeReceiver
+    lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     lateinit var receiver: BroadcastReceiver
 
@@ -163,6 +170,37 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 }
             }
         }
+
+//        networkChangeReceiver = NetworkChangeReceiver()
+
+        val connectivityManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            getSystemService(ConnectivityManager::class.java)
+        } else {
+            getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        }
+
+        val networkRequest = NetworkRequest.Builder()
+            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+            .build()
+
+        connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) {
+                super.onAvailable(network)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    vm.onNetworkAvailable()
+                }
+            }
+
+            override fun onLost(network: Network) {
+                super.onLost(network)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    vm.onNetworkUnavailable()
+                }
+            }
+        })
     }
 
     override fun onStart() {
@@ -227,7 +265,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_app_functions_info)
         dialog.setCancelable(false)
-//        val saveIsFirstTimeAppOpened: SaveIsFirstTimeAppOpened by inject()
 
         if (ContextCompat.checkSelfPermission(
                 applicationContext,
@@ -265,7 +302,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
 
         dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
-//            saveIsFirstTimeAppOpened.execute()
             ActivityCompat.requestPermissions(
                 this,
                 permissionList.toTypedArray(),

@@ -14,6 +14,7 @@ import com.appodeal.ads.RewardedVideoCallbacks
 import com.breakneck.domain.PART_ADS_QUANTITY
 import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
+import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
@@ -232,9 +233,7 @@ class MainFragment : Fragment() {
                         mainActivityVM.setDeviceIpAddress(address = IpAddress(value = activityInterface.getDeviceIpAddress()))
                     } catch (e: Exception) {
                         e.printStackTrace()
-                        vm.changeNetworkState()
                     }
-
                 }
 
                 ServiceState.Loading -> {
@@ -283,37 +282,22 @@ class MainFragment : Fragment() {
                 binding.watchAdButton.isEnabled = true
         }
 
-//        vm.networkState.observe(this) { state ->
-//            when (state) {
-//                NetworkState.Available -> {
-//
-//                }
-//                NetworkState.Unavailable -> {
-//                    binding.stateTextView.text = getString(R.string.network_connection_unavailable)
-//                    binding.settingsButton.apply {
-//                        isEnabled = true
-//                        setStrokeColorResource(R.color.disabled_button)
-//                        setRippleColorResource(R.color.disabled_button)
-//                    }
-//                    binding.activateServiceButton.apply {
-//                        isEnabled = false
-//                        setBackgroundColor(
-//                            ContextCompat.getColor(
-//                                this@MainActivity,
-//                                R.color.disabled_button
-//                            )
-//                        )
-//                        setRippleColorResource(R.color.black)
-//                    }
-//                    binding.stateCardView.setCardBackgroundColor(
-//                        ContextCompat.getColor(
-//                            this,
-//                            R.color.disabled_card
-//                        )
-//                    )
-//                }
-//            }
-//        }
+        mainActivityVM.networkState.observe(viewLifecycleOwner) { state ->
+            when (state) {
+                NetworkState.Available -> {
+                    binding.watchAdButton.isEnabled = true
+                    binding.activateServiceButton.isEnabled = true
+                    binding.connectSubscriptionButton.isEnabled = true
+                    mainActivityVM.setServiceError("")
+                }
+                NetworkState.Unavailable -> {
+                    binding.watchAdButton.isEnabled = false
+                    binding.activateServiceButton.isEnabled = false
+                    binding.connectSubscriptionButton.isEnabled = false
+                    mainActivityVM.setServiceError(getString(R.string.please_note_you_are_not_connected_to_the_internet))
+                }
+            }
+        }
 
         return view
     }

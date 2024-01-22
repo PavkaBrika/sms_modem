@@ -4,9 +4,11 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
+import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
@@ -22,6 +24,8 @@ import com.breakneck.domain.usecase.settings.GetRemainingAds
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import com.breakneck.domain.usecase.settings.SaveRemainingAds
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val savePort: SavePort,
@@ -74,9 +78,9 @@ class MainActivityViewModel(
     val remainingAds: LiveData<RemainingAdsQuantity>
         get() = _remainingAds
 
-    private val _viewAdCount = MutableLiveData<Int>()
-    val viewAdCount: LiveData<Int>
-        get() = _viewAdCount
+    private val _networkState = MutableLiveData<NetworkState>(NetworkState.Available)
+    val networkState: LiveData<NetworkState>
+        get() = _networkState
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -198,7 +202,19 @@ class MainActivityViewModel(
         saveRemainingAds()
     }
 
-    fun saveRemainingAds() {
+    private fun saveRemainingAds() {
         saveRemainingAds.execute(_remainingAds.value!!)
+    }
+
+    fun onNetworkUnavailable() {
+        _networkServiceIntent.value = ServiceIntent.Enable
+        _networkServiceState.value = ServiceState.Disabled
+        _networkState.value = NetworkState.Unavailable
+    }
+
+    fun onNetworkAvailable() {
+        _networkServiceIntent.value = ServiceIntent.Enable
+        _networkServiceState.value = ServiceState.Disabled
+        _networkState.value = NetworkState.Available
     }
 }

@@ -59,7 +59,7 @@
 
 <!--        <receiver android:name=".receiver.NetworkChangeReceiver">-->
 <!--            <intent-filter>-->
-<!--                <action android:name="W"-->
+<!--                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
 <!--            </intent-filter>-->
 <!--        </receiver>-->
 
