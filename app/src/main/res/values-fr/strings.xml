@@ -38,6 +38,6 @@
     <string name="are_you_sure_it_will_delete_all_messages_on_message_screen">Êtes-vous sûr ? Il supprimera tous les messages sur l\'écran Message.</string>
     <string name="subscription_is_not_connected">L\'abonnement n\'est pas connecté</string>
     <string name="watch_ad">Voir l\'annonce</string>
-    <string name="subscription_error">Cela signifie que vous ne pouvez utiliser l\'application qu\'après avoir regardé les publicités. 5 publicités en plein écran vous donnent accès aux fonctionnalités de l\'application pendant 24 heures. Vous pouvez accumuler du temps d\'accès jusqu\'à 72 heures. L\'abonnement lève ces restrictions et supprime les publicités de l\'application.</string>
+    <string name="subscription_error">Cela signifie que vous ne pouvez utiliser l\'application qu\'après avoir regardé les publicités. 3 publicités en plein écran vous donnent accès aux fonctionnalités de l\'application pendant 24 heures. Vous pouvez accumuler du temps d\'accès jusqu\'à 72 heures. L\'abonnement lève ces restrictions et supprime les publicités de l\'application.</string>
     <string name="notification_settings_hint">Définir le délai jusqu\'à la fin du service, lorsqu\'une notification push sera envoyée pour vous rappeler de regarder les publicités.</string>
 </resources>
