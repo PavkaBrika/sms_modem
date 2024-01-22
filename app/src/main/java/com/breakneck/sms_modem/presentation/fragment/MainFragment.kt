@@ -43,6 +43,8 @@ class MainFragment : Fragment() {
         fun updateServiceRemainingTimer()
 
         fun getDeviceIpAddress(): String
+
+        fun checkPermissions(): Boolean
     }
 
     lateinit var activityInterface: ActivityInterface
@@ -131,18 +133,20 @@ class MainFragment : Fragment() {
         }
 
         binding.activateServiceButton.setOnClickListener {
-            try {
-                if (mainActivityVM.serviceRemainingTime.value!! > 0) {
-                    activityInterface.serviceAction(mainActivityVM.networkServiceIntent.value!!)
-                    mainActivityVM.changeServiceIntent()
-                    mainActivityVM.setServiceStateLoading()
-                } else {
-                    mainActivityVM.setServiceError(getString(R.string.unable_to_start_service_please_watch_ads))
+            if (activityInterface.checkPermissions()) {
+                try {
+                    if (mainActivityVM.serviceRemainingTime.value!! > 0) {
+                        activityInterface.serviceAction(mainActivityVM.networkServiceIntent.value!!)
+                        mainActivityVM.changeServiceIntent()
+                        mainActivityVM.setServiceStateLoading()
+                    } else {
+                        mainActivityVM.setServiceError(getString(R.string.unable_to_start_service_please_watch_ads))
+                    }
+                } catch (e: NullPointerException) {
+                    e.printStackTrace()
+                    //TODO change hardcode strings to string file
+                    Toast.makeText(requireActivity(), "Error", Toast.LENGTH_SHORT).show()
                 }
-            } catch (e: NullPointerException) {
-                e.printStackTrace()
-                //TODO change hardcode strings to string file
-                Toast.makeText(requireActivity(), "Error", Toast.LENGTH_SHORT).show()
             }
         }
 

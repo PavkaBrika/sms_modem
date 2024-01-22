@@ -29,6 +29,8 @@ import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.usecase.settings.GetIsFirstTimeAppOpened
+import com.breakneck.domain.usecase.settings.SaveIsFirstTimeAppOpened
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
@@ -48,6 +50,7 @@ import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 //import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
+import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
 
@@ -66,11 +69,14 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
     private val vm by viewModel<MainActivityViewModel>()
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
+    private val getIsFirstTimeAppOpened: GetIsFirstTimeAppOpened by inject()
 
     lateinit var boundNetworkService: NetworkService
 //    lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     lateinit var receiver: BroadcastReceiver
+
+    val permissionList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,52 +119,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         //TODO implement dagger instead koin
 //        (applicationContext as App).appComponent.inject(this)
 //        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
-
-        if (ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.READ_SMS
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.RECEIVE_SMS
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.SEND_SMS
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                applicationContext,
-                android.Manifest.permission.POST_NOTIFICATIONS
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.READ_SMS,
-                        android.Manifest.permission.RECEIVE_SMS,
-                        android.Manifest.permission.SEND_SMS,
-                        android.Manifest.permission.ACCESS_NOTIFICATION_POLICY,
-                        android.Manifest.permission.POST_NOTIFICATIONS
-                    ),
-                    10
-                )
-            } else {
-                ActivityCompat.requestPermissions(
-                    this,
-                    arrayOf(
-                        android.Manifest.permission.READ_SMS,
-                        android.Manifest.permission.RECEIVE_SMS,
-                        android.Manifest.permission.SEND_SMS,
-                    ),
-                    10
-                )
-            }
-        }
+        checkPermissions()
 
         val toolbar = supportActionBar
 
@@ -262,6 +223,64 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
     }
 
+    private fun showAppFunctionalityInfoDialog() {
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(R.layout.dialog_app_functions_info)
+        dialog.setCancelable(false)
+//        val saveIsFirstTimeAppOpened: SaveIsFirstTimeAppOpened by inject()
+
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_SMS
+            ) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.READ_SMS)
+        }
+        if (ContextCompat.checkSelfPermission(
+            applicationContext,
+            android.Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.RECEIVE_SMS)
+        }
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.SEND_SMS
+            ) != PackageManager.PERMISSION_GRANTED) {
+            permissionList.add(android.Manifest.permission.SEND_SMS)
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    android.Manifest.permission.ACCESS_NOTIFICATION_POLICY
+                ) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(android.Manifest.permission.ACCESS_NOTIFICATION_POLICY)
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    applicationContext,
+                    android.Manifest.permission.POST_NOTIFICATIONS
+                ) != PackageManager.PERMISSION_GRANTED) {
+                permissionList.add(android.Manifest.permission.POST_NOTIFICATIONS)
+            }
+        }
+
+        dialog.findViewById<Button>(R.id.confirmButton)!!.setOnClickListener {
+//            saveIsFirstTimeAppOpened.execute()
+            ActivityCompat.requestPermissions(
+                this,
+                permissionList.toTypedArray(),
+                10
+            )
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
     override fun showSettingsBottomSheetDialog() {
         val dialog = BottomSheetDialog(this)
         dialog.setContentView(R.layout.dialog_settings)
@@ -348,7 +367,30 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         } catch (e: IllegalArgumentException) {
             e.printStackTrace()
         }
+    }
 
+    override fun checkPermissions(): Boolean {
+        if (ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.READ_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.RECEIVE_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.SEND_SMS
+            ) != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(
+                applicationContext,
+                android.Manifest.permission.POST_NOTIFICATIONS
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            showAppFunctionalityInfoDialog()
+            return false
+        } else
+            return true
     }
 
     private val networkServiceConnection = object : ServiceConnection {

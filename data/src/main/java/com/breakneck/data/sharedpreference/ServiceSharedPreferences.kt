@@ -3,6 +3,7 @@ package com.breakneck.data.sharedpreference
 import android.content.Context
 import com.breakneck.data.entity.ServiceStateData
 import com.breakneck.data.storage.ServiceStorage
+import com.breakneck.domain.MINUTES_30_IN_SECONDS
 
 private const val SERVICE_SHARED_PREFERENCES_NAME = "SERVICE_SHARED_PREFERENCES"
 private const val SERVICE_STATE = "SERVICE_STATE"
@@ -34,7 +35,7 @@ class ServiceSharedPreferences(private val context: Context): ServiceStorage {
     }
 
     override fun getServiceRemainingTime(): Long {
-        return sharedPreferences.getLong(SERVICE_REMAINING_TIME, 0)
+        return sharedPreferences.getLong(SERVICE_REMAINING_TIME, MINUTES_30_IN_SECONDS)
     }
 
     override fun saveServiceRemainingTime(time: Long) {
