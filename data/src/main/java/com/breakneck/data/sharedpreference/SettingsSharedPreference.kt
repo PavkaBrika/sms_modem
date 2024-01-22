@@ -6,6 +6,7 @@ import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
 import com.breakneck.data.entity.RemainingAdsQuantityData
 import com.breakneck.data.storage.SettingsStorage
+import com.breakneck.domain.TOTAL_ADS_QUANTITY
 
 const val SETTINGS_SHARED_PREFERENCES_NAME = "SETTINGS_SHARED_PREFERENCES"
 const val PORT = "PORT"
@@ -51,7 +52,7 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
     }
 
     override fun getRemainingAdsQuantity(): RemainingAdsQuantityData {
-        return RemainingAdsQuantityData(value = sharedPreference.getInt(REMAINING_ADS, 15))
+        return RemainingAdsQuantityData(value = sharedPreference.getInt(REMAINING_ADS, TOTAL_ADS_QUANTITY))
     }
 
     override fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantityData) {

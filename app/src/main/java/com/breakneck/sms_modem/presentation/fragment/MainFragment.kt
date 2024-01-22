@@ -13,14 +13,19 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
+import com.breakneck.domain.PART_ADS_QUANTITY
+import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageFullListVisibilityState
+import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMainBinding
+import com.breakneck.sms_modem.service.HOURS_24_IN_SECONDS
+import com.breakneck.sms_modem.service.HOURS_48_IN_SECONDS
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
@@ -30,7 +35,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.TimeUnit
 
-class MainFragment: Fragment() {
+class MainFragment : Fragment() {
 
     private lateinit var binding: FragmentMainBinding
 
@@ -96,6 +101,12 @@ class MainFragment: Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
+            val quantity = mainActivityVM.remainingAds.value
+            if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+                mainActivityVM.saveServiceRemainingTime()
+                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                    activityInterface.updateServiceRemainingTimer()
+            }
             mainActivityVM.onAdView()
         }
 
@@ -180,12 +191,13 @@ class MainFragment: Fragment() {
 
         mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
             val millis = time * 1000
-            binding.serviceTimeRemainingTextView.text = String.format("%02d:%02d:%02d",
+            binding.serviceTimeRemainingTextView.text = String.format(
+                "%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
-            );
+            )
         }
 
         mainActivityVM.serviceError.observe(viewLifecycleOwner) { error ->
@@ -208,11 +220,10 @@ class MainFragment: Fragment() {
 
         mainActivityVM.remainingAds.observe(viewLifecycleOwner) { quantity ->
             binding.adsToViewRemainingTextView.text = quantity.value.toString()
-            if ((quantity.value % 5 == 0) && (quantity.value != 15)) {
-                mainActivityVM.saveServiceRemainingTime()
-                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                    activityInterface.updateServiceRemainingTimer()
-            }
+            if (quantity.value <= 0)
+                binding.watchAdButton.isEnabled = false
+            else
+                binding.watchAdButton.isEnabled = true
         }
 
 //        vm.networkState.observe(this) { state ->

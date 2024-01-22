@@ -226,7 +226,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
             val intent = Intent(this, NetworkService::class.java)
             bindService(intent, networkServiceConnection, 0)
-            vm.changeServiceBoundState()
+            vm.onServiceBind()
         }
     }
 
@@ -234,7 +234,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         super.onStop()
         if (vm.networkServiceBoundState.value is ServiceBoundState.Bounded) {
             unbindService(networkServiceConnection)
-            vm.changeServiceBoundState()
+            vm.onServiceUnbind()
         }
 
         LocalBroadcastManager.getInstance(this).unregisterReceiver(receiver)
@@ -347,11 +347,9 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             when (intent) {
                 ServiceIntent.Disable -> {
                     unbindService(networkServiceConnection)
-                    vm.changeServiceBoundState()
                 }
                 ServiceIntent.Enable -> {
                     bindService(serviceIntent, networkServiceConnection, 0)
-                    vm.changeServiceBoundState()
                 }
             }
         } catch (e: IllegalArgumentException) {
@@ -365,10 +363,12 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             val networkServiceBinder = binder as NetworkService.NetworkServiceBinder
             boundNetworkService = networkServiceBinder.getService()
             Log.e(TAG, "onNetworkServiceConnected")
+            vm.onServiceBind()
         }
 
         override fun onServiceDisconnected(p0: ComponentName?) {
             Log.e(TAG, "onNetworkServiceDisconnected")
+            vm.onServiceUnbind()
         }
     }
 

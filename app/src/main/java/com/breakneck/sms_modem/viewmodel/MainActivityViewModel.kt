@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
 import com.breakneck.domain.model.Port
@@ -76,6 +77,10 @@ class MainActivityViewModel(
     val remainingAds: LiveData<RemainingAdsQuantity>
         get() = _remainingAds
 
+    private val _viewAdCount = MutableLiveData<Int>()
+    val viewAdCount: LiveData<Int>
+        get() = _viewAdCount
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
@@ -146,20 +151,18 @@ class MainActivityViewModel(
         _networkServiceState.value = ServiceState.Loading
     }
 
-    fun changeServiceBoundState() {
-        when (networkServiceBoundState.value!!) {
-            ServiceBoundState.Bounded -> {
-                _networkServiceBoundState.value = ServiceBoundState.Unbounded
-            }
-            ServiceBoundState.Unbounded -> {
-                _networkServiceBoundState.value = ServiceBoundState.Bounded
-            }
-        }
+    fun onServiceBind() {
+        _networkServiceBoundState.value = ServiceBoundState.Bounded
+        Log.e(TAG, "Service bound state is ${networkServiceBoundState.value.toString()}")
+    }
+
+    fun onServiceUnbind() {
+        _networkServiceBoundState.value = ServiceBoundState.Unbounded
+        Log.e(TAG, "Service bound state is ${networkServiceBoundState.value.toString()}")
     }
 
     fun saveServiceRemainingTime() {
         //TODO CHANGE TO HOURS
-        val t = getServiceRemainingTime.execute()
         saveServiceRemainingTime.execute(getServiceRemainingTime.execute() + 24000)
         getServiceRemainingTime()
     }
@@ -184,8 +187,8 @@ class MainActivityViewModel(
 
     fun getRemainingAds() {
         val remainingAds = getRemainingAds.execute().value
-        if (remainingAds >= 15)
-            _remainingAds.value = RemainingAdsQuantity(value = 15)
+        if (remainingAds >= TOTAL_ADS_QUANTITY)
+            _remainingAds.value = RemainingAdsQuantity(value = TOTAL_ADS_QUANTITY)
         else
             _remainingAds.value = getRemainingAds.execute()
     }

@@ -20,6 +20,7 @@ import android.telephony.SmsManager
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.breakneck.domain.PART_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.RemainingAdsQuantity
@@ -73,8 +74,8 @@ const val REMINDER_NOTIFICATION_ID = 21343215
 //TODO CHANGE TO HOURS
 //const val HOURS_24_IN_SECONDS = 86400L
 //const val HOURS_48_IN_SECONDS = 172800L
-const val HOURS_24_IN_SECONDS = 10L
-const val HOURS_48_IN_SECONDS = 16L
+const val HOURS_24_IN_SECONDS = 24L
+const val HOURS_48_IN_SECONDS = 48L
 
 open class NetworkService : Service() {
 
@@ -151,6 +152,7 @@ open class NetworkService : Service() {
                             stopService()
                         }
                     }
+
                     SERVICE_REMIND_LATER -> {
                         //TODO CHANGE TO HOURS (now 1000 = 1 hour)
                         if (getServiceRemainingTime.execute() > 3000) {
@@ -315,16 +317,16 @@ open class NetworkService : Service() {
                 }
 
         val notificationButtonPendingIntent =
-                Intent(this, NetworkService::class.java)
-                    .apply { action = ServiceIntent.Disable.toString() }
-                    .let { notificationIntent ->
-                        PendingIntent.getService(
-                            this,
-                            0,
-                            notificationIntent,
-                            PendingIntent.FLAG_MUTABLE
-                        )
-                    }
+            Intent(this, NetworkService::class.java)
+                .apply { action = ServiceIntent.Disable.toString() }
+                .let { notificationIntent ->
+                    PendingIntent.getService(
+                        this,
+                        0,
+                        notificationIntent,
+                        PendingIntent.FLAG_MUTABLE
+                    )
+                }
 
         return NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -340,7 +342,11 @@ open class NetworkService : Service() {
                     getString(R.string.unable_to_get_ip_address)
                 }
             )
-            .addAction(R.drawable.baseline_close_24, "Stop service", notificationButtonPendingIntent)
+            .addAction(
+                R.drawable.baseline_close_24,
+                "Stop service",
+                notificationButtonPendingIntent
+            )
             .setOngoing(true)
             .setContentIntent(notificationClickPendingIntent)
             .build()
@@ -372,10 +378,17 @@ open class NetworkService : Service() {
 
         val notification = NotificationCompat.Builder(this, notificationChannelId)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle(getString(R.string.service_will_stop_after_hours, TimeUnit.MILLISECONDS.toHours(remindTime)))
+            .setContentTitle(
+                getString(
+                    R.string.service_will_stop_after_hours,
+                    TimeUnit.MILLISECONDS.toHours(remindTime)
+                )
+            )
             .setContentText(getString(R.string.please_watch_ads_or_buy_a_subscription_to_continue_service_work))
-            .addAction(R.drawable.baseline_close_24,
-                getString(R.string.remind_later), notificationButtonPendingIntent)
+            .addAction(
+                R.drawable.baseline_close_24,
+                getString(R.string.remind_later), notificationButtonPendingIntent
+            )
             .setContentIntent(notificationClickPendingIntent)
             .setAutoCancel(true)
 
@@ -482,17 +495,26 @@ open class NetworkService : Service() {
                         createReminderNotification()
                     }
                 when (millisUntilFinished / 1000) {
-                    HOURS_24_IN_SECONDS ->  {
-                        saveRemainingAdsQuantity.execute(RemainingAdsQuantity(getRemainingAdsQuantity.execute().value + 5))
+                    HOURS_24_IN_SECONDS -> {
+                        saveRemainingAdsQuantity.execute(
+                            RemainingAdsQuantity(
+                                getRemainingAdsQuantity.execute().value + PART_ADS_QUANTITY
+                            )
+                        )
                         updateRemainingAdsQuantityInActivity()
                     }
+
                     HOURS_48_IN_SECONDS -> {
-                        saveRemainingAdsQuantity.execute(RemainingAdsQuantity(getRemainingAdsQuantity.execute().value + 5))
+                        saveRemainingAdsQuantity.execute(
+                            RemainingAdsQuantity(
+                                getRemainingAdsQuantity.execute().value + PART_ADS_QUANTITY
+                            )
+                        )
                         updateRemainingAdsQuantityInActivity()
                     }
                 }
-                updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
+                updateServiceTimeRemainingInActivity()
             }
 
             override fun onFinish() {
