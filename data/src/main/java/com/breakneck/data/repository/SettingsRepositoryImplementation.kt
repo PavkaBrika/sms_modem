@@ -52,4 +52,12 @@ class SettingsRepositoryImplementation(private val settingsStorage: SettingsStor
     override fun getRemainingAdsQuantity(): RemainingAdsQuantity {
         return RemainingAdsQuantity(value = settingsStorage.getRemainingAdsQuantity().value)
     }
+
+    override fun getIsFirstTimeAppOpened(): Boolean {
+        return settingsStorage.getIsFirstTimeAppOpened()
+    }
+
+    override fun saveIsFirstTimeAppOpened(isOpened: Boolean) {
+        settingsStorage.saveIsFirstTimeAppOpened(isOpened = isOpened)
+    }
 }

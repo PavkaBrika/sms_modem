@@ -14,6 +14,7 @@ const val MESSAGE_DESTINATION_URL = "MESSAGE_DESTINATION_URL"
 const val DEVICE_IP_ADDRESS = "DEVICE_IP_ADDRESS"
 const val REMIND_NOTIFICATION = "REMIND_NOTIFICATION"
 const val REMAINING_ADS = "REMAINING_ADS"
+const val FIRST_TIME_APP_OPENED = "FIRST_TIME_APP_OPENED"
 
 class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
@@ -57,5 +58,13 @@ class SettingsSharedPreference(private val context: Context): SettingsStorage {
 
     override fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantityData) {
         sharedPreference.edit().putInt(REMAINING_ADS, quantity.value).apply()
+    }
+
+    override fun getIsFirstTimeAppOpened(): Boolean {
+        return sharedPreference.getBoolean(FIRST_TIME_APP_OPENED, false)
+    }
+
+    override fun saveIsFirstTimeAppOpened(isOpened: Boolean) {
+        sharedPreference.edit().putBoolean(FIRST_TIME_APP_OPENED, isOpened).apply()
     }
 }

@@ -27,4 +27,8 @@ interface SettingsStorage {
     fun getRemainingAdsQuantity(): RemainingAdsQuantityData
 
     fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantityData)
+
+    fun getIsFirstTimeAppOpened(): Boolean
+
+    fun saveIsFirstTimeAppOpened(isOpened: Boolean)
 }

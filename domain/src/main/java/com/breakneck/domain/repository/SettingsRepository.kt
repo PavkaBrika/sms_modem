@@ -26,4 +26,8 @@ interface SettingsRepository {
     fun getRemainingAdsQuantity(): RemainingAdsQuantity
 
     fun saveRemainingAdsQuantity(quantity: RemainingAdsQuantity)
+
+    fun getIsFirstTimeAppOpened(): Boolean
+
+    fun saveIsFirstTimeAppOpened(isOpened: Boolean)
 }
