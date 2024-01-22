@@ -40,4 +40,6 @@
     <string name="watch_ad">Watch ad</string>
     <string name="subscription_error">It means that you can use app only after watching ads. 2 full-screen ads give you 24 hours access to the app\'s functionality. You can accumulate access time up to 72 hours. Subscription removes these restrictions and removes ads from the app.</string>
     <string name="notification_settings_hint">Set the time until the end of the service, when a push notification will be sent to remind you to watch ads</string>
+    <string name="ad">Ad</string>
+    <string name="buy">Buy</string>
 </resources>

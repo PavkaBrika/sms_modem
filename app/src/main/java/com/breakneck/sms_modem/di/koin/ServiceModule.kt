@@ -1,8 +1,8 @@
 package com.breakneck.sms_modem.di.koin
 
-import com.breakneck.domain.usecase.service.GetServiceRemainingTime
+import com.breakneck.domain.usecase.service.GetServiceRemainingTimeInMillis
 import com.breakneck.domain.usecase.service.GetServiceState
-import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
+import com.breakneck.domain.usecase.service.SaveServiceRemainingTimeInMillis
 import com.breakneck.domain.usecase.service.SaveServiceState
 import org.koin.dsl.module
 
@@ -16,11 +16,11 @@ val serviceModule = module {
         SaveServiceState(serviceRepository = get())
     }
 
-    factory<GetServiceRemainingTime> {
-        GetServiceRemainingTime(serviceRepository = get())
+    factory<GetServiceRemainingTimeInMillis> {
+        GetServiceRemainingTimeInMillis(serviceRepository = get())
     }
 
-    factory<SaveServiceRemainingTime> {
-        SaveServiceRemainingTime(serviceRepository = get())
+    factory<SaveServiceRemainingTimeInMillis> {
+        SaveServiceRemainingTimeInMillis(serviceRepository = get())
     }
 }

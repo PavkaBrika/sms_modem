@@ -86,13 +86,13 @@ class MainFragment : Fragment() {
 
             override fun onRewardedVideoFinished(amount: Double, currency: String) {
                 Log.e("Appodeal", "onRewardedVideoFinished")
-                val quantity = mainActivityVM.remainingAds.value
-                if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
-                    mainActivityVM.saveServiceRemainingTime()
-                    if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                        activityInterface.updateServiceRemainingTimer()
-                }
-                mainActivityVM.onAdView()
+//                val quantity = mainActivityVM.remainingAds.value
+//                if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+//                    mainActivityVM.saveServiceRemainingTime()
+//                    if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+//                        activityInterface.updateServiceRemainingTimer()
+//                }
+//                mainActivityVM.onAdView()
                 vm.isRewardAdLoading()
             }
 
@@ -111,16 +111,16 @@ class MainFragment : Fragment() {
             }
         })
 
-        vm.isRewardAdLoaded.observe(viewLifecycleOwner) { isLoaded ->
-            if (isLoaded) {
-                binding.watchAdButton.setText(R.string.ad)
-                binding.watchAdButton.isEnabled = true
-            }
-            else {
-                binding.watchAdButton.setText(R.string.loading)
-                binding.watchAdButton.isEnabled = false
-            }
-        }
+//        vm.isRewardAdLoaded.observe(viewLifecycleOwner) { isLoaded ->
+//            if (isLoaded) {
+//                binding.watchAdButton.setText(R.string.ad)
+//                binding.watchAdButton.isEnabled = true
+//            }
+//            else {
+//                binding.watchAdButton.setText(R.string.loading)
+//                binding.watchAdButton.isEnabled = false
+//            }
+//        }
 
         mainActivityVM.serverIpAddress.observe(viewLifecycleOwner) { address ->
             binding.ipAddressTextView.text = address.value
@@ -151,9 +151,16 @@ class MainFragment : Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
-            if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)) {
-                Appodeal.show(requireActivity(), Appodeal.REWARDED_VIDEO)
+            val quantity = mainActivityVM.remainingAds.value
+            if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+                mainActivityVM.saveServiceRemainingTime()
+                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                    activityInterface.updateServiceRemainingTimer()
             }
+            mainActivityVM.onAdView()
+//            if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)) {
+//                Appodeal.show(requireActivity(), Appodeal.REWARDED_VIDEO)
+//            }
         }
 
         mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->

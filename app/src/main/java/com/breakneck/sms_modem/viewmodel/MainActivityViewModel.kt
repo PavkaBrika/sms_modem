@@ -12,19 +12,16 @@ import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.service.GetServiceRemainingTime
+import com.breakneck.domain.usecase.service.GetServiceRemainingTimeInMillis
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.service.GetServiceState
-import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
+import com.breakneck.domain.usecase.service.SaveServiceRemainingTimeInMillis
 import com.breakneck.domain.usecase.settings.GetDeviceIpAddress
 import com.breakneck.domain.usecase.settings.GetRemainingAds
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import com.breakneck.domain.usecase.settings.SaveRemainingAds
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class MainActivityViewModel(
     private val savePort: SavePort,
@@ -32,8 +29,8 @@ class MainActivityViewModel(
     private val getServiceState: GetServiceState,
     private val saveMessageDestinationUrl: SaveMessageDestinationUrl,
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
-    private val saveServiceRemainingTime: SaveServiceRemainingTime,
-    private val getServiceRemainingTime: GetServiceRemainingTime,
+    private val saveServiceRemainingTimeInMillis: SaveServiceRemainingTimeInMillis,
+    private val getServiceRemainingTimeInMillis: GetServiceRemainingTimeInMillis,
     private val getDeviceIpAddress: GetDeviceIpAddress,
     private val getRemainingAds: GetRemainingAds,
     private val saveRemainingAds: SaveRemainingAds
@@ -163,12 +160,12 @@ class MainActivityViewModel(
 
     fun saveServiceRemainingTime() {
         //TODO CHANGE TO HOURS
-        saveServiceRemainingTime.execute(getServiceRemainingTime.execute() + 24000)
+        saveServiceRemainingTimeInMillis.execute(getServiceRemainingTimeInMillis.execute() + 24000)
         getServiceRemainingTime()
     }
 
     fun getServiceRemainingTime() {
-        _serviceRemainingTimeInSec.value = getServiceRemainingTime.execute() / 1000
+        _serviceRemainingTimeInSec.value = getServiceRemainingTimeInMillis.execute() / 1000
     }
 
     fun getServiceIpAddress() {
