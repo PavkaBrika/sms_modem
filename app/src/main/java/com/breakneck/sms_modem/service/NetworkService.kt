@@ -22,6 +22,7 @@ import androidx.core.app.NotificationCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.Message
+import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.Sender
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
@@ -31,8 +32,10 @@ import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.service.SaveServiceState
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
+import com.breakneck.domain.usecase.settings.GetRemainingAds
 import com.breakneck.domain.usecase.settings.GetRemindNotificationTime
 import com.breakneck.domain.usecase.settings.SaveDeviceIpAddress
+import com.breakneck.domain.usecase.settings.SaveRemainingAds
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.presentation.activity.MainActivity
@@ -67,8 +70,11 @@ const val ERROR = "com.breakneck.sms_modem.ERROR"
 const val SERVICE_NOTIFICATION_ID = 21343214
 const val REMINDER_NOTIFICATION_ID = 21343215
 
-const val HOURS_24_IN_SECONDS = 86400L
-const val HOURS_48_IN_SECONDS = 172800L
+//TODO CHANGE TO HOURS
+//const val HOURS_24_IN_SECONDS = 86400L
+//const val HOURS_48_IN_SECONDS = 172800L
+const val HOURS_24_IN_SECONDS = 10L
+const val HOURS_48_IN_SECONDS = 16L
 
 open class NetworkService : Service() {
 
@@ -89,6 +95,8 @@ open class NetworkService : Service() {
     val saveDeviceIpAddress: SaveDeviceIpAddress by inject()
     val getMessageDestinationUrl: GetMessageDestinationUrl by inject()
     val getRemindNotificationTime: GetRemindNotificationTime by inject()
+    val getRemainingAdsQuantity: GetRemainingAds by inject()
+    val saveRemainingAdsQuantity: SaveRemainingAds by inject()
 
 
     private lateinit var server: NettyApplicationEngine
@@ -474,8 +482,14 @@ open class NetworkService : Service() {
                         createReminderNotification()
                     }
                 when (millisUntilFinished / 1000) {
-                    HOURS_24_IN_SECONDS -> updateRemainingAdsQuantityInActivity()
-                    HOURS_48_IN_SECONDS -> updateRemainingAdsQuantityInActivity()
+                    HOURS_24_IN_SECONDS ->  {
+                        saveRemainingAdsQuantity.execute(RemainingAdsQuantity(getRemainingAdsQuantity.execute().value + 5))
+                        updateRemainingAdsQuantityInActivity()
+                    }
+                    HOURS_48_IN_SECONDS -> {
+                        saveRemainingAdsQuantity.execute(RemainingAdsQuantity(getRemainingAdsQuantity.execute().value + 5))
+                        updateRemainingAdsQuantityInActivity()
+                    }
                 }
                 updateServiceTimeRemainingInActivity()
                 saveServiceRemainingTime.execute(millisUntilFinished)
@@ -484,6 +498,8 @@ open class NetworkService : Service() {
             override fun onFinish() {
                 Log.e(TAG, "CountDownTimerFinished")
                 saveServiceRemainingTime.execute(0)
+                saveRemainingAdsQuantity.execute(RemainingAdsQuantity(getRemainingAdsQuantity.execute().value + 5))
+                updateRemainingAdsQuantityInActivity()
                 stopService()
             }
         }.start()

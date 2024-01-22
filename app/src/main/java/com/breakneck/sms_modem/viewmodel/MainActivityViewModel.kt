@@ -4,25 +4,23 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.model.IpAddress
-import com.breakneck.domain.model.Message
 import com.breakneck.domain.model.MessageDestinationUrl
-import com.breakneck.domain.model.MessageFullListVisibilityState
-import com.breakneck.domain.model.NetworkState
 import com.breakneck.domain.model.Port
+import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.message.GetAllMessages
 import com.breakneck.domain.usecase.service.GetServiceRemainingTime
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
 import com.breakneck.domain.usecase.service.GetServiceState
 import com.breakneck.domain.usecase.service.SaveServiceRemainingTime
 import com.breakneck.domain.usecase.settings.GetDeviceIpAddress
+import com.breakneck.domain.usecase.settings.GetRemainingAds
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
+import com.breakneck.domain.usecase.settings.SaveRemainingAds
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -35,7 +33,9 @@ class MainActivityViewModel(
     private val getMessageDestinationUrl: GetMessageDestinationUrl,
     private val saveServiceRemainingTime: SaveServiceRemainingTime,
     private val getServiceRemainingTime: GetServiceRemainingTime,
-    private val getDeviceIpAddress: GetDeviceIpAddress
+    private val getDeviceIpAddress: GetDeviceIpAddress,
+    private val getRemainingAds: GetRemainingAds,
+    private val saveRemainingAds: SaveRemainingAds
 ): ViewModel() {
 
     val TAG = "MainViewModel"
@@ -72,6 +72,10 @@ class MainActivityViewModel(
     val serviceError: LiveData<String>
         get() = _serviceError
 
+    private val _remainingAds = MutableLiveData<RemainingAdsQuantity>()
+    val remainingAds: LiveData<RemainingAdsQuantity>
+        get() = _remainingAds
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
@@ -79,6 +83,7 @@ class MainActivityViewModel(
         changeServiceIntent()
         getServiceRemainingTime()
         getServiceIpAddress()
+        getRemainingAds()
     }
 
     override fun onCleared() {
@@ -154,7 +159,7 @@ class MainActivityViewModel(
 
     fun saveServiceRemainingTime() {
         //TODO CHANGE TO HOURS
-        saveServiceRemainingTime.execute(24000)
+        saveServiceRemainingTime.execute(getServiceRemainingTime.execute() / 1000 + 24000)
         getServiceRemainingTime()
     }
 
@@ -174,5 +179,23 @@ class MainActivityViewModel(
 
     fun setServiceError(error: String) {
         _serviceError.value = error
+    }
+
+    fun getRemainingAds() {
+        val remainingAds = getRemainingAds.execute().value
+        if (remainingAds >= 15)
+            _remainingAds.value = RemainingAdsQuantity(value = 15)
+        else
+            _remainingAds.value = getRemainingAds.execute()
+    }
+
+    fun onAdView() {
+        if (_remainingAds.value!!.value > 0)
+            _remainingAds.value = RemainingAdsQuantity(_remainingAds.value!!.value - 1)
+        saveRemainingAds()
+    }i
+
+    fun saveRemainingAds() {
+        saveRemainingAds.execute(_remainingAds.value!!)
     }
 }

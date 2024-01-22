@@ -39,10 +39,6 @@ class MainFragment: Fragment() {
     private val mainActivityVM by activityViewModel<MainActivityViewModel>()
     private val vm by viewModel<MainFragmentViewModel>()
 
-    private val sdf = SimpleDateFormat("HH:mm:ss")
-    val date = Date()
-
-
     interface ActivityInterface {
         fun serviceAction(intent: ServiceIntent)
 
@@ -86,7 +82,6 @@ class MainFragment: Fragment() {
                     mainActivityVM.changeServiceIntent()
                     mainActivityVM.setServiceStateLoading()
                 } else {
-                    //TODO change location of this message in layout
                     mainActivityVM.setServiceError(getString(R.string.unable_to_start_service_please_watch_ads))
                 }
             } catch (e: NullPointerException) {
@@ -101,10 +96,7 @@ class MainFragment: Fragment() {
         }
 
         binding.watchAdButton.setOnClickListener {
-
-            mainActivityVM.saveServiceRemainingTime()
-            if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                activityInterface.updateServiceRemainingTimer()
+            mainActivityVM.onAdView()
         }
 
         mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->
@@ -188,7 +180,6 @@ class MainFragment: Fragment() {
 
         mainActivityVM.serviceRemainingTime.observe(viewLifecycleOwner) { time ->
             val millis = time * 1000
-//            binding.serviceTimeRemainingTextView.text = sdf.format(Date(millis))
             binding.serviceTimeRemainingTextView.text = String.format("%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
                 TimeUnit.MILLISECONDS.toMinutes(millis),
@@ -212,6 +203,15 @@ class MainFragment: Fragment() {
             } else {
                 binding.messageDestinationTextView.visibility = View.VISIBLE
                 binding.messageDestinationTextView.text = url.value
+            }
+        }
+
+        mainActivityVM.remainingAds.observe(viewLifecycleOwner) { quantity ->
+            binding.adsToViewRemainingTextView.text = quantity.value.toString()
+            if ((quantity.value % 5 == 0) && (quantity.value != 15)) {
+                mainActivityVM.saveServiceRemainingTime()
+                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                    activityInterface.updateServiceRemainingTimer()
             }
         }
 

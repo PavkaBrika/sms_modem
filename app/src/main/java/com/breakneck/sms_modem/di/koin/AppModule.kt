@@ -24,7 +24,9 @@ val appModule = module {
             getMessageDestinationUrl = get(),
             saveServiceRemainingTime = get(),
             getServiceRemainingTime = get(),
-            getDeviceIpAddress = get()
+            getDeviceIpAddress = get(),
+            getRemainingAds = get(),
+            saveRemainingAds = get()
         )
     }
 

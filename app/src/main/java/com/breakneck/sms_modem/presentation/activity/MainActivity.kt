@@ -47,6 +47,7 @@ import com.breakneck.sms_modem.service.SERVICE_NEW_MESSAGE
 import com.breakneck.sms_modem.service.SERVICE_START_SUCCESS
 import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
+import com.breakneck.sms_modem.service.SERVICE_UPDATE_ADS
 import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
@@ -203,6 +204,8 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     vm.setServiceError("")
                 } else if (intent.action.equals(RECEIVER_NEW_MESSAGE)) {
                     messageFragmentViewModel.getAllMessages()
+                } else if (intent.action.equals(SERVICE_UPDATE_ADS)) {
+                    vm.getRemainingAds()
                 }
             }
         }
@@ -217,6 +220,7 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             registerReceiver(receiver, IntentFilter(RECEIVER_NEW_MESSAGE))
             registerReceiver(receiver, IntentFilter(SERVICE_ERROR))
             registerReceiver(receiver, IntentFilter(SERVICE_START_SUCCESS))
+            registerReceiver(receiver, IntentFilter(SERVICE_UPDATE_ADS))
         }
 
         if ((vm.networkServiceBoundState.value is ServiceBoundState.Unbounded) && (vm.networkServiceState.value is ServiceState.Enabled)) {
