@@ -33,14 +33,11 @@ import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
-import com.breakneck.domain.usecase.settings.GetIsFirstTimeAppOpened
-import com.breakneck.domain.usecase.settings.SaveIsFirstTimeAppOpened
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
 import com.breakneck.sms_modem.presentation.fragment.MainFragment
 import com.breakneck.sms_modem.presentation.fragment.MessagesFragment
-import com.breakneck.sms_modem.receiver.NetworkChangeReceiver
 import com.breakneck.sms_modem.receiver.RECEIVER_NEW_MESSAGE
 import com.breakneck.sms_modem.service.ERROR
 import com.breakneck.sms_modem.service.NetworkService
@@ -52,15 +49,12 @@ import com.breakneck.sms_modem.service.SERVICE_TIME_REMAINING_RESULT
 import com.breakneck.sms_modem.service.SERVICE_UPDATE_ADS
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
-//import com.breakneck.sms_modem.viewmodel.MainViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.lang.IllegalArgumentException
-import kotlin.coroutines.coroutineContext
 
 class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
@@ -79,7 +73,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
 
     lateinit var boundNetworkService: NetworkService
-    lateinit var networkChangeReceiver: NetworkChangeReceiver
 
     lateinit var receiver: BroadcastReceiver
 

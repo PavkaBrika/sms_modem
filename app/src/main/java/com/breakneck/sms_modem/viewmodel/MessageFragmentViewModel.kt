@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.model.Message
 import com.breakneck.domain.usecase.message.GetAllMessages
-import com.breakneck.domain.usecase.message.SaveSentMessage
 import com.breakneck.domain.usecase.message.SendMessageToServer
 import com.breakneck.domain.usecase.message.UpdateMessage
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl

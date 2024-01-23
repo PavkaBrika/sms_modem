@@ -4,7 +4,6 @@ import com.breakneck.data.entity.IpAddressData
 import com.breakneck.data.entity.MessageDestinationUrlData
 import com.breakneck.data.entity.PortData
 import com.breakneck.data.entity.RemainingAdsQuantityData
-import com.breakneck.domain.model.RemainingAdsQuantity
 
 interface SettingsStorage {
 

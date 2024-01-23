@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.LinearLayout
-import androidx.core.os.BuildCompat
 import androidx.fragment.app.Fragment
 import com.breakneck.domain.HOURS_12_IN_SECONDS
 import com.breakneck.domain.HOURS_3_IN_SECONDS
@@ -18,11 +17,9 @@ import com.breakneck.domain.HOURS_9_IN_SECONDS
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.FragmentInfoBinding
 import com.breakneck.sms_modem.viewmodel.InfoFragmentViewModel
-import com.breakneck.sms_modem.viewmodel.MainFragmentViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class InfoFragment: Fragment() {
 

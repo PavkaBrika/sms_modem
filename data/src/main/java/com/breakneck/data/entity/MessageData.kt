@@ -2,8 +2,6 @@ package com.breakneck.data.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.breakneck.domain.model.Sender
-import java.util.Date
 
 @Entity
 data class MessageData(

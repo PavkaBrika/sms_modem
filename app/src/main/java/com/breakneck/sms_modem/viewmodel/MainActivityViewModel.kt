@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
@@ -24,8 +23,6 @@ import com.breakneck.domain.usecase.settings.GetRemainingAds
 import com.breakneck.domain.usecase.settings.SaveMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.SavePort
 import com.breakneck.domain.usecase.settings.SaveRemainingAds
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class MainActivityViewModel(
     private val savePort: SavePort,

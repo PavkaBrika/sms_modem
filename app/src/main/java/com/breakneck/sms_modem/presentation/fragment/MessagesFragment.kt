@@ -6,20 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.breakneck.domain.model.Message
-import com.breakneck.domain.usecase.message.SendMessageToServer
-import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.adapter.MessageAdapter
 import com.breakneck.sms_modem.databinding.FragmentMessagesBinding
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.activityViewModel
-import org.koin.core.component.inject
 
 class MessagesFragment : Fragment() {
 

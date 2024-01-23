@@ -13,19 +13,14 @@ import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.message.SaveSentMessage
 import com.breakneck.domain.usecase.message.SendMessageToServer
 import com.breakneck.domain.usecase.util.FromTimestampToDateString
-import com.breakneck.sms_modem.service.SERVICE_STATE_RESULT
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import java.util.Locale
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 const val RECEIVER_NEW_MESSAGE = "com.breakneck.sms_modem.RECEIVER_NEW_MESSAGE"
 

@@ -1,7 +1,6 @@
 package com.breakneck.domain.model
 
 import java.io.Serializable
-import java.util.Date
 
 data class Message(
     val id: Long?,

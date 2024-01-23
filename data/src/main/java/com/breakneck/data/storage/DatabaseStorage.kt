@@ -1,7 +1,6 @@
 package com.breakneck.data.storage
 
 import com.breakneck.data.entity.MessageData
-import com.breakneck.domain.model.Message
 
 interface DatabaseStorage {
 
