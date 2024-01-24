@@ -51,4 +51,18 @@
     <string name="please_note_you_are_not_connected_to_the_internet">Please note, you are not connected to the internet!</string>
     <string name="stop_service">Stop service</string>
     <string name="sms_modem_service_has_stopped_working">SMS Modem service has stopped working</string>
+    <string name="choose_your_subscription_plan">Choose your subscription plan</string>
+    <string name="annual">Annual</string>
+    <string name="_3_months">3 Months</string>
+    <string name="monthly">Monthly</string>
+    <string name="subscribe_now">Subscribe Now</string>
+    <string name="already_purchased">Already Purchased?</string>
+    <string name="terms_conditions_underline"><u><![CDATA[Terms&Conditions]]></u></string>
+    <string name="privacy_policy_underline"><u>Privacy Policy</u></string>
+    <string name="terms_conditions"><![CDATA[Terms & Conditions]]></string>
+    <string name="first_term">- SMS Modem subscription is billed monthly, seasonally (3-months) or annualy at the rate corresponding to the selected plan.</string>
+    <string name="second_term">- Subscription auto-renews before the end of the current period, unless canceled 24-hours in advance.</string>
+    <string name="third_term">- You may manage your subscriptions and turned off auto-renewal from your Google Play Store account settings.</string>
+    <string name="forth_term">- If you cancel a subscription purchased from an app on Google Play, you will not receive a refund for the current billing period, but will continue to receive their subscription content for the remainder of the current billing period, regardless of the cancellation date. The cancellation goes into effect after the current billing period has passed.</string>
+    <string name="hot">Hot</string>
 </resources>

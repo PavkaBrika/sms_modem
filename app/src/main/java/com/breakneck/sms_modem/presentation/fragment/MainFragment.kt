@@ -46,6 +46,8 @@ class MainFragment : Fragment() {
         fun getDeviceIpAddress(): String
 
         fun checkPermissions(): Boolean
+
+        fun showSubscriptionPlansDialog()
     }
 
     lateinit var activityInterface: ActivityInterface
@@ -153,6 +155,10 @@ class MainFragment : Fragment() {
 
         binding.settingsButton.setOnClickListener {
             activityInterface.showSettingsBottomSheetDialog()
+        }
+
+        binding.connectSubscriptionButton.setOnClickListener {
+            activityInterface.showSubscriptionPlansDialog()
         }
 
         binding.watchAdButton.setOnClickListener {

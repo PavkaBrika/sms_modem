@@ -12,14 +12,17 @@ import android.net.LinkProperties
 import android.net.Network
 import android.net.NetworkCapabilities
 import android.net.NetworkRequest
+import android.net.Uri
 import android.net.wifi.WifiManager
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -54,7 +57,7 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.lang.IllegalArgumentException
+
 
 class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
 
@@ -346,6 +349,43 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 dialog.dismiss()
             }
         }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.show()
+    }
+
+    override fun showSubscriptionPlansDialog() {
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(R.layout.dialog_subscription_plans)
+        dialog.setCancelable(false)
+
+        dialog.findViewById<ImageView>(R.id.cancelImageView)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.findViewById<TextView>(R.id.termsTextView)!!.setOnClickListener {
+            showSubscriptionsTermsDialog()
+        }
+
+        dialog.findViewById<TextView>(R.id.privacyPolicyTextView)!!.setOnClickListener {
+            //TODO CHANGE URL
+            startActivity(
+                Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("https://simpledebtbook-privacy-policy.ucoz.net/")
+                )
+            )
+        }
+
+        dialog.show()
+    }
+
+    fun showSubscriptionsTermsDialog() {
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(R.layout.dialog_subscription_terms)
 
         dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
             dialog.dismiss()
