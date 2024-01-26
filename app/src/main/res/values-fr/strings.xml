@@ -44,7 +44,8 @@
     <string name="buy">Acheter</string>
     <string name="app_requires_permissions">L\'application requiert des permissions</string>
     <string name="this_app_is_made_primarily_for_startups_its_main_functionality_is_to_send_sms_messages_using_a_request_from_the_server_as_well_as_to_send_a_request_to_the_server_with_information_about_the_sms_message_that_came_to_the_phone_nthis_functionality_requires_access_to_receive_read_and_send_sms_messages_as_well_as_to_send_notifications_to_this_device_so_that_the_user_knows_when_the_application_is_running_nthese_permissions_will_be_requested_after_clicking_on_the_confirm_button">Cette application est principalement destinée aux entreprises en phase de démarrage. Sa principale fonctionnalité est d\'envoyer des messages SMS en utilisant une requête du serveur, ainsi que d\'envoyer une requête au serveur avec des informations sur le message SMS qui est arrivé sur le téléphone.  Cette fonctionnalité nécessite un accès pour recevoir, lire et envoyer des SMS, ainsi que pour envoyer des notifications à cet appareil afin que l\'utilisateur sache quand l\'application est en cours d\'exécution. Ces autorisations seront demandées après avoir cliqué sur le bouton \"Confirmer\".</string>
-    <string name="please_note_you_are_not_connected_to_the_internet">Attention, vous n\'êtes pas connecté à l\'internet !</string>
+    <string name="please_note_you_are_not_connected_to_the_internet">Attention, vous n\'êtes probablement pas connecté à l\'internet !</string>
     <string name="stop_service">Arrêter le service</string>
     <string name="sms_modem_service_has_stopped_working">le service a cessé de fonctionner</string>
+    <string name="sorry_this_section_is_not_available_yet">Désolé, cette section n\'est pas encore disponible</string>
 </resources>

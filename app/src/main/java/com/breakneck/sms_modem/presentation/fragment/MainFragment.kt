@@ -91,13 +91,19 @@ class MainFragment : Fragment() {
 
             override fun onRewardedVideoFinished(amount: Double, currency: String) {
                 Log.e("Appodeal", "onRewardedVideoFinished")
-//                val quantity = mainActivityVM.remainingAds.value
-//                if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
-//                    mainActivityVM.saveServiceRemainingTime()
-//                    if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-//                        activityInterface.updateServiceRemainingTimer()
-//                }
-//                mainActivityVM.onAdView()
+                /**
+                 * COMMENT FOR TEST
+                 */
+                val quantity = mainActivityVM.remainingAds.value
+                if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+                    mainActivityVM.saveServiceRemainingTime()
+                    if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+                        activityInterface.updateServiceRemainingTimer()
+                }
+                mainActivityVM.onAdView()
+                /**
+                 * COMMENT FOR TEST
+                 */
                 vm.isRewardAdLoading()
             }
 
@@ -116,16 +122,22 @@ class MainFragment : Fragment() {
             }
         })
 
-//        vm.isRewardAdLoaded.observe(viewLifecycleOwner) { isLoaded ->
-//            if (isLoaded) {
-//                binding.watchAdButton.setText(R.string.ad)
-//                binding.watchAdButton.isEnabled = true
-//            }
-//            else {
-//                binding.watchAdButton.setText(R.string.loading)
-//                binding.watchAdButton.isEnabled = false
-//            }
-//        }
+        /**
+         * COMMENT FOR TEST
+         */
+        vm.isRewardAdLoaded.observe(viewLifecycleOwner) { isLoaded ->
+            if (isLoaded) {
+                binding.watchAdButton.setText(R.string.ad)
+                binding.watchAdButton.isEnabled = true
+            }
+            else {
+                binding.watchAdButton.setText(R.string.loading)
+                binding.watchAdButton.isEnabled = false
+            }
+        }
+        /**
+         * COMMENT FOR TEST
+         */
 
         mainActivityVM.serverIpAddress.observe(viewLifecycleOwner) { address ->
             binding.ipAddressTextView.text = address.value
@@ -158,20 +170,34 @@ class MainFragment : Fragment() {
         }
 
         binding.connectSubscriptionButton.setOnClickListener {
-            activityInterface.showSubscriptionPlansDialog()
+            //TODO ADD SUBSCRIPTIONS
+//            activityInterface.showSubscriptionPlansDialog()
+            Toast.makeText(requireActivity(), getString(R.string.sorry_this_section_is_not_available_yet), Toast.LENGTH_SHORT).show()
         }
 
         binding.watchAdButton.setOnClickListener {
-            val quantity = mainActivityVM.remainingAds.value
-            if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
-                mainActivityVM.saveServiceRemainingTime()
-                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
-                    activityInterface.updateServiceRemainingTimer()
-            }
-            mainActivityVM.onAdView()
-//            if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)) {
-//                Appodeal.show(requireActivity(), Appodeal.REWARDED_VIDEO)
+            /**
+             * UNCOMMENT FOR TEST
+             */
+//            val quantity = mainActivityVM.remainingAds.value
+//            if ((quantity!!.value % PART_ADS_QUANTITY == 1) && (quantity.value != TOTAL_ADS_QUANTITY) && (quantity.value != 0)) {
+//                mainActivityVM.saveServiceRemainingTime()
+//                if (mainActivityVM.networkServiceBoundState.value is ServiceBoundState.Bounded)
+//                    activityInterface.updateServiceRemainingTimer()
 //            }
+//            mainActivityVM.onAdView()
+            /**
+             * UNCOMMENT FOR TEST
+             */
+            /**
+             * COMMENT FOR TEST
+             */
+            if (Appodeal.isLoaded(Appodeal.REWARDED_VIDEO)) {
+                Appodeal.show(requireActivity(), Appodeal.REWARDED_VIDEO)
+            }
+            /**
+             * COMMENT FOR TEST
+             */
         }
 
         mainActivityVM.networkServiceIntent.observe(viewLifecycleOwner) { intent ->
@@ -239,6 +265,7 @@ class MainFragment : Fragment() {
                         mainActivityVM.setDeviceIpAddress(address = IpAddress(value = activityInterface.getDeviceIpAddress()))
                     } catch (e: Exception) {
                         e.printStackTrace()
+                        binding.ipAddressTextView.setText(R.string.unable_to_get_ip_address)
                     }
                 }
 
@@ -256,7 +283,7 @@ class MainFragment : Fragment() {
             binding.serviceTimeRemainingTextView.text = String.format(
                 "%02d:%02d:%02d",
                 TimeUnit.MILLISECONDS.toHours(millis),
-                TimeUnit.MILLISECONDS.toMinutes(millis),
+                TimeUnit.MILLISECONDS.toMinutes(millis) - TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)),
                 TimeUnit.MILLISECONDS.toSeconds(millis) -
                         TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis))
             )
@@ -297,9 +324,9 @@ class MainFragment : Fragment() {
                     mainActivityVM.setServiceError("")
                 }
                 NetworkState.Unavailable -> {
-                    binding.watchAdButton.isEnabled = false
-                    binding.activateServiceButton.isEnabled = false
-                    binding.connectSubscriptionButton.isEnabled = false
+//                    binding.watchAdButton.isEnabled = false
+//                    binding.activateServiceButton.isEnabled = false
+//                    binding.connectSubscriptionButton.isEnabled = false
                     mainActivityVM.setServiceError(getString(R.string.please_note_you_are_not_connected_to_the_internet))
                 }
             }

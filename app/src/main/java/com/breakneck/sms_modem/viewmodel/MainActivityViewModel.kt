@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.breakneck.domain.HOURS_24_IN_SECONDS
 import com.breakneck.domain.TOTAL_ADS_QUANTITY
 import com.breakneck.domain.model.IpAddress
 import com.breakneck.domain.model.MessageDestinationUrl
@@ -170,7 +171,7 @@ class MainActivityViewModel(
 
     fun saveServiceRemainingTime() {
         //TODO CHANGE TO HOURS
-        saveServiceRemainingTimeInMillis.execute(getServiceRemainingTimeInMillis.execute() + 24000)
+        saveServiceRemainingTimeInMillis.execute(getServiceRemainingTimeInMillis.execute() + HOURS_24_IN_SECONDS * 1000)
         getServiceRemainingTime()
     }
 
@@ -213,14 +214,12 @@ class MainActivityViewModel(
     }
 
     fun onNetworkUnavailable() {
-        _networkServiceIntent.value = ServiceIntent.Enable
-        _networkServiceState.value = ServiceState.Disabled
+//        _networkServiceIntent.value = ServiceIntent.Enable
+//        _networkServiceState.value = ServiceState.Disabled
         _networkState.value = NetworkState.Unavailable
     }
 
     fun onNetworkAvailable() {
-        _networkServiceIntent.value = ServiceIntent.Enable
-        _networkServiceState.value = ServiceState.Disabled
         _networkState.value = NetworkState.Available
     }
 

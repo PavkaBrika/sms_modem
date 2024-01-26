@@ -175,18 +175,20 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         }
 
-//        networkChangeReceiver = NetworkChangeReceiver()
-
         val connectivityManager = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             getSystemService(ConnectivityManager::class.java)
         } else {
             getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         }
 
-        val networkRequest = NetworkRequest.Builder()
-            .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
-            .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
-            .build()
+        val networkRequestBuilder = NetworkRequest.Builder()
+                .addTransportType(NetworkCapabilities.TRANSPORT_CELLULAR)
+                .addTransportType(NetworkCapabilities.TRANSPORT_WIFI)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O)
+                networkRequestBuilder.addTransportType(NetworkCapabilities.TRANSPORT_WIFI_AWARE)
+
+        val networkRequest = networkRequestBuilder.build()
 
         connectivityManager.registerNetworkCallback(networkRequest, object : ConnectivityManager.NetworkCallback() {
             override fun onAvailable(network: Network) {
@@ -197,9 +199,26 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 }
             }
 
+            override fun onCapabilitiesChanged(
+                network: Network,
+                networkCapabilities: NetworkCapabilities
+            ) {
+                super.onCapabilitiesChanged(network, networkCapabilities)
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    vm.onNetworkAvailable()
+                }
+            }
+
+//            override fun onLosing(network: Network, maxMsToLive: Int) {
+//                super.onLosing(network, maxMsToLive)
+//                lifecycleScope.launch(Dispatchers.Main) {
+//                    vm.onNetworkUnavailable()
+//                }
+//            }
+
             override fun onLost(network: Network) {
                 super.onLost(network)
-
                 lifecycleScope.launch(Dispatchers.Main) {
                     vm.onNetworkUnavailable()
                 }

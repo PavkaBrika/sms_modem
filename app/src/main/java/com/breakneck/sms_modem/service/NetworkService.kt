@@ -154,7 +154,6 @@ open class NetworkService : Service() {
                     }
 
                     SERVICE_REMIND_LATER -> {
-                        //TODO CHANGE TO HOURS (now 1 = 1 hour)
                         val serviceRemainingTimeInSeconds = getServiceRemainingTimeInMillis.execute() / 1000
                         if (serviceRemainingTimeInSeconds > HOURS_3_IN_SECONDS) {
                             remindTimeInSec = HOURS_3_IN_SECONDS
@@ -229,6 +228,7 @@ open class NetworkService : Service() {
         hideErrorCardInActivity()
         changeServiceStateInActivity()
         updateServiceRemainingTimer()
+        notificationManager.cancel(DISABLED_NOTIFICATION_ID)
 
         Log.e(TAG, "Starting service task")
     }
