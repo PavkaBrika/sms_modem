@@ -65,4 +65,5 @@
     <string name="third_term">- You may manage your subscriptions and turned off auto-renewal from your Google Play Store account settings.</string>
     <string name="forth_term">- If you cancel a subscription purchased from an app on Google Play, you will not receive a refund for the current billing period, but will continue to receive their subscription content for the remainder of the current billing period, regardless of the cancellation date. The cancellation goes into effect after the current billing period has passed.</string>
     <string name="hot">Hot</string>
+    <string name="popular">Popular</string>
 </resources>

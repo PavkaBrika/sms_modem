@@ -13,6 +13,7 @@ import com.breakneck.domain.model.RemainingAdsQuantity
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.model.SubscriptionPlan
 import com.breakneck.domain.usecase.service.GetServiceRemainingTimeInMillis
 import com.breakneck.domain.usecase.settings.GetMessageDestinationUrl
 import com.breakneck.domain.usecase.settings.GetPort
@@ -78,6 +79,14 @@ class MainActivityViewModel(
     private val _networkState = MutableLiveData<NetworkState>(NetworkState.Available)
     val networkState: LiveData<NetworkState>
         get() = _networkState
+
+    private val _selectedSubscription = MutableLiveData<SubscriptionPlan>(SubscriptionPlan.ANNUALLY)
+    val selectedSubscription: LiveData<SubscriptionPlan>
+        get() = _selectedSubscription
+
+    private val _isSubscriptionDialogOpened = MutableLiveData<Boolean>(false)
+    val isSubscriptionDialogOpened: LiveData<Boolean>
+        get() = _isSubscriptionDialogOpened
 
     init {
         Log.e(TAG, "MainViewModel Created")
@@ -213,5 +222,25 @@ class MainActivityViewModel(
         _networkServiceIntent.value = ServiceIntent.Enable
         _networkServiceState.value = ServiceState.Disabled
         _networkState.value = NetworkState.Available
+    }
+
+    fun onAnnualSubscriptionClicked() {
+        _selectedSubscription.value = SubscriptionPlan.ANNUALLY
+    }
+
+    fun onSeasonSubscriptionClicked() {
+        _selectedSubscription.value = SubscriptionPlan.SEASONALLY
+    }
+
+    fun onMonthSubscriptionClicked() {
+        _selectedSubscription.value = SubscriptionPlan.MONTHLY
+    }
+
+    fun onSubscriptionDialogOpen() {
+        _isSubscriptionDialogOpened.value = true
+    }
+
+    fun onSubscriptionDialogClose() {
+        _isSubscriptionDialogOpened.value = false
     }
 }

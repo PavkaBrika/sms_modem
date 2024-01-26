@@ -7,6 +7,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.LinkProperties
 import android.net.Network
@@ -23,6 +24,7 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -36,6 +38,7 @@ import com.breakneck.domain.model.Port
 import com.breakneck.domain.model.ServiceBoundState
 import com.breakneck.domain.model.ServiceIntent
 import com.breakneck.domain.model.ServiceState
+import com.breakneck.domain.model.SubscriptionPlan
 import com.breakneck.sms_modem.R
 import com.breakneck.sms_modem.databinding.ActivityMainBinding
 import com.breakneck.sms_modem.presentation.fragment.InfoFragment
@@ -53,6 +56,7 @@ import com.breakneck.sms_modem.service.SERVICE_UPDATE_ADS
 import com.breakneck.sms_modem.viewmodel.MainActivityViewModel
 import com.breakneck.sms_modem.viewmodel.MessageFragmentViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -145,6 +149,10 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 }
                 else -> false
             }
+        }
+
+        if (vm.isSubscriptionDialogOpened.value!!) {
+            showSubscriptionPlansDialog()
         }
 
         receiver = object : BroadcastReceiver() {
@@ -362,6 +370,84 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         dialog.setContentView(R.layout.dialog_subscription_plans)
         dialog.setCancelable(false)
 
+        val annualCardView = dialog.findViewById<MaterialCardView>(R.id.annualSubscriptionCardView)
+        val annualSubscriptionTitleTextView = dialog.findViewById<TextView>(R.id.annualSubscriptionTitleTextView)
+        val annualSubscriptionPriceTextView = dialog.findViewById<TextView>(R.id.annualSubscriptionPriceTextView)
+
+        val seasonalCardView = dialog.findViewById<MaterialCardView>(R.id.threeMonthsSubscriptionCardView)
+        val seasonalSubscriptionTitleTextView = dialog.findViewById<TextView>(R.id.seasonalSubscriptionTitleTextView)
+        val seasonalSubscriptionPriceTextView = dialog.findViewById<TextView>(R.id.seasonalSubscriptionPriceTextView)
+
+        val monthCardView = dialog.findViewById<MaterialCardView>(R.id.monthlySubscriptionCardView)
+        val monthSubscriptionTitleTextView = dialog.findViewById<TextView>(R.id.monthlySubscriptionTitleTextView)
+        val monthSubscriptionPriceTextView = dialog.findViewById<TextView>(R.id.monthlySubscriptionPriceTextView)
+
+        val confirmButton = dialog.findViewById<Button>(R.id.confirmButton)
+
+        vm.selectedSubscription.observe(dialog) { plan ->
+            when (plan) {
+                SubscriptionPlan.MONTHLY -> {
+                    monthCardView!!.strokeColor = ContextCompat.getColor(this, R.color.disabled_card)
+                    monthCardView.strokeWidth = 10
+                    monthSubscriptionPriceTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+                    monthSubscriptionTitleTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+
+                    seasonalCardView!!.strokeColor = Color.BLACK
+                    seasonalCardView.strokeWidth = 5
+                    seasonalSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+                    seasonalSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+
+                    annualCardView!!.strokeColor = Color.BLACK
+                    annualCardView.strokeWidth = 5
+                    annualSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+                    annualSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+
+                    //TODO CHANGE STRING
+                    confirmButton!!.text = "${getString(R.string.subscribe_now)}\n150.00 Р per month"
+                }
+                SubscriptionPlan.SEASONALLY -> {
+                    monthCardView!!.strokeColor = Color.BLACK
+                    monthCardView.strokeWidth = 5
+                    monthSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+                    monthSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+
+                    seasonalCardView!!.strokeColor = ContextCompat.getColor(this, R.color.disabled_card)
+                    seasonalCardView.strokeWidth = 10
+                    seasonalSubscriptionPriceTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+                    seasonalSubscriptionTitleTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+
+                    annualCardView!!.strokeColor = Color.BLACK
+                    annualCardView.strokeWidth = 5
+                    annualSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+                    annualSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+
+                    confirmButton!!.text = "${getString(R.string.subscribe_now)}\n387.00 Р per 3 months"
+                }
+                SubscriptionPlan.ANNUALLY -> {
+                    monthCardView!!.strokeColor = Color.BLACK
+                    monthCardView.strokeWidth = 5
+                    monthSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+                    monthSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+
+                    seasonalCardView!!.strokeColor = Color.BLACK
+                    seasonalCardView.strokeWidth = 5
+                    seasonalSubscriptionPriceTextView!!.setTextColor(Color.BLACK)
+                    seasonalSubscriptionTitleTextView!!.setTextColor(Color.BLACK)
+
+                    annualCardView!!.strokeColor = ContextCompat.getColor(this, R.color.disabled_card)
+                    annualCardView.strokeWidth = 10
+                    annualSubscriptionTitleTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+                    annualSubscriptionPriceTextView!!.setTextColor(ContextCompat.getColor(this, R.color.disabled_card))
+
+                    confirmButton!!.text = "${getString(R.string.subscribe_now)}\n1188.00 Р per year"
+                }
+            }
+        }
+
+        annualCardView!!.setOnClickListener { vm.onAnnualSubscriptionClicked() }
+        seasonalCardView!!.setOnClickListener { vm.onSeasonSubscriptionClicked() }
+        monthCardView!!.setOnClickListener { vm.onMonthSubscriptionClicked() }
+
         dialog.findViewById<ImageView>(R.id.cancelImageView)!!.setOnClickListener {
             dialog.dismiss()
         }
@@ -380,7 +466,12 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             )
         }
 
+        dialog.setOnDismissListener {
+            vm.onSubscriptionDialogClose()
+        }
+
         dialog.show()
+        vm.onSubscriptionDialogOpen()
     }
 
     fun showSubscriptionsTermsDialog() {
