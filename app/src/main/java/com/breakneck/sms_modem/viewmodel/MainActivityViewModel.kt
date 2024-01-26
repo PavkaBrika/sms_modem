@@ -117,7 +117,6 @@ class MainActivityViewModel(
         } else {
             Log.e(TAG, "Port not saved: Equals old value")
         }
-
     }
 
     private fun getMessageDestinationUrl() {
@@ -170,7 +169,6 @@ class MainActivityViewModel(
     }
 
     fun saveServiceRemainingTime() {
-        //TODO CHANGE TO HOURS
         saveServiceRemainingTimeInMillis.execute(getServiceRemainingTimeInMillis.execute() + HOURS_24_IN_SECONDS * 1000)
         getServiceRemainingTime()
     }
@@ -214,8 +212,6 @@ class MainActivityViewModel(
     }
 
     fun onNetworkUnavailable() {
-//        _networkServiceIntent.value = ServiceIntent.Enable
-//        _networkServiceState.value = ServiceState.Disabled
         _networkState.value = NetworkState.Unavailable
     }
 

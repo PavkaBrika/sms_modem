@@ -24,7 +24,6 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -68,13 +67,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
     private lateinit var binding: ActivityMainBinding
 
     val TAG = "MainActivity"
-
-    //TODO implement dagger instead koin
-//    @Inject
-//    lateinit var vmFactory: MainViewModelFactory
-//    private lateinit var vm: MainViewModel
-//    @Inject
-//    lateinit var getPort: GetPort
 
     private val vm by viewModel<MainActivityViewModel>()
     private val messageFragmentViewModel by viewModel<MessageFragmentViewModel>()
@@ -123,9 +115,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         })
 
-        //TODO implement dagger instead koin
-//        (applicationContext as App).appComponent.inject(this)
-//        vm = ViewModelProvider(this, vmFactory).get(MainViewModel::class.java)
         checkPermissions()
 
         val toolbar = supportActionBar
@@ -209,13 +198,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                     vm.onNetworkAvailable()
                 }
             }
-
-//            override fun onLosing(network: Network, maxMsToLive: Int) {
-//                super.onLosing(network, maxMsToLive)
-//                lifecycleScope.launch(Dispatchers.Main) {
-//                    vm.onNetworkUnavailable()
-//                }
-//            }
 
             override fun onLost(network: Network) {
                 super.onLost(network)

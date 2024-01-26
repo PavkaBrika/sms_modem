@@ -79,12 +79,6 @@ const val DISABLED_NOTIFICATION_ID = 21341123
 
 open class NetworkService : Service() {
 
-    //TODO implement dagger instead koin
-//    @Inject
-//    lateinit var getPort: GetPort
-//    @Inject
-//    lateinit var saveServiceState: SaveServiceState
-
     private val binder: IBinder = NetworkServiceBinder()
     private lateinit var broadcaster: LocalBroadcastManager
 
@@ -174,8 +168,6 @@ open class NetworkService : Service() {
     override fun onCreate() {
         super.onCreate()
         Log.e(TAG, "Service create")
-        //TODO implement dagger instead koin
-//        AndroidInjection.inject(this)
         broadcaster = LocalBroadcastManager.getInstance(this)
 
         createNotificationChannel()
@@ -276,7 +268,6 @@ open class NetworkService : Service() {
                             getCurrentLocale(applicationContext)
                         )
                         sendSMS(phoneNumber = phone!!, message = message!!, date = date)
-                        //TODO return json code
                         call.respondText("$date: Message $message sent to $phone")
                     } else {
                         call.respondText("Error")
@@ -474,7 +465,6 @@ open class NetworkService : Service() {
         timer = object : CountDownTimer(getServiceRemainingTimeInMillis.execute(), 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
-//                Log.e(TAG, "CountDownTimer second remaining until finished = $millisUntilFinished")
                 val secondUntilFinished = millisUntilFinished / 1000
                 if (remindTimeInSec != 0L)
                     if (secondUntilFinished == remindTimeInSec) {

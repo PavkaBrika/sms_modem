@@ -28,14 +28,6 @@ class InfoFragment: Fragment() {
     private val vm by activityViewModel<InfoFragmentViewModel>()
     private val messagesFragmentViewModel by activityViewModel<MessageFragmentViewModel>()
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
