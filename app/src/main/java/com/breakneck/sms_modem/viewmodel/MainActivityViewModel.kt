@@ -89,6 +89,10 @@ class MainActivityViewModel(
     val isSubscriptionDialogOpened: LiveData<Boolean>
         get() = _isSubscriptionDialogOpened
 
+    private val _isHowToUseDialogOpened = MutableLiveData<Boolean>(false)
+    val isHowToUseDialogOpened: LiveData<Boolean>
+        get() = _isHowToUseDialogOpened
+
     init {
         Log.e(TAG, "MainViewModel Created")
         getPort()
@@ -241,5 +245,13 @@ class MainActivityViewModel(
 
     fun onSubscriptionDialogClose() {
         _isSubscriptionDialogOpened.value = false
+    }
+
+    fun onHowToUseDialogOpen() {
+        _isHowToUseDialogOpened.value = true
+    }
+
+    fun onHowToUseDialogClose() {
+        _isHowToUseDialogOpened.value = false
     }
 }

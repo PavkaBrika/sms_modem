@@ -48,4 +48,11 @@
     <string name="stop_service">Arrêter le service</string>
     <string name="sms_modem_service_has_stopped_working">le service a cessé de fonctionner</string>
     <string name="sorry_this_section_is_not_available_yet">Désolé, cette section n\'est pas encore disponible</string>
+    <string name="how_to_use">Comment l\'utiliser ?</string>
+    <string name="your_request_to_send_an_sms_message">Votre demande d\'envoi d\'un message SMS :</string>
+    <string name="send_message_request">%1$s:%2$s/numéro de téléphone du destinataire/texte du message</string>
+    <string name="how_to_use_guide">Sur l\'écran principal, vous pouvez voir l\'adresse IP à laquelle votre appareil est connecté et le port que vous pouvez configurer vous-même dans les paramètres. En utilisant cette adresse IP et ce port, vous pouvez envoyer une demande sous la forme \"ip:port/recipient-phone-number/message-text\", et ce message sera envoyé depuis votre smartphone selon les données spécifiées dans la demande. L\'application peut également envoyer une demande au serveur à l\'adresse URL spécifiée dans les paramètres, sous la forme \"adresse-URL/numéro de téléphone de l\'expéditeur/texte du message/\".</string>
+    <string name="address_send_received_message">%1$s/numéro de portable de l\'expéditeur/texte du message</string>
+    <string name="address_to_which_the_application_will_send_received_sms_messages">%1$s/sender_cell_numéro/message_text</string>
+    <string name="address_to_which_the_application_will_send_received_sms_messages">Adresse à laquelle l\'application enverra les SMS reçus</string>
 </resources>

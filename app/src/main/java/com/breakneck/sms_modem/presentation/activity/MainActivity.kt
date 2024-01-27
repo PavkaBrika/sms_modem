@@ -20,11 +20,13 @@ import android.os.Bundle
 import android.os.IBinder
 import android.text.format.Formatter
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -151,9 +153,10 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             }
         }
 
-        if (vm.isSubscriptionDialogOpened.value!!) {
+        if (vm.isSubscriptionDialogOpened.value!!)
             showSubscriptionPlansDialog()
-        }
+        if (vm.isHowToUseDialogOpened.value!!)
+            showHowToUseDialog()
 
         receiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {
@@ -224,6 +227,18 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
                 }
             }
         })
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_main_toolbar, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.howToUseMenuItem -> showHowToUseDialog()
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStart() {
@@ -502,6 +517,47 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
 
         dialog.show()
+    }
+
+    private fun showHowToUseDialog() {
+        val dialog = BottomSheetDialog(this)
+        dialog.setContentView(R.layout.dialog_how_to_use)
+
+        if ((vm.serverIpAddress.value != null) && (vm.serverIpAddress.value!!.value != "")) {
+            dialog.findViewById<TextView>(R.id.requestToSendTextView)!!.text = getString(
+                R.string.send_message_request,
+                vm.serverIpAddress.value!!.value,
+                vm.port.value!!.value.toString()
+            )
+        } else {
+            dialog.findViewById<TextView>(R.id.requestToSendTextView)!!.visibility = View.GONE
+            dialog.findViewById<TextView>(R.id.requestToSendHintTextView)!!.visibility = View.GONE
+        }
+
+        if ((vm.messageDestinationUrl.value != null) && (vm.messageDestinationUrl.value!!.value != "")) {
+            dialog.findViewById<TextView>(R.id.sendAddressTextView)!!.text = getString(
+                R.string.address_send_received_message,
+                vm.messageDestinationUrl.value!!.value
+            )
+        } else {
+            dialog.findViewById<TextView>(R.id.sendAddressHintTextView)!!.visibility = View.GONE
+            dialog.findViewById<TextView>(R.id.sendAddressTextView)!!.visibility = View.GONE
+        }
+
+        dialog.findViewById<Button>(R.id.cancelButton)!!.setOnClickListener {
+            dialog.dismiss()
+        }
+
+        dialog.setOnDismissListener {
+            vm.onHowToUseDialogClose()
+        }
+
+        dialog.setOnCancelListener {
+            vm.onHowToUseDialogClose()
+        }
+
+        dialog.show()
+        vm.onHowToUseDialogOpen()
     }
 
     override fun getDeviceIpAddress(): String {
