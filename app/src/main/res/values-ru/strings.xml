@@ -54,4 +54,7 @@
     <string name="how_to_use_guide">На главном экране вы можете увидеть IP-адрес, к которому подключено ваше устройство, и порт, который вы можете задать самостоятельно в настройках. Используя этот IP-адрес и порт, вы можете отправить запрос в виде \'ip:port/recipient-phone-number/message-text\', и это сообщение будет отправлено с вашего смартфона в соответствии с данными, указанными в запросе. Также приложение может отправить запрос на сервер по указанному в настройках URL-адресу в формате \'your-URL-address/sender-phone-number/message-text/\'.</string>
     <string name="address_send_received_message">%1$s/номер_телефона_получателя/текст_сообщения</string>
     <string name="address_to_which_the_application_will_send_received_sms_messages">Адрес, на который приложение будет отправлять полученные SMS-сообщения</string>
+    <string name="your_code_is_20">Ваш код - 20%1$s</string>
+    <string name="thanks_for_code">Спасибо за код</string>
+    <string name="enter_the_url_where_sms_will_be_sent">Введите URL-адрес, на который будут отправляться SMS</string>
 </resources>

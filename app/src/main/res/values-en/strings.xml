@@ -54,4 +54,7 @@
     <string name="how_to_use_guide">On the main screen, you can see your IP address that your device is connected to and the port that you can configure yourself in settings. Using this IP address and port, you can send a request in the form of \'ip:port/recipient-phone-number/message-text\', and this message will be sent from your smartphone according to the data specified in the request. Also, the application can send a request to the server at the URL address you specify in the settings in the format \'your-URL-address/sender-phone-number/message-text/\'.</string>
     <string name="address_send_received_message">%1$s/sender_cell_number/message_text</string>
     <string name="address_to_which_the_application_will_send_received_sms_messages">Address to which the application will send received SMS messages</string>
+    <string name="your_code_is_20">Your Code is 20%1$s</string>
+    <string name="thanks_for_code">Thanks for code</string>
+    <string name="enter_the_url_where_sms_will_be_sent">Enter the URL where SMS will be sent</string>
 </resources>
