@@ -491,11 +491,10 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
         }
 
         dialog.findViewById<TextView>(R.id.privacyPolicyTextView)!!.setOnClickListener {
-            //TODO CHANGE URL
             startActivity(
                 Intent(
                     Intent.ACTION_VIEW,
-                    Uri.parse("https://simpledebtbook-privacy-policy.ucoz.net/")
+                    Uri.parse("https://smsmodem-privacy-policy.ucoz.net/")
                 )
             )
         }
