@@ -1,6 +1,5 @@
 package com.breakneck.sms_modem.presentation.fragment
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -58,7 +57,6 @@ class MessagesFragment : Fragment() {
                 }
             }
         }
-
         return view
     }
 }

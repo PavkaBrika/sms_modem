@@ -73,4 +73,7 @@
     <string name="address_send_received_message">%1$s/Handynummer des Absenders/message_text</string>
     <string name="address_to_which_the_application_will_send_received_sms_messages">Address to which the application will send received SMS messages</string>
     <string name="your_request_to_send_an_sms_message">Your request to send an SMS message:</string>
+    <string name="your_code_is_20">Your Code is 20%1$s</string>
+    <string name="thanks_for_code">Thanks for code</string>
+    <string name="enter_the_url_where_sms_will_be_sent">Enter the URL where SMS will be sent</string>
 </resources>
