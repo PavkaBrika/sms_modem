@@ -7,7 +7,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.graphics.Color
 import android.net.ConnectivityManager
 import android.net.LinkProperties
@@ -64,7 +63,6 @@ import com.google.android.material.textfield.TextInputLayout
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.util.Locale
 
 
 class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
@@ -90,17 +88,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
     val permissionList: MutableList<String> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        /**
-         * UNCOMMENT FOR LANGUAGE TEST
-         */
-//        val locale = Locale("en")
-//        Locale.setDefault(locale)
-//        val config = Configuration()
-//        config.locale = locale
-//        resources.updateConfiguration(config, resources.displayMetrics)
-        /**
-         * UNCOMMENT FOR LANGUAGE TEST
-         */
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         val view = binding.root
