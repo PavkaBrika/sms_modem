@@ -582,7 +582,6 @@ class MainActivity : AppCompatActivity(), MainFragment.ActivityInterface {
             for (address in link.linkAddresses.indices) {
                 if (link.linkAddresses[address].address.hostAddress.matches(ipRegex)) {
                     return link.linkAddresses[address].address.hostAddress
-//                    return "123.456.0.78"
                 }
             }
             //TODO MAKE ERROR IN THIS RETURN

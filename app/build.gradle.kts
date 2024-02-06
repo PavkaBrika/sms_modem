@@ -12,8 +12,8 @@ android {
         applicationId = "com.breakneck.sms_modem"
         minSdk = 21
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
         setProperty("archivesBaseName", "SMS-modem-v$versionCode($versionName)")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
